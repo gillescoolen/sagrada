@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.TextField?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Button?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      stylesheets="/styles/chat.css"
+      fx:controller="sagrada.controller.ChatController"
+      fx:id="chatBox" prefWidth="300">
+    <ScrollPane fx:id="messageScrollBox" prefHeight="200" vbarPolicy="ALWAYS">
+        <VBox>
+            <fx:include source="chatMessage.fxml"/>
+            <fx:include source="chatMessage.fxml"/>
+            <fx:include source="chatMessage.fxml"/>
+            <fx:include source="chatMessage.fxml"/>
+        </VBox>
+    </ScrollPane>
+    <HBox>
+        <TextField fx:id="messageField" prefWidth="240" prefHeight="20" styleClass="input"/>
+        <Button fx:id="sendButton" text="Send" prefWidth="60" prefHeight="20" styleClass="send-button"/>
+    </HBox>
+</VBox>
