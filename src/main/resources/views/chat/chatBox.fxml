@@ -9,9 +9,9 @@
       xmlns:fx="http://javafx.com/fxml"
       stylesheets="/styles/chat.css"
       fx:controller="sagrada.controller.ChatController"
-      fx:id="chatBox" prefWidth="300">
-    <ScrollPane fx:id="messageScrollBox" prefHeight="200" vbarPolicy="ALWAYS">
-        <VBox>
+      prefWidth="300">
+    <ScrollPane prefHeight="200" vbarPolicy="ALWAYS">
+        <VBox fx:id="messageBox">
             <fx:include source="chatMessage.fxml"/>
             <fx:include source="chatMessage.fxml"/>
             <fx:include source="chatMessage.fxml"/>
