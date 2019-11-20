@@ -1,7 +1,7 @@
 package sagrada.model;
 
 public class PatternCardField {
-    private Position position;
+    private final Position position;
     private Color color;
     private Integer value;
 

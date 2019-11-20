@@ -1,7 +1,7 @@
 package sagrada.model;
 
 public class FavorToken {
-    private int id;
+    private final int id;
     private Player player;
     private Integer round = null;
 

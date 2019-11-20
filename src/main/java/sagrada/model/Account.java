@@ -1,16 +1,16 @@
 package sagrada.model;
 
 public class Account {
-    private String userName;
-    private String password;
+    private final String username;
+    private final String password;
 
-    public Account(String userName, String password) {
-        this.userName = userName;
+    public Account(String username, String password) {
+        this.username = username;
         this.password = password;
     }
 
-    public String getUserName() {
-        return this.userName;
+    public String getUsername() {
+        return this.username;
     }
 
     public String getPassword() {

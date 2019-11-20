@@ -6,11 +6,11 @@ import java.util.List;
 public class Game {
     private int id;
     private Player playerTurn;
-    private List<Player> players;
-    private List<ToolCard> toolCards;
-    private List<PublicObjectiveCard> objectiveCards;
-    private List<FavorToken> favorTokens;
-    private List<Die> dice;
+    private final List<Player> players;
+    private final List<ToolCard> toolCards;
+    private final List<PublicObjectiveCard> objectiveCards;
+    private final List<FavorToken> favorTokens;
+    private final List<Die> dice;
 
     public Game() {
         this.players = new ArrayList<>(2);
@@ -74,5 +74,13 @@ public class Game {
 
     public List<Die> getDice() {
         return List.copyOf(this.dice);
+    }
+
+    public void removeDie(Die die) {
+        this.dice.remove(die);
+    }
+
+    public void removeFavorToken(FavorToken favorToken) {
+        this.favorTokens.remove(favorToken);
     }
 }

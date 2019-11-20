@@ -1,7 +1,7 @@
 package sagrada.model;
 
 public class Die {
-    private Color color;
+    private final Color color;
     private Integer value = null;
     private ToolCard usedToolCard;
 
@@ -18,10 +18,10 @@ public class Die {
     }
 
     public void setValue(Integer value) {
-        if (value != null) {
-            if (!(value < 1) && !(value > 6)) {
-                this.value = value;
-            }
+        if (value == null) return;
+
+        if (value >= 1 && value <= 6) {
+            this.value = value;
         }
     }
 

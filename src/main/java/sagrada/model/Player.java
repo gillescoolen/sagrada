@@ -12,8 +12,8 @@ public class Player {
     private boolean isCurrentPlayer = false;
     private Color privateObjectiveCardColor;
     private PatternCard patternCard;
-    private List<PatternCard> cardOptions;
-    private List<FavorToken> favorTokens;
+    private final List<PatternCard> cardOptions;
+    private final List<FavorToken> favorTokens;
     private Integer score = 0;
 
     /**
@@ -117,5 +117,13 @@ public class Player {
 
     public void removeFavorToken(FavorToken favorToken) {
         this.favorTokens.remove(favorToken);
+    }
+
+    public PatternCard getPatternCard() {
+        return this.patternCard;
+    }
+
+    public void setPatternCard(PatternCard patternCard) {
+        this.patternCard = patternCard;
     }
 }

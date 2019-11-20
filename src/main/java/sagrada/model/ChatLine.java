@@ -3,9 +3,9 @@ package sagrada.model;
 import java.time.LocalDateTime;
 
 public class ChatLine {
-    private Player player;
-    private LocalDateTime timestamp;
-    private String message;
+    private final Player player;
+    private final LocalDateTime timestamp;
+    private final String message;
 
     public ChatLine(Player player, LocalDateTime timestamp, String message) {
         this.player = player;

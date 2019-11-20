@@ -1,10 +1,10 @@
 package sagrada.model;
 
 public class PatternCard {
-    private int id;
-    private String name;
-    private int difficulty;
-    private int standard;
+    private final int id;
+    private final String name;
+    private final int difficulty;
+    private final int standard;
 
     public PatternCard(int id, String name, int difficulty, int standard) {
         this.id = id;

@@ -1,10 +1,10 @@
 package sagrada.model;
 
 public class PublicObjectiveCard {
-    private int id;
-    private String name;
-    private String description;
-    private int points;
+    private final int id;
+    private final String name;
+    private final String description;
+    private final int points;
 
     public PublicObjectiveCard(int id, String name, String description, int points) {
         this.id = id;
