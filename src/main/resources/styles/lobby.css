@@ -1,0 +1,11 @@
+.title {
+  -fx-font-size: 24px;
+}
+
+.side-column {
+  -fx-background-color: #ededed;
+}
+
+.main-column {
+  -fx-background-color: #ffffff;
+}
