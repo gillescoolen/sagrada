@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<HBox xmlns="http://javafx.com/javafx/11.0.1">
+    <VBox style="-fx-background-color: #ededed;" prefHeight="720.0" prefWidth="350.0">
+        <padding>
+            <Insets top="25" right="25" bottom="25" left="25"/>
+        </padding>
+        <Text style="-fx-font-size: 24px;" text="Invites"/>
+    </VBox>
+    <VBox style="-fx-background-color: #ffffff;" alignment="BASELINE_CENTER" prefHeight="720.0" prefWidth="500.0">
+        <padding>
+            <Insets top="25" right="25" bottom="25" left="25"/>
+        </padding>
+        <Text style="-fx-font-size: 24px;" text="Lobby's"/>
+        <VBox>
+            <padding>
+                <Insets top="25"/>
+            </padding>
+            <!-- Split these to components -->
+            <HBox>
+                <Text text="Lobby 1"/>
+            </HBox>
+            <HBox>
+                <Text text="Lobby 2"/>
+            </HBox>
+            <HBox>
+                <Text text="Lobby 3"/>
+            </HBox>
+            <HBox>
+                <Text text="Lobby 4"/>
+            </HBox>
+        </VBox>
+    </VBox>
+    <VBox style="-fx-background-color: #ededed;" prefHeight="720.0" prefWidth="350.0">
+        <padding>
+            <Insets top="25" right="25" bottom="25" left="25"/>
+        </padding>
+        <Text style="-fx-font-size: 24px;" text="Global Chat"/>
+    </VBox>
+</HBox>
+
