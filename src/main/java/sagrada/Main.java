@@ -9,10 +9,11 @@ import javafx.stage.Stage;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        var sagrada = getClass().getResource("/views/main.fxml");
+        var sagrada = getClass().getResource("/views/login.fxml");
         Parent root = FXMLLoader.load(sagrada);
         primaryStage.setTitle("Sagrada");
-        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 

@@ -1,0 +1,21 @@
+.title {
+  -fx-font-size: 36px;
+}
+
+.wrapper {
+  -fx-padding: 10px;
+  -fx-spacing: 25px;
+  -fx-alignment: center;
+}
+
+.textfield {
+    -fx-pref-height: 40px;
+    -fx-pref-width: 400px;
+  -fx-spacing: 25px;
+}
+
+.passwordfield {
+    -fx-pref-height: 40px;
+    -fx-pref-width: 400px;
+  -fx-spacing: 25px;
+}
