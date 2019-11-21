@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox fx:id="chatBox" prefWidth="300" stylesheets="/styles/chat.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sagrada.controller.ChatController">
-    <ListView prefHeight="200.0" prefWidth="200.0" >
+    <ListView prefHeight="200.0" prefWidth="200.0" fx:id="lvMessageBox">
         <fx:include source="chatMessage.fxml"/>
     </ListView>
     <HBox>

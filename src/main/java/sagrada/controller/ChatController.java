@@ -2,8 +2,8 @@ package sagrada.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 
 public class ChatController {
     @FXML
@@ -11,7 +11,7 @@ public class ChatController {
     @FXML
     private Button sendButton;
     @FXML
-    private VBox messageBox;
+    private ListView lvMessageBox;
 
     @FXML
     public void initialize() {
