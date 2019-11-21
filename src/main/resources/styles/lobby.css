@@ -3,9 +3,17 @@
 }
 
 .side-column {
-  -fx-background-color: #ededed;
+  -fx-padding: 25px;
+  -fx-background-color: #ededed;  
+
 }
 
 .main-column {
+  -fx-padding: 25px;
   -fx-background-color: #ffffff;
+  -fx-alignment: baseline-center;
+}
+
+.lobby-list {
+  -fx-padding: 25px;
 }

@@ -1,28 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <HBox xmlns="http://javafx.com/javafx/11.0.1"
       stylesheets="/styles/lobby.css"
       prefWidth="1200"
-      prefHeight="720"
-      styleClass="window">
+      prefHeight="720">
     <VBox styleClass="side-column" prefHeight="720.0" prefWidth="350.0">
-        <padding>
-            <Insets top="25" right="25" bottom="25" left="25"/>
-        </padding>
         <Text styleClass="title" text="Invites"/>
     </VBox>
-    <VBox styleClass="main-column" alignment="BASELINE_CENTER" prefHeight="720.0" prefWidth="500.0">
-        <padding>
-            <Insets top="25" right="25" bottom="25" left="25"/>
-        </padding>
+    <VBox styleClass="main-column" prefHeight="720.0" prefWidth="500.0">
         <Text styleClass="title" text="Lobby's"/>
-        <VBox>
-            <padding>
-                <Insets top="25"/>
-            </padding>
+        <VBox styleClass="lobby-list">
             <!-- Split these to components -->
             <HBox>
                 <Text text="Lobby 1"/>
@@ -39,9 +28,6 @@
         </VBox>
     </VBox>
     <VBox styleClass="side-column" prefHeight="720.0" prefWidth="350.0">
-        <padding>
-            <Insets top="25" right="25" bottom="25" left="25"/>
-        </padding>
         <Text styleClass="title" text="Global Chat"/>
     </VBox>
 </HBox>
