@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
+<<<<<<< Updated upstream
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Button?>
 <VBox xmlns="http://javafx.com/javafx"
@@ -18,8 +22,16 @@
             <fx:include source="chatMessage.fxml"/>
         </VBox>
     </ScrollPane>
+=======
+<?import javafx.scene.control.Cell?>
+<?import javafx.scene.control.ListCell?>
+<VBox fx:id="chatBox" prefWidth="300" stylesheets="/styles/chat.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sagrada.controller.ChatController">
+    <ListView prefHeight="200.0" prefWidth="200.0" >
+        <fx:include source="chatMessage.fxml"/>
+    </ListView>
+>>>>>>> Stashed changes
     <HBox>
-        <TextField fx:id="messageField" prefWidth="240" prefHeight="20" styleClass="input"/>
-        <Button fx:id="sendButton" text="Send" prefWidth="60" prefHeight="20" styleClass="send-button"/>
+        <TextField fx:id="messageField" prefHeight="20" prefWidth="240" styleClass="input" />
+        <Button fx:id="sendButton" prefHeight="20" prefWidth="60" styleClass="send-button" text="Send" />
     </HBox>
 </VBox>

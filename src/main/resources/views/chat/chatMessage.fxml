@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.Label?>
-<Label text="Nog niet klaar" prefWidth="120" wrapText="true" prefHeight="20"/>
-
+<AnchorPane prefHeight="24.0" prefWidth="200.0" stylesheets="/styles/chat.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" >
+  <Label fx:id="message" prefHeight="24.0" prefWidth="200.0" styleClass="outgoing-message" text="Nog niet klaar" wrapText="true" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"/>
+</AnchorPane>
