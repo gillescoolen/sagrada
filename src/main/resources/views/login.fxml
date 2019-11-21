@@ -11,28 +11,22 @@
 <?import javafx.scene.control.PasswordField?>
 
 <VBox fx:controller="sagrada.controller.LoginController" alignment="CENTER" prefWidth="1200" prefHeight="720"
+      stylesheets="/styles/login.css"
       xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
-    <Text strokeType="OUTSIDE" text="Sagrada!">
-        <font>
-            <Font size="36.0"/>
-        </font>
-    </Text>
-    <HBox alignment="CENTER" spacing="25">
-        <padding>
-            <Insets top="10" right="10" bottom="10" left="10"/>
-        </padding>
+    <Text styleClass="title" text="Sagrada!"/>
+
+    <HBox styleClass="wrapper">
         <Label text="Username"/>
-        <TextField fx:id="tfUsername" prefHeight="40" prefWidth="400"/>
+        <TextField styleClass="textfield" fx:id="tfUsername"/>
     </HBox>
-    <HBox alignment="CENTER" spacing="25">
-        <padding>
-            <Insets top="10" right="10" bottom="10" left="10"/>
-        </padding>
+
+    <HBox styleClass="wrapper">
         <Label text="Password"/>
-        <PasswordField fx:id="pfPassword" prefHeight="40" prefWidth="400"/>
+        <PasswordField styleClass="passwordfield" fx:id="pfPassword"/>
     </HBox>
-    <HBox alignment="CENTER" spacing="25">
-        <Button fx:id="btnLogin" text="Login" onAction="#handleLogin"/>
-        <Button fx:id="btnRegister" text="Register"/>
+
+    <HBox styleClass="wrapper" alignment="CENTER">
+        <Button text="Login" onAction="#handleLogin"/>
+        <Button text="Register"/>
     </HBox>
 </VBox>
