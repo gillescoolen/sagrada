@@ -10,7 +10,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 
-<VBox fx:controller="sagrada.controller.LoginController" alignment="CENTER"
+<VBox fx:controller="sagrada.controller.LoginController" alignment="CENTER" prefWidth="1200" prefHeight="720"
       xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <Text strokeType="OUTSIDE" text="Sagrada!">
         <font>
@@ -31,7 +31,7 @@
         <Label text="Password"/>
         <PasswordField fx:id="pfPassword" prefHeight="40" prefWidth="400"/>
     </HBox>
-    <HBox alignment="CENTER" spacing="25" >
+    <HBox alignment="CENTER" spacing="25">
         <Button fx:id="btnLogin" text="Login" onAction="#handleLogin"/>
         <Button fx:id="btnRegister" text="Register"/>
     </HBox>
