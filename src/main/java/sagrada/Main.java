@@ -13,6 +13,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(sagrada);
         primaryStage.setTitle("Sagrada");
         primaryStage.setScene(new Scene(root, 1200, 720));
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 
