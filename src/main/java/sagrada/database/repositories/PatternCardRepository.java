@@ -49,6 +49,8 @@ public final class PatternCardRepository extends Repository<PatternCard> {
         preparedStatement.setInt(4, patternCard.getId());
 
         preparedStatement.executeUpdate();
+
+        preparedStatement.close();
     }
 
     @Override
@@ -85,6 +87,8 @@ public final class PatternCardRepository extends Repository<PatternCard> {
         preparedStatement.setInt(1, patternCard.getId());
 
         preparedStatement.executeUpdate();
+
+        preparedStatement.close();
     }
 
     @Override
@@ -119,6 +123,8 @@ public final class PatternCardRepository extends Repository<PatternCard> {
         preparedStatement.setBoolean(3, patternCard.getStandard());
 
         preparedStatement.executeUpdate();
+
+        preparedStatement.close();
     }
 
     @Override
