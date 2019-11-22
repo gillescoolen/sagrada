@@ -6,6 +6,7 @@ import sagrada.model.PatternCard;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 
 public final class PatternCardRepository extends Repository<PatternCard> {
 
@@ -36,58 +37,112 @@ public final class PatternCardRepository extends Repository<PatternCard> {
     }
 
     @Override
-    public void update(PatternCard model) throws SQLException {
+    public void update(PatternCard patternCard) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(
                 "UPDATE patterncard SET `name` = ?, `difficulty` = ?, `standard` = ? WHERE `idpatterncard` = ?;"
         );
 
-        preparedStatement.setString(1, model.getName());
-        preparedStatement.setInt(2, model.getDifficulty());
-        preparedStatement.setBoolean(3, model.getStandard());
+        preparedStatement.setString(1, patternCard.getName());
+        preparedStatement.setInt(2, patternCard.getDifficulty());
+        preparedStatement.setBoolean(3, patternCard.getStandard());
 
-        preparedStatement.setInt(4, model.getId());
+        preparedStatement.setInt(4, patternCard.getId());
 
-        int rowsUpdated = preparedStatement.executeUpdate();
-
-        assert (rowsUpdated == 1) : "multiple rows were updated";
+        preparedStatement.executeUpdate();
     }
 
     @Override
-    public void updateMultiple(Iterable<PatternCard> models) throws SQLException {
+    public void updateMultiple(Collection<PatternCard> patternCards) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(
+                "UPDATE patterncard SET `name` = ?, `difficulty` = ?, `standard` = ? WHERE `idpatterncard` = ?;"
+        );
 
+        int count = 0;
+
+        for (PatternCard patternCard : patternCards) {
+            preparedStatement.setString(1, patternCard.getName());
+            preparedStatement.setInt(2, patternCard.getDifficulty());
+            preparedStatement.setBoolean(3, patternCard.getStandard());
+
+            preparedStatement.setInt(4, patternCard.getId());
+
+            preparedStatement.addBatch();
+
+            count++;
+
+            if (count % BATCH_SIZE == 0 || count == patternCards.size()) {
+                preparedStatement.executeBatch();
+            }
+        }
+
+        preparedStatement.close();
     }
 
     @Override
-    public void delete(PatternCard model) throws SQLException {
+    public void delete(PatternCard patternCard) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("DELETE FROM patterncard WHERE idpatterncard = ?;");
 
-        preparedStatement.setInt(1, model.getId());
+        preparedStatement.setInt(1, patternCard.getId());
 
-        int rowsDeleted = preparedStatement.executeUpdate();
-
-        assert (rowsDeleted == 1) : "multiple rows were deleted";
+        preparedStatement.executeUpdate();
     }
 
     @Override
-    public void deleteMultiple(Iterable<PatternCard> models) throws SQLException {
+    public void deleteMultiple(Collection<PatternCard> patternCards) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(
+                "DELETE FROM patterncard WHERE idpatterncard = ?;"
+        );
 
+        int count = 0;
+
+        for (PatternCard patternCard : patternCards) {
+            preparedStatement.setInt(1, patternCard.getId());
+
+            preparedStatement.addBatch();
+
+            count++;
+
+            if (count % BATCH_SIZE == 0 || count == patternCards.size()) {
+                preparedStatement.executeBatch();
+            }
+        }
+
+        preparedStatement.close();
     }
 
     @Override
-    public void add(PatternCard model) throws SQLException {
+    public void add(PatternCard patternCard) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("INSERT INTO patterncard values(?, ?, ?);");
 
-        preparedStatement.setString(1, model.getName());
-        preparedStatement.setInt(2, model.getDifficulty());
-        preparedStatement.setBoolean(3, model.getStandard());
+        preparedStatement.setString(1, patternCard.getName());
+        preparedStatement.setInt(2, patternCard.getDifficulty());
+        preparedStatement.setBoolean(3, patternCard.getStandard());
 
-        int rowsAdded = preparedStatement.executeUpdate();
-
-        assert (rowsAdded == 1) : "multiple rows were added";
+        preparedStatement.executeUpdate();
     }
 
     @Override
-    public void addMultiple(Iterable<PatternCard> models) throws SQLException {
+    public void addMultiple(Collection<PatternCard> patternCards) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(
+                "INSERT INTO patterncard values(?, ?, ?);"
+        );
 
+        int count = 0;
+
+        for (PatternCard patternCard : patternCards) {
+            preparedStatement.setString(1, patternCard.getName());
+            preparedStatement.setInt(2, patternCard.getDifficulty());
+            preparedStatement.setBoolean(3, patternCard.getStandard());
+
+            preparedStatement.addBatch();
+
+            count++;
+
+            if (count % BATCH_SIZE == 0 || count == patternCards.size()) {
+                preparedStatement.executeBatch();
+            }
+        }
+
+        preparedStatement.close();
     }
 }
