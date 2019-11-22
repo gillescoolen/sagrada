@@ -10,7 +10,7 @@ import java.util.Collection;
 
 public final class PatternCardRepository extends Repository<PatternCard> {
 
-    PatternCardRepository(DatabaseConnection connection) {
+    public PatternCardRepository(DatabaseConnection connection) {
         super(connection);
     }
 

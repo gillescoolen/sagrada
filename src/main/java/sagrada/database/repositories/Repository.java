@@ -9,7 +9,7 @@ public abstract class Repository<T> {
     protected final DatabaseConnection connection;
     protected final static int BATCH_SIZE = 10;
 
-    Repository(DatabaseConnection connection) {
+    public Repository(DatabaseConnection connection) {
         this.connection = connection;
     }
 
