@@ -10,6 +10,10 @@
     <Text styleClass="title" text="Sagrada!"/>
 
     <HBox styleClass="wrapper">
+        <Label fx:id="messageLabel"/>
+    </HBox>
+
+    <HBox styleClass="wrapper">
         <Label text="Username"/>
         <TextField styleClass="textfield" fx:id="tfUsername"/>
     </HBox>
@@ -21,6 +25,6 @@
 
     <HBox styleClass="wrapper" alignment="CENTER">
         <Button text="Login" onAction="#handleLogin"/>
-        <Button text="Register"/>
+        <Button text="Register" onAction="#handleRegister"/>
     </HBox>
 </VBox>
