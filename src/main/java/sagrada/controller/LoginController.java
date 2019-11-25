@@ -1,47 +1,77 @@
 package sagrada.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.AccountRepository;
+import sagrada.model.Account;
 
 import java.sql.SQLException;
 
 public class LoginController {
     @FXML
     private TextField tfUsername;
-
     @FXML
     private PasswordField pfPassword;
+    @FXML
+    private Label messageLabel;
+
+    private AccountRepository accountRepository;
 
     @FXML
-    protected void handleLogin() {
+    protected void initialize() {
         try {
-            var validLogin = this.doLogin();
+            var connection = new DatabaseConnection();
+            var accountRepository = new AccountRepository(connection);
 
-            if (validLogin) {
-                System.out.println("Logged in");
-            } else {
-                System.out.println("Invalid login");
-            }
+            connection.connect();
+            this.accountRepository = accountRepository;
         } catch (SQLException e) {
-            System.out.println("Something went wrong!");
+            this.messageLabel.getStyleClass().add("warning");
+            this.messageLabel.setText("Er kon geen database connectie gemaakt worden");
         }
     }
 
-    private boolean doLogin() throws SQLException {
-        var connection = new DatabaseConnection();
+    @FXML
+    protected void handleLogin() {
+        this.resetMessage();
 
-        connection.connect();
+        try {
+            var loggedIn = this.accountRepository.getUserByUsernameAndPassword(this.tfUsername.getText(), this.pfPassword.getText());
 
-        var database = connection.getConnection();
-        var preparedStatement = database.prepareStatement("SELECT * FROM account WHERE username = ? AND password = ?");
+            if (loggedIn != null) {
+                this.messageLabel.getStyleClass().add("success");
+                this.messageLabel.setText("Ingelogd!");
+            } else {
+                this.messageLabel.getStyleClass().add("warning");
+                this.messageLabel.setText("Gebruikersnaam/wachtwoord is verkeerd!");
+            }
+        } catch (SQLException e) {
+            this.messageLabel.getStyleClass().add("warning");
+            this.messageLabel.setText("Er ging iets fout tijdens het inloggen!");
+        }
+    }
 
-        preparedStatement.setString(1, this.tfUsername.getText());
-        preparedStatement.setString(2, this.pfPassword.getText());
+    @FXML
+    protected void handleRegister() {
+        this.resetMessage();
 
-        var resultSet = preparedStatement.executeQuery();
+        try {
+            var account = new Account(this.tfUsername.getText(), this.pfPassword.getText());
+            this.accountRepository.add(account);
+        } catch (SQLException e) {
+            this.messageLabel.getStyleClass().add("warning");
+            this.messageLabel.setText("Er ging iets fout tijdens het registreren!");
+        } finally {
+            this.messageLabel.getStyleClass().add("success");
+            this.messageLabel.setText("Registreren is gelukt!");
+        }
+    }
 
-        return resultSet.getFetchSize() == 1;
+    private void resetMessage() {
+        this.messageLabel.getStyleClass().clear();
+        this.messageLabel.setText("");
     }
 }
