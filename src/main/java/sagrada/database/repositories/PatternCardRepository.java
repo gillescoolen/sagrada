@@ -25,7 +25,9 @@ public final class PatternCardRepository extends Repository<PatternCard> {
             throw new SQLException("Multiple results, expected 1.");
         }
 
-        resultSet.next();
+        if (!resultSet.next()) {
+            return null;
+        }
 
         final int idPatternCard = resultSet.getInt("idpatterncard");
         final String name = resultSet.getString("name");

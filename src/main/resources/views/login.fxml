@@ -24,7 +24,7 @@
     </HBox>
 
     <HBox styleClass="wrapper" alignment="CENTER">
-        <Button text="Login" onAction="#handleLogin"/>
-        <Button text="Register" onAction="#handleRegister"/>
+        <Button text="Login" fx:id="loginButton"/>
+        <Button text="Register" fx:id="registerButton"/>
     </HBox>
 </VBox>

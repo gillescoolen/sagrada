@@ -44,7 +44,9 @@ public class AccountRepository extends Repository<Account> {
             throw new SQLException("Multiple results, expected 1.");
         }
 
-        resultSet.next();
+        if (!resultSet.next()) {
+            return null;
+        }
 
         final String usernameAccount = resultSet.getString("username");
         final String passwordAccount = resultSet.getString("password");
