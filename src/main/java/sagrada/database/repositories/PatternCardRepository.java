@@ -25,10 +25,14 @@ public final class PatternCardRepository extends Repository<PatternCard> {
             throw new SQLException("Multiple results, expected 1.");
         }
 
+        if (!resultSet.next()) {
+            return null;
+        }
+
         final int idPatternCard = resultSet.getInt("idpatterncard");
         final String name = resultSet.getString("name");
         final int difficulty = resultSet.getInt("difficulty");
-        final boolean standard = resultSet.getBoolean("standard");
+        final int standard = resultSet.getInt("standard");
 
         resultSet.close();
         preparedStatement.close();
@@ -44,7 +48,7 @@ public final class PatternCardRepository extends Repository<PatternCard> {
 
         preparedStatement.setString(1, patternCard.getName());
         preparedStatement.setInt(2, patternCard.getDifficulty());
-        preparedStatement.setBoolean(3, patternCard.getStandard());
+        preparedStatement.setInt(3, patternCard.getStandard());
 
         preparedStatement.setInt(4, patternCard.getId());
 
@@ -64,7 +68,7 @@ public final class PatternCardRepository extends Repository<PatternCard> {
         for (PatternCard patternCard : patternCards) {
             preparedStatement.setString(1, patternCard.getName());
             preparedStatement.setInt(2, patternCard.getDifficulty());
-            preparedStatement.setBoolean(3, patternCard.getStandard());
+            preparedStatement.setInt(3, patternCard.getStandard());
 
             preparedStatement.setInt(4, patternCard.getId());
 
@@ -120,7 +124,7 @@ public final class PatternCardRepository extends Repository<PatternCard> {
 
         preparedStatement.setString(1, patternCard.getName());
         preparedStatement.setInt(2, patternCard.getDifficulty());
-        preparedStatement.setBoolean(3, patternCard.getStandard());
+        preparedStatement.setInt(3, patternCard.getStandard());
 
         preparedStatement.executeUpdate();
 
@@ -138,7 +142,7 @@ public final class PatternCardRepository extends Repository<PatternCard> {
         for (PatternCard patternCard : patternCards) {
             preparedStatement.setString(1, patternCard.getName());
             preparedStatement.setInt(2, patternCard.getDifficulty());
-            preparedStatement.setBoolean(3, patternCard.getStandard());
+            preparedStatement.setInt(3, patternCard.getStandard());
 
             preparedStatement.addBatch();
 
