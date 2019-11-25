@@ -4,9 +4,9 @@ public class PatternCard {
     private final int id;
     private final String name;
     private final int difficulty;
-    private final int standard;
+    private final boolean standard;
 
-    public PatternCard(int id, String name, int difficulty, int standard) {
+    public PatternCard(int id, String name, int difficulty, boolean standard) {
         this.id = id;
         this.name = name;
         this.difficulty = difficulty;
@@ -25,7 +25,7 @@ public class PatternCard {
         return this.difficulty;
     }
 
-    public int getStandard() {
+    public boolean getStandard() {
         return this.standard;
     }
 }
