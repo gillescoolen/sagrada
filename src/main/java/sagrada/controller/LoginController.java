@@ -1,14 +1,18 @@
 package sagrada.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.AccountRepository;
 import sagrada.model.Account;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class LoginController {
@@ -50,8 +54,11 @@ public class LoginController {
             var loggedIn = this.accountRepository.getUserByUsernameAndPassword(this.tfUsername.getText(), this.pfPassword.getText());
 
             if (loggedIn != null) {
-                this.messageLabel.getStyleClass().add("success");
-                this.messageLabel.setText("Ingelogd!");
+                try {
+                    this.switchScene();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
                 this.messageLabel.getStyleClass().add("warning");
                 this.messageLabel.setText("Gebruikersnaam/wachtwoord is verkeerd!");
@@ -82,5 +89,12 @@ public class LoginController {
         this.loginButton.setDisable(false);
         this.messageLabel.getStyleClass().clear();
         this.messageLabel.setText("");
+    }
+
+    private void switchScene() throws IOException {
+        var loader = new FXMLLoader(getClass().getResource("/views/lobby.fxml"));
+        var stage = ((Stage) tfUsername.getScene().getWindow());
+        var scene = new Scene(loader.load());
+        stage.setScene(scene);
     }
 }
