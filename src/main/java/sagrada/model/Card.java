@@ -7,7 +7,7 @@ public abstract class Card {
         return this.name;
     }
 
-    Card(String name) {
+    public Card(String name) {
         this.name = name;
     }
 }
