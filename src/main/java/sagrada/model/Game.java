@@ -1,11 +1,13 @@
 package sagrada.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Game {
     private int id;
     private Player playerTurn;
+    private Date createdOn;
     private final List<Player> players = new ArrayList<>(2);
 
     private final List<ToolCard> toolCards = new ArrayList<>(3);
@@ -30,6 +32,10 @@ public class Game {
     public void setPlayerTurn(Player playerTurn) {
         this.playerTurn = playerTurn;
     }
+
+    public Date getCreatedOn() { return this.createdOn; }
+
+    public void setCreatedOn(Date createdOn) { this.createdOn = createdOn; }
 
     public void addPlayer(Player player) {
         this.players.add(player);
