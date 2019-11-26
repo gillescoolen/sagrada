@@ -15,8 +15,4 @@ public class LobbyController {
         this.user = account;
     }
 
-    @FXML
-    protected void initialize() {
-
-    }
 }

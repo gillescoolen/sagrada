@@ -6,8 +6,7 @@
 <HBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1"
       stylesheets="/styles/lobby/lobby-list.css"
       prefWidth="1200"
-      prefHeight="720"
-      fx:controller="sagrada.controller.LobbyController">
+      prefHeight="720">
     <VBox styleClass="side-column" prefHeight="720.0" prefWidth="350.0">
         <Text styleClass="title" text="Invites"/>
     </VBox>
