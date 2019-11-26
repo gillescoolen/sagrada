@@ -92,7 +92,7 @@ public class LoginController {
     }
 
     private void switchScene(Account account) throws IOException {
-        var loader = new FXMLLoader(getClass().getResource("/views/lobby/lobbyList.fxml"));
+        var loader = new FXMLLoader(getClass().getResource("/views/lobby/lobby.fxml"));
         var stage = ((Stage) this.tfUsername.getScene().getWindow());
         loader.setController(new LobbyController(account));
         var scene = new Scene(loader.load());
