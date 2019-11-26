@@ -6,19 +6,14 @@ import java.util.List;
 public class Game {
     private int id;
     private Player playerTurn;
-    private final List<Player> players;
-    private final List<ToolCard> toolCards;
-    private final List<PublicObjectiveCard> objectiveCards;
-    private final List<FavorToken> favorTokens;
-    private final List<Die> dice;
+    private final List<Player> players = new ArrayList<>(2);
 
-    public Game() {
-        this.players = new ArrayList<>(2);
-        this.toolCards = new ArrayList<>(3);
-        this.objectiveCards = new ArrayList<>(3);
-        this.favorTokens = new ArrayList<>(24);
-        this.dice = new ArrayList<>(90);
-    }
+    private final List<ToolCard> toolCards = new ArrayList<>(3);
+    private final List<PublicObjectiveCard> objectiveCards = new ArrayList<>(3);
+
+    private final List<FavorToken> favorTokens = new ArrayList<>(24);
+
+    private final List<Die> dice = new ArrayList<>(90);
 
     public int getId() {
         return this.id;
@@ -82,5 +77,18 @@ public class Game {
 
     public void removeFavorToken(FavorToken favorToken) {
         this.favorTokens.remove(favorToken);
+    }
+
+    public void createPlayers() {
+        // TODO: implement
+    }
+
+    public void play() {
+        // TODO: implement
+    }
+
+    // FIXME: rename function, init functions are bad practice
+    public void init() {
+        // TODO: implement
     }
 }

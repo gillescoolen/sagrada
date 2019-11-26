@@ -10,13 +10,13 @@ public class Position {
     }
 
     private void setX(int x) {
-        if (x < 1) return;
+        if (x < 1) x = 1;
 
         this.x = Math.min(x, 5);
     }
 
     private void setY(int y) {
-        if (y < 1) return;
+        if (y < 1) y = 1;
 
         this.y = Math.min(y, 4);
     }
