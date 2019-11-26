@@ -2,24 +2,14 @@ package sagrada.model;
 
 public class FavorToken {
     private final int id;
-    private Player player;
     private Integer round = null;
 
-    public FavorToken(int id, Player player) {
+    public FavorToken(int id) {
         this.id = id;
-        this.player = player;
     }
 
     public int getId() {
         return this.id;
-    }
-
-    public Player getPlayer() {
-        return this.player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 
     public Integer getRound() {
