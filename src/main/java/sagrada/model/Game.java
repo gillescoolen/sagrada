@@ -1,13 +1,13 @@
 package sagrada.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Game {
     private int id;
     private Player playerTurn;
-    private Date createdOn;
+    private LocalDateTime createdOn;
     private final List<Player> players = new ArrayList<>(2);
 
     private final List<ToolCard> toolCards = new ArrayList<>(3);
@@ -33,9 +33,9 @@ public class Game {
         this.playerTurn = playerTurn;
     }
 
-    public Date getCreatedOn() { return this.createdOn; }
+    public LocalDateTime getCreatedOn() { return this.createdOn; }
 
-    public void setCreatedOn(Date createdOn) { this.createdOn = createdOn; }
+    public void setCreatedOn(LocalDateTime createdOn) { this.createdOn = createdOn; }
 
     public void addPlayer(Player player) {
         this.players.add(player);
