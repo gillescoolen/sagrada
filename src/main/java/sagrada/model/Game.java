@@ -85,6 +85,14 @@ public class Game {
         this.favorTokens.remove(favorToken);
     }
 
+    public Player getOwner() {
+        var stream = this.players.stream().filter(player -> player.getPlayStatus() == PlayStatus.CHALLENGER);
+
+        if (stream.findFirst().isPresent()) {
+            return stream.findFirst().get();
+        } else return null;
+    }
+
     public void createPlayers() {
         // TODO: implement
     }

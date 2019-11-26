@@ -37,10 +37,11 @@ public class Player {
      * @param account                   the account of a player
      * @param playStatus                the status of the player
      */
-    public Player(int id, Account account, PlayStatus playStatus, PrivateObjectiveCard privateObjectiveCard) {
+    public Player(int id, Account account, PlayStatus playStatus, boolean isCurrentPlayer, PrivateObjectiveCard privateObjectiveCard) {
         this.id = id;
         this.account = account;
         this.playStatus = playStatus;
+        this.isCurrentPlayer = isCurrentPlayer;
         this.privateObjectiveCard = privateObjectiveCard;
     }
 

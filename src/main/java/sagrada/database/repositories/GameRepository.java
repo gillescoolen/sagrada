@@ -53,6 +53,7 @@ public class GameRepository extends Repository<Game> {
                         playerResultSet.getInt("idplayer"),
                         playerAccount,
                         playerPlayStatus,
+                        playerResultSet.getInt("isCurrentPlayer") > 0,
                         new PrivateObjectiveCard(playerCardColor)
                 );
 
