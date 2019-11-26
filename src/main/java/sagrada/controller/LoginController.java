@@ -51,11 +51,11 @@ public class LoginController {
         this.resetUi();
 
         try {
-            var loggedIn = this.accountRepository.getUserByUsernameAndPassword(this.tfUsername.getText(), this.pfPassword.getText());
+            var account = this.accountRepository.getUserByUsernameAndPassword(this.tfUsername.getText(), this.pfPassword.getText());
 
-            if (loggedIn != null) {
+            if (account != null) {
                 try {
-                    this.switchScene();
+                    this.switchScene(account);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -91,9 +91,10 @@ public class LoginController {
         this.messageLabel.setText("");
     }
 
-    private void switchScene() throws IOException {
+    private void switchScene(Account account) throws IOException {
         var loader = new FXMLLoader(getClass().getResource("/views/lobby.fxml"));
-        var stage = ((Stage) tfUsername.getScene().getWindow());
+        var stage = ((Stage) this.tfUsername.getScene().getWindow());
+        loader.setController(new LobbyController(account));
         var scene = new Scene(loader.load());
         stage.setScene(scene);
     }
