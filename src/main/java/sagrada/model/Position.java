@@ -10,13 +10,13 @@ public class Position {
     }
 
     private void setX(int x) {
-        if (x < 1) x = 1;
+        if (x < 1) throw new RuntimeException("X cannot be smaller than 1");
 
         this.x = Math.min(x, 5);
     }
 
     private void setY(int y) {
-        if (y < 1) y = 1;
+        if (y < 1) throw new RuntimeException("Y cannot be smaller than 1");;
 
         this.y = Math.min(y, 4);
     }
