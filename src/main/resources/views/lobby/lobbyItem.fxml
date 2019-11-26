@@ -9,11 +9,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="100.0" prefWidth="450.0" stylesheets="/styles/lobby/lobby-item.css" styleClass="item" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
-  <HBox prefHeight="112.0" prefWidth="500.0" styleClass="hSpacer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<AnchorPane prefHeight="100.0" prefWidth="500.0" stylesheets="/styles/lobby/lobby-item.css" styleClass="item" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+  <HBox prefHeight="100.0" prefWidth="500.0" styleClass="hSpacer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
     <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-      <Image fx:id="imgItemImage" url="@../../images/empty-profile.png"/>
+      <Image fx:id="imgItemImage" url="/images/empty-profile.png"/>
     </ImageView>
     <VBox prefHeight="50.0" prefWidth="400.0" styleClass="vSpacer">
       <Label text="Someone's Game" styleClass="lobbyTitle" />

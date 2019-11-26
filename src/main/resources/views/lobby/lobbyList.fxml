@@ -3,19 +3,20 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.ListView?>
-<HBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+<HBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1"
       stylesheets="/styles/lobby/lobby-list.css"
       prefWidth="1200"
-      prefHeight="720">
+      prefHeight="720"
+      fx:controller="sagrada.controller.LobbyController">
     <VBox styleClass="side-column" prefHeight="720.0" prefWidth="350.0">
         <Text styleClass="title" text="Invites"/>
     </VBox>
     <VBox styleClass="main-column" prefHeight="720.0" prefWidth="500.0">
         <Text styleClass="title" text="Lobby's"/>
-        <ListView styleClass="lobby-list">
+        <VBox styleClass="lobby-list" fx:id="vbLobbyItems">
             <fx:include source="./lobbyItem.fxml"/>
             <fx:include source="./lobbyItem.fxml"/>
-        </ListView>
+        </VBox>
     </VBox>
     <VBox styleClass="side-column" prefHeight="720.0" prefWidth="350.0">
         <Text styleClass="title" text="Global Chat"/>

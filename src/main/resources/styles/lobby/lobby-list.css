@@ -1,19 +1,19 @@
 .title {
-  -fx-font-size: 24px;
+  -fx-font-size: 24;
 }
 
 .side-column {
-  -fx-padding: 25px;
+  -fx-padding: 25;
   -fx-background-color: #ededed;  
 
 }
 
 .main-column {
-  -fx-padding: 25px;
+  -fx-padding: 25;
   -fx-background-color: #ffffff;
   -fx-alignment: baseline-center;
 }
 
 .lobby-list {
-  -fx-padding: 25px;
+  -fx-padding: 25;
 }
