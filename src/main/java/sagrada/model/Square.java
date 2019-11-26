@@ -1,11 +1,15 @@
 package sagrada.model;
 
-public class PatternCardField {
+/**
+ * This is *patterncardfield* in the database.
+ */
+public class Square {
     private final Position position;
     private Color color;
     private Integer value;
+    private Die die;
 
-    public PatternCardField(Position position) {
+    public Square(Position position) {
         this.position = position;
     }
 
@@ -27,5 +31,13 @@ public class PatternCardField {
 
     public void setValue(Integer value) {
         this.value = value;
+    }
+
+    public Die getDie() {
+        return this.die;
+    }
+
+    public void setDie(Die die) {
+        this.die = die;
     }
 }

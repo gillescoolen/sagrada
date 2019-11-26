@@ -1,14 +1,20 @@
 package sagrada.model;
 
-public class PatternCard {
+import java.util.ArrayList;
+import java.util.List;
+
+public class PatternCard extends Card {
     private final int id;
-    private final String name;
     private final int difficulty;
     private final int standard;
 
+    private static final int AMOUNT_OF_SQUARES = 20;
+
+    private final List<Square> squares = new ArrayList<>(AMOUNT_OF_SQUARES);
+
     public PatternCard(int id, String name, int difficulty, int standard) {
+        super(name);
         this.id = id;
-        this.name = name;
         this.difficulty = difficulty;
         this.standard = standard;
     }
@@ -17,15 +23,19 @@ public class PatternCard {
         return this.id;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
     public int getDifficulty() {
         return this.difficulty;
     }
 
     public int getStandard() {
         return this.standard;
+    }
+
+    public List<Square> getSquares() {
+        return List.copyOf(this.squares);
+    }
+
+    public void placeDie() {
+        // TODO: implement this function
     }
 }
