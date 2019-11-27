@@ -10,12 +10,9 @@
     <VBox styleClass="side-column" prefHeight="720.0" prefWidth="350.0">
         <Text styleClass="title" text="Invites"/>
     </VBox>
-    <VBox styleClass="main-column" prefHeight="720.0" prefWidth="500.0">
+    <VBox styleClass="main-column" prefHeight="720.0" prefWidth="850.0">
         <Text styleClass="title" text="Lobby's"/>
         <VBox styleClass="lobby-list" fx:id="vbLobbyItems"/>
-    </VBox>
-    <VBox styleClass="side-column" prefHeight="720.0" prefWidth="350.0">
-        <Text styleClass="title" text="Global Chat"/>
     </VBox>
 </HBox>
 
