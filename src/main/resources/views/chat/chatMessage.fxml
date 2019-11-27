@@ -2,7 +2,7 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
-<HBox minHeight="24.0" prefWidth="500" stylesheets="/styles/chat.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" >
-  <Label fx:id="author" prefWidth="100.0" text="Jan Boskamp" wrapText="true"/>
-  <Label fx:id="message" prefWidth="350.0" text="Dit is een lang tekstbericht om de chat te testen. Mocht dit bericht je niet aanstaan." wrapText="true"/>
+<HBox minHeight="24.0" prefWidth="450.0" maxWidth="450.0" stylesheets="/styles/chat.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" >
+  <Label fx:id="author" prefWidth="100.0" maxWidth="100.0" wrapText="true"/>
+  <Label fx:id="message" prefWidth="350.0" maxWidth="350.0" wrapText="true"/>
 </HBox>
