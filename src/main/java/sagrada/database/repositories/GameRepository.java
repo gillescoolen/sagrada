@@ -49,13 +49,13 @@ public class GameRepository extends Repository<Game> {
                     }
                 }
 
-                var player = new Player(
-                        playerResultSet.getInt("idplayer"),
-                        playerAccount,
-                        playerPlayStatus,
-                        playerResultSet.getInt("isCurrentPlayer") > 0,
-                        new PrivateObjectiveCard(playerCardColor)
-                );
+                var player = new Player();
+
+                player.setId(playerResultSet.getInt("idplayer"));
+                player.setAccount(playerAccount);
+                player.setPlayStatus(playerPlayStatus);
+                player.setCurrentPlayer(playerResultSet.getInt("isCurrentPlayer") > 0);
+                player.setPrivateObjectiveCard(new PrivateObjectiveCard(playerCardColor));
 
                 game.addPlayer(player);
             }

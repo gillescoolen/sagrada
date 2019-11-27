@@ -4,49 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
-    private final int id;
-    private final Account account;
+    private int id;
+    private Account account;
     private PlayStatus playStatus;
     private int sequenceNumber; // seqnr
     private boolean isCurrentPlayer = false;
-    private final PrivateObjectiveCard privateObjectiveCard;
+    private PrivateObjectiveCard privateObjectiveCard;
     private PatternCard patternCard;
-    private final List<PatternCard> cardOptions = new ArrayList<>();
-    private final List<FavorToken> favorTokens = new ArrayList<>();
+    private List<PatternCard> cardOptions = new ArrayList<>();
+    private List<FavorToken> favorTokens = new ArrayList<>();
     private Integer score = 0;
     private DiceBag diceBag;
 
-    /**
-     * @param id                        the id of a player
-     * @param account                   the account of a player
-     * @param playStatus                the status of the player
-     * @param isCurrentPlayer           whether it is the player's turn
-     * @param privateObjectiveCardColor the color of the private objective card
-     */
-    public Player(int id, Account account, PlayStatus playStatus, boolean isCurrentPlayer, Color privateObjectiveCardColor, DiceBag diceBag) {
+    public void setId(int id) {
         this.id = id;
-        this.account = account;
-        this.playStatus = playStatus;
-        this.isCurrentPlayer = isCurrentPlayer;
-        this.privateObjectiveCard = new PrivateObjectiveCard(privateObjectiveCardColor);
-        this.diceBag = diceBag;
-    }
-
-    /**
-     * @param id                        the id of a player
-     * @param account                   the account of a player
-     * @param playStatus                the status of the player
-     */
-    public Player(int id, Account account, PlayStatus playStatus, boolean isCurrentPlayer, PrivateObjectiveCard privateObjectiveCard) {
-        this.id = id;
-        this.account = account;
-        this.playStatus = playStatus;
-        this.isCurrentPlayer = isCurrentPlayer;
-        this.privateObjectiveCard = privateObjectiveCard;
     }
 
     public int getId() {
         return this.id;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public Account getAccount() {
@@ -95,6 +74,10 @@ public class Player {
 
     public PrivateObjectiveCard getPrivateObjectiveCard() {
         return this.privateObjectiveCard;
+    }
+
+    public void setPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
+        this.privateObjectiveCard = privateObjectiveCard;
     }
 
     public void addCardOption(PatternCard patternCard) {
