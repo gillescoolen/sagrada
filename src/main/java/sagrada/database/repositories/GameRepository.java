@@ -56,12 +56,14 @@ public class GameRepository extends Repository<Game> {
                         playerResultSet.getInt("isCurrentPlayer") > 0,
                         new PrivateObjectiveCard(playerCardColor)
                 );
+                playerPreparedStatement.close();
 
                 game.addPlayer(player);
             }
 
             games.add(game);
         }
+        preparedStatement.close();
 
         return games;
     }
