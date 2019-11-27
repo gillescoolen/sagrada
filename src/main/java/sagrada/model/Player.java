@@ -6,7 +6,6 @@ import java.util.List;
 public class Player {
     private final int id;
     private final Account account;
-    private Game game;
     private PlayStatus playStatus;
     private int sequenceNumber; // seqnr
     private boolean isCurrentPlayer = false;
@@ -15,25 +14,35 @@ public class Player {
     private final List<PatternCard> cardOptions = new ArrayList<>();
     private final List<FavorToken> favorTokens = new ArrayList<>();
     private Integer score = 0;
-
-    private final DiceBag diceBag;
+    private DiceBag diceBag;
 
     /**
      * @param id                        the id of a player
      * @param account                   the account of a player
-     * @param game                      the game the player is in
      * @param playStatus                the status of the player
      * @param isCurrentPlayer           whether it is the player's turn
      * @param privateObjectiveCardColor the color of the private objective card
      */
-    public Player(int id, Account account, Game game, PlayStatus playStatus, boolean isCurrentPlayer, Color privateObjectiveCardColor, DiceBag diceBag) {
+    public Player(int id, Account account, PlayStatus playStatus, boolean isCurrentPlayer, Color privateObjectiveCardColor, DiceBag diceBag) {
         this.id = id;
         this.account = account;
-        this.game = game;
         this.playStatus = playStatus;
         this.isCurrentPlayer = isCurrentPlayer;
         this.privateObjectiveCard = new PrivateObjectiveCard(privateObjectiveCardColor);
         this.diceBag = diceBag;
+    }
+
+    /**
+     * @param id                        the id of a player
+     * @param account                   the account of a player
+     * @param playStatus                the status of the player
+     */
+    public Player(int id, Account account, PlayStatus playStatus, boolean isCurrentPlayer, PrivateObjectiveCard privateObjectiveCard) {
+        this.id = id;
+        this.account = account;
+        this.playStatus = playStatus;
+        this.isCurrentPlayer = isCurrentPlayer;
+        this.privateObjectiveCard = privateObjectiveCard;
     }
 
     public int getId() {
@@ -84,14 +93,6 @@ public class Player {
         this.playStatus = playStatus;
     }
 
-    public Game getGame() {
-        return this.game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
     public PrivateObjectiveCard getPrivateObjectiveCard() {
         return this.privateObjectiveCard;
     }
@@ -118,5 +119,9 @@ public class Player {
 
     public List<Die> grabRandomDice(int amount) {
         return this.diceBag.getRandomDice(amount);
+    }
+
+    public void setDiceBag(DiceBag diceBag) {
+        this.diceBag = diceBag;
     }
 }

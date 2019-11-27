@@ -2,8 +2,9 @@
 
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<HBox xmlns="http://javafx.com/javafx/11.0.1"
-      stylesheets="/styles/lobby.css"
+<?import javafx.scene.control.ListView?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1"
+      stylesheets="/styles/lobby/lobby-list.css"
       prefWidth="1200"
       prefHeight="720">
     <VBox styleClass="side-column" prefHeight="720.0" prefWidth="350.0">
@@ -11,21 +12,7 @@
     </VBox>
     <VBox styleClass="main-column" prefHeight="720.0" prefWidth="500.0">
         <Text styleClass="title" text="Lobby's"/>
-        <VBox styleClass="lobby-list">
-            <!-- Split these to components -->
-            <HBox>
-                <Text text="Lobby 1"/>
-            </HBox>
-            <HBox>
-                <Text text="Lobby 2"/>
-            </HBox>
-            <HBox>
-                <Text text="Lobby 3"/>
-            </HBox>
-            <HBox>
-                <Text text="Lobby 4"/>
-            </HBox>
-        </VBox>
+        <VBox styleClass="lobby-list" fx:id="vbLobbyItems"/>
     </VBox>
     <VBox styleClass="side-column" prefHeight="720.0" prefWidth="350.0">
         <Text styleClass="title" text="Global Chat"/>
