@@ -1,0 +1,18 @@
+.item {
+    -fx-border-radius: 20;
+    -fx-border-color: black;
+    -fx-border-insets: 5;
+}
+
+.hSpacer {
+    -fx-spacing: 10;
+    -fx-padding: 20;
+}
+
+.vSpacer {
+    -fx-spacing: 5;
+}
+
+.lobbyTitle {
+    -fx-font-size: 18;
+}
