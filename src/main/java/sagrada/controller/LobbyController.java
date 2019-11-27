@@ -41,7 +41,7 @@ public class LobbyController {
                 loader.setController(new LobbyItemController(game));
                 this.vbLobbyItems.getChildren().add(loader.load());
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

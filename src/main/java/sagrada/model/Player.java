@@ -14,7 +14,7 @@ public class Player {
     private final List<PatternCard> cardOptions = new ArrayList<>();
     private final List<FavorToken> favorTokens = new ArrayList<>();
     private Integer score = 0;
-    private DiceBag diceBag = new DiceBag(new ArrayList<>());
+    private DiceBag diceBag;
 
     /**
      * @param id                        the id of a player
@@ -119,5 +119,9 @@ public class Player {
 
     public List<Die> grabRandomDice(int amount) {
         return this.diceBag.getRandomDice(amount);
+    }
+
+    public void setDiceBag(DiceBag diceBag) {
+        this.diceBag = diceBag;
     }
 }
