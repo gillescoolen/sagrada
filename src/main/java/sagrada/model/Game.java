@@ -90,11 +90,11 @@ public class Game {
     }
 
     public Player getOwner() {
-        var stream = this.players.stream().filter(player -> player.getPlayStatus() == PlayStatus.CHALLENGER);
-
-        if (stream.findFirst().isPresent()) {
-            return stream.findFirst().get();
-        } else return null;
+        return this.players
+                .stream()
+                .filter(player -> player.getPlayStatus() == PlayStatus.CHALLENGER)
+                .findFirst()
+                .orElse(null);
     }
 
     public void createPlayers() {

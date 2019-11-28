@@ -60,7 +60,9 @@ public class GameRepository extends Repository<Game> {
                 game.addPlayer(player);
             }
 
-            games.add(game);
+            if (game.getPlayers().size() > 0) {
+                games.add(game);
+            }
         }
 
         return games;
