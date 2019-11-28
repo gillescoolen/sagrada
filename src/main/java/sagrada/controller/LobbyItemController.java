@@ -11,6 +11,7 @@ public class LobbyItemController {
     private Label lbSpotsLeft;
 
     private final Game game;
+    private final static int MAX_PLAYERS = 4;
 
     public LobbyItemController(Game game) {
         this.game = game;
@@ -19,6 +20,6 @@ public class LobbyItemController {
     @FXML
     protected void initialize() {
         this.lbName.setText(this.game.getOwner().getAccount().getUsername() + "'s Game");
-        this.lbSpotsLeft.setText(4 - this.game.getPlayers().size() + " spot(s) left!");
+        this.lbSpotsLeft.setText(MAX_PLAYERS - this.game.getPlayers().size() + " spot(s) left!");
     }
 }

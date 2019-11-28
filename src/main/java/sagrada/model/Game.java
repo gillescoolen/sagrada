@@ -3,9 +3,6 @@ package sagrada.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Game {
     private int id;
@@ -36,9 +33,13 @@ public class Game {
         this.playerTurn = playerTurn;
     }
 
-    public LocalDateTime getCreatedOn() { return this.createdOn; }
+    public LocalDateTime getCreatedOn() {
+        return this.createdOn;
+    }
 
-    public void setCreatedOn(LocalDateTime createdOn) { this.createdOn = createdOn; }
+    public void setCreatedOn(LocalDateTime createdOn) {
+        this.createdOn = createdOn;
+    }
 
     public void addPlayer(Player player) {
         this.players.add(player);
