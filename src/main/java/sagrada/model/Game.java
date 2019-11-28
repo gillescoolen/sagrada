@@ -41,6 +41,10 @@ public class Game {
         this.players.add(player);
     }
 
+    public void addPlayers(List<Player> players) {
+        this.players.addAll(players);
+    }
+
     public void addToolCard(ToolCard toolCard) {
         this.toolCards.add(toolCard);
     }
