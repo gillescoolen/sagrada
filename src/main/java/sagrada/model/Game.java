@@ -3,6 +3,9 @@ package sagrada.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Game {
     private int id;
@@ -90,11 +93,11 @@ public class Game {
     }
 
     public Player getOwner() {
-        var stream = this.players.stream().filter(player -> player.getPlayStatus() == PlayStatus.CHALLENGER);
+        var filteredPlayers = this.players.stream().filter(player -> player.getPlayStatus() == PlayStatus.CHALLENGER).collect(Collectors.toList());
 
-        if (stream.findFirst().isPresent()) {
-            return stream.findFirst().get();
-        } else return null;
+        if (filteredPlayers.size() > 0) {
+            return filteredPlayers.get(0);
+        } return null;
     }
 
     public void createPlayers() {
