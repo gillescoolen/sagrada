@@ -93,11 +93,11 @@ public class Game {
     }
 
     public Player getOwner() {
-        var filteredPlayers = this.players.stream().filter(player -> player.getPlayStatus() == PlayStatus.CHALLENGER).collect(Collectors.toList());
-
-        if (filteredPlayers.size() > 0) {
-            return filteredPlayers.get(0);
-        } return null;
+        return this.players
+                .stream()
+                .filter(player -> player.getPlayStatus() == PlayStatus.CHALLENGER)
+                .findFirst()
+                .orElse(null);
     }
 
     public void createPlayers() {
