@@ -29,6 +29,7 @@ public class LobbyController {
     @FXML
     protected void initialize() {
         var getGamesTimer = new Timer();
+        var getInvitesTimer = new Timer();
 
         try {
             this.databaseConnection.connect();
@@ -41,6 +42,13 @@ public class LobbyController {
             public void run() {
                 Platform.runLater(() -> getGames());
             }
+        }, 0, 5000);
+
+        getInvitesTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> getInvites());
+            }
         }, 0, 3000);
     }
 
@@ -48,6 +56,15 @@ public class LobbyController {
         try {
             var gameRepository = new GameRepository(this.databaseConnection);
             this.fillLobbyList(gameRepository.getAll());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getInvites() {
+        try {
+            var gameRepository = new GameRepository(this.databaseConnection);
+            System.out.println(gameRepository.getInvitedGames(this.user));
         } catch (SQLException e) {
             e.printStackTrace();
         }
