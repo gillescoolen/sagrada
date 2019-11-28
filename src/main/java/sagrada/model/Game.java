@@ -33,9 +33,13 @@ public class Game {
         this.playerTurn = playerTurn;
     }
 
-    public LocalDateTime getCreatedOn() { return this.createdOn; }
+    public LocalDateTime getCreatedOn() {
+        return this.createdOn;
+    }
 
-    public void setCreatedOn(LocalDateTime createdOn) { this.createdOn = createdOn; }
+    public void setCreatedOn(LocalDateTime createdOn) {
+        this.createdOn = createdOn;
+    }
 
     public void addPlayer(Player player) {
         this.players.add(player);
@@ -90,11 +94,11 @@ public class Game {
     }
 
     public Player getOwner() {
-        var stream = this.players.stream().filter(player -> player.getPlayStatus() == PlayStatus.CHALLENGER);
-
-        if (stream.findFirst().isPresent()) {
-            return stream.findFirst().get();
-        } else return null;
+        return this.players
+                .stream()
+                .filter(player -> player.getPlayStatus() == PlayStatus.CHALLENGER)
+                .findFirst()
+                .orElse(null);
     }
 
     public void createPlayers() {
