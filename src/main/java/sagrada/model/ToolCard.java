@@ -1,6 +1,8 @@
 package sagrada.model;
 
-public class ToolCard extends Card {
+import java.util.List;
+
+public abstract class ToolCard extends Card {
     private final int id;
     private final String description;
 
@@ -17,4 +19,6 @@ public class ToolCard extends Card {
     public String getDescription() {
         return this.description;
     }
+
+    public abstract void use(List<Die> dice, DiceBag diceBag, PatternCard patternCard);
 }
