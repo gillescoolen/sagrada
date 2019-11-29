@@ -10,6 +10,7 @@ import sagrada.model.Account;
 import sagrada.model.Game;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Timer;
@@ -17,7 +18,9 @@ import java.util.TimerTask;
 
 public class LobbyController {
     @FXML
-    private VBox vbLobbyItems;
+    private VBox vbLobbyGames;
+    @FXML
+    private VBox vbLobbyInvites;
 
     private final Account user;
     private final DatabaseConnection databaseConnection = new DatabaseConnection();
@@ -55,7 +58,8 @@ public class LobbyController {
     private void getGames() {
         try {
             var gameRepository = new GameRepository(this.databaseConnection);
-            this.fillLobbyList(gameRepository.getAll());
+            var loader = this.getClass().getResource("/views/lobby/lobbyGame.fxml");
+            this.fillLobbyList(gameRepository.getAll(), this.vbLobbyGames, loader);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -64,21 +68,22 @@ public class LobbyController {
     private void getInvites() {
         try {
             var gameRepository = new GameRepository(this.databaseConnection);
-            System.out.println(gameRepository.getInvitedGames(this.user));
+            var loader = this.getClass().getResource("/views/lobby/lobbyInvite.fxml");
+            this.fillLobbyList(gameRepository.getInvitedGames(this.user), this.vbLobbyInvites, loader);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void fillLobbyList(List<Game> games) {
-        this.vbLobbyItems.getChildren().clear();
+    private void fillLobbyList(List<Game> games, VBox items, URL view) {
+        items.getChildren().clear();
 
         try {
             for (var game : games) {
                 if (game.getOwner() != null) {
-                    var loader = new FXMLLoader(this.getClass().getResource("/views/lobby/lobbyItem.fxml"));
+                    var loader = new FXMLLoader(view);
                     loader.setController(new LobbyItemController(game));
-                    this.vbLobbyItems.getChildren().add(loader.load());
+                    items.getChildren().add(loader.load());
                 }
             }
         } catch (IOException e) {

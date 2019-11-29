@@ -63,7 +63,7 @@ public class GameRepository extends Repository<Game> {
     }
 
     public List<Game> getInvitedGames(Account account) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player p JOIN game g ON p.idplayer = g.turn_idplayer WHERE p.idplayer = ? AND p.playstatus_playstatus = ? ORDER BY g.created_on DESC LIMIT 20;");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player p JOIN game g ON p.spel_idspel = g.idgame WHERE p.username = ? AND p.playstatus_playstatus = ? ORDER BY g.created_on DESC LIMIT 20;");
 
         preparedStatement.setString(1, account.getUsername());
         preparedStatement.setString(2, PlayStatus.INVITED.getPlayState());
@@ -77,8 +77,10 @@ public class GameRepository extends Repository<Game> {
             game.setId(resultSet.getInt("idgame"));
             game.setCreatedOn(resultSet.getTimestamp("created_on").toLocalDateTime());
 
-            PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player p WHERE spel_idspel = ?;");
+            PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player p WHERE spel_idspel = ? AND p.playstatus_playstatus IN (?, ?);");
             playerPreparedStatement.setInt(1, resultSet.getInt("idgame"));
+            playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
+            playerPreparedStatement.setString(3, PlayStatus.CHALLENGER.getPlayState());
             ResultSet playerResultSet = playerPreparedStatement.executeQuery();
 
             while (playerResultSet.next()) {
