@@ -1,0 +1,18 @@
+.tool-card-wrapper {
+    -fx-padding: 15px;
+    -fx-background-color: rgb(255,255,205);
+    -fx-background-radius: 10px;
+}
+
+.tool-card-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.tool-card-description {
+    -fx-wrap-text: true;
+}
+
+.favor-token {
+    -fx-fill: black;
+}
