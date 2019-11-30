@@ -91,7 +91,7 @@ public class LobbyController {
             for (var game : games) {
                 if (game.getOwner() != null) {
                     var loader = new FXMLLoader(view);
-                    loader.setController(new LobbyItemController(game));
+                    loader.setController(new LobbyItemController(game, this.user));
                     items.getChildren().add(loader.load());
                 }
             }

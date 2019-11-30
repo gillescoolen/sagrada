@@ -81,7 +81,6 @@ public class GameRepository extends Repository<Game> {
 
             game.addPlayer(player);
         }
-        preparedStatement.close();
 
         playerResultSet.close();
         playerPreparedStatement.close();
