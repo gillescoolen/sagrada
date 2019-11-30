@@ -25,14 +25,10 @@ public class LobbyController {
     private VBox vbLobbyInvites;
 
     private final Account user;
-    private final DatabaseConnection databaseConnection = new DatabaseConnection();
+    private final DatabaseConnection databaseConnection;
 
-    @FXML
-    private VBox vbLobbyItems;
-    @FXML
-    private Button btnCreateGame;
-
-    public LobbyController(Account account) {
+    public LobbyController(DatabaseConnection databaseConnection, Account account) {
+        this.databaseConnection = databaseConnection;
         this.user = account;
     }
 
@@ -42,13 +38,6 @@ public class LobbyController {
         var getInvitesTimer = new Timer();
 
         this.btnCreateGame.setOnMouseClicked(e -> this.createGame());
-
-        try {
-            this.databaseConnection.connect();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
         getGamesTimer.schedule(new TimerTask() {
             @Override
             public void run() {
