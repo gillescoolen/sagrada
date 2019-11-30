@@ -6,13 +6,23 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.text.Text?>
 <VBox xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            stylesheets="/styles/game.css"
-            styleClass="game-wrapper"
-            prefWidth="1200" prefHeight="720"
-            fx:controller="sagrada.controller.GameController">
+      xmlns:fx="http://javafx.com/fxml"
+      stylesheets="/styles/game.css"
+      styleClass="game-wrapper"
+      prefWidth="1200" prefHeight="720"
+      fx:controller="sagrada.controller.GameController">
 
+    
     <fx:include source="game/gameUsers.fxml"/>
-    <fx:include source="game/toolCard.fxml"/>
+    <!-- Tool cards -->
+    <VBox styleClass="game-vbox" alignment="CENTER_RIGHT" prefWidth="300">
+        <Text styleClass="title-tool-cards">Tool Cards</Text>
+        <HBox alignment="CENTER_RIGHT" styleClass="game-hbox">
+            <fx:include source="game/toolCard.fxml"/>
+            <fx:include source="game/toolCard.fxml"/>
+            <fx:include source="game/toolCard.fxml"/>
+        </HBox>
+    </VBox>
 </VBox>
