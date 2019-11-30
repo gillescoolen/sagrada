@@ -1,7 +1,7 @@
 .tool-card-wrapper {
-    -fx-padding: 15px;
     -fx-background-color: rgb(255,255,205);
     -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.5, 0.0, 0.0);
 }
 
 .tool-card-title {
@@ -9,10 +9,10 @@
     -fx-font-weight: bold;
 }
 
-.tool-card-description {
-    -fx-wrap-text: true;
-}
-
 .favor-token {
     -fx-fill: black;
+}
+
+.tool-card-vbox {
+    -fx-padding: 15px;
 }
