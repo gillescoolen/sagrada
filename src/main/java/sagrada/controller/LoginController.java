@@ -27,7 +27,13 @@ public class LoginController {
     @FXML
     private Button registerButton;
 
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
+    private final DatabaseConnection databaseConnection;
+
+    public LoginController(DatabaseConnection databaseConnection) {
+        this.databaseConnection = databaseConnection;
+        this.accountRepository = new AccountRepository(databaseConnection);
+    }
 
     @FXML
     protected void initialize() {
@@ -35,10 +41,7 @@ public class LoginController {
         this.registerButton.setOnAction((actionEvent) -> this.handleRegister());
 
         try {
-            var connection = new DatabaseConnection();
-            this.accountRepository = new AccountRepository(connection);
-
-            connection.connect();
+            this.databaseConnection.connect();
         } catch (SQLException e) {
             this.registerButton.setDisable(true);
             this.loginButton.setDisable(true);
@@ -94,7 +97,7 @@ public class LoginController {
     private void switchScene(Account account) throws IOException {
         var loader = new FXMLLoader(getClass().getResource("/views/lobby/lobby.fxml"));
         var stage = ((Stage) this.tfUsername.getScene().getWindow());
-        loader.setController(new LobbyController(account));
+        loader.setController(new LobbyController(this.databaseConnection, account));
         var scene = new Scene(loader.load());
         stage.setScene(scene);
     }
