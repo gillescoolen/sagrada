@@ -7,16 +7,18 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Text?>
-<VBox xmlns="http://javafx.com/javafx"
+<HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       stylesheets="/styles/game.css"
       styleClass="game-wrapper"
       prefWidth="1200" prefHeight="720"
       fx:controller="sagrada.controller.GameController">
 
-    <!-- <fx:include source="game/gameUsers.fxml"/> -->
-    <VBox styleClass="game-vbox" alignment="CENTER_RIGHT">
+    <VBox HBox.hgrow="ALWAYS">
+        <fx:include source="game/gameUsers.fxml"/>
+    </VBox>
 
+    <VBox styleClass="game-vbox" alignment="CENTER_RIGHT">
         <!-- Tool cards -->
         <Text styleClass="title-tool-cards">Tool Cards</Text>
         <HBox alignment="CENTER_RIGHT" styleClass="game-hbox">
@@ -37,4 +39,4 @@
             <fx:include source="game/privateObjectiveCard.fxml"/>
         </HBox>
     </VBox>
-</VBox>
+</HBox>

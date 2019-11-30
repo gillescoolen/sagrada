@@ -9,6 +9,7 @@
 .game-vbox {
     -fx-spacing: 15px;
     -fx-padding: 20;
+    -fx-background-color: rgba(0, 0, 0, 0.1);
 }
 
 .title-tool-cards {
