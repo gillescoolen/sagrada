@@ -6,7 +6,6 @@ import sagrada.model.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,42 +21,15 @@ public class GameRepository extends Repository<Game> {
         List<Game> games = new ArrayList<>();
 
         while (resultSet.next()) {
-            var game = new Game();
-            var timeStamp = resultSet.getTimestamp("created_on");
-
-            game.setCreatedOn(timeStamp.toLocalDateTime());
-            game.setId(resultSet.getInt("idgame"));
-
-            PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player p WHERE spel_idspel = ? AND p.playstatus_playstatus IN (?, ?);");
-            playerPreparedStatement.setInt(1, resultSet.getInt("idgame"));
-            playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
-            playerPreparedStatement.setString(3, PlayStatus.CHALLENGER.getPlayState());
-            ResultSet playerResultSet = playerPreparedStatement.executeQuery();
-
-            while (playerResultSet.next()) {
-                PlayStatus playerPlayStatus = PlayStatus.DONE_PLAYING;
-                var account = new Account(playerResultSet.getString("username"));
-
-                for (PlayStatus playStatus : PlayStatus.values()) {
-                    if (playStatus.getPlayState().equals(playerResultSet.getString("playstatus_playstatus"))) {
-                        playerPlayStatus = playStatus;
-                    }
-                }
-
-                var player = new Player();
-
-                player.setId(playerResultSet.getInt("idplayer"));
-                player.setPlayStatus(playerPlayStatus);
-                player.setCurrentPlayer(playerResultSet.getInt("isCurrentPlayer") > 0);
-                player.setAccount(account);
-
-                game.addPlayer(player);
-            }
+            Game game = this.getGame(resultSet);
 
             if (game.getPlayers().size() > 0) {
                 games.add(game);
             }
         }
+
+        resultSet.close();
+        preparedStatement.close();
 
         return games;
     }
@@ -72,41 +44,48 @@ public class GameRepository extends Repository<Game> {
         List<Game> invitedGames = new ArrayList<>();
 
         while (resultSet.next()) {
-            var game = new Game();
-
-            game.setId(resultSet.getInt("idgame"));
-            game.setCreatedOn(resultSet.getTimestamp("created_on").toLocalDateTime());
-
-            PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player p WHERE spel_idspel = ? AND p.playstatus_playstatus IN (?, ?);");
-            playerPreparedStatement.setInt(1, resultSet.getInt("idgame"));
-            playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
-            playerPreparedStatement.setString(3, PlayStatus.CHALLENGER.getPlayState());
-            ResultSet playerResultSet = playerPreparedStatement.executeQuery();
-
-            while (playerResultSet.next()) {
-                PlayStatus playerPlayStatus = PlayStatus.DONE_PLAYING;
-                var playerAccount = new Account(playerResultSet.getString("username"));
-
-                for (PlayStatus playStatus : PlayStatus.values()) {
-                    if (playStatus.getPlayState().equals(playerResultSet.getString("playstatus_playstatus"))) {
-                        playerPlayStatus = playStatus;
-                    }
-                }
-
-                var player = new Player();
-
-                player.setId(playerResultSet.getInt("idplayer"));
-                player.setPlayStatus(playerPlayStatus);
-                player.setCurrentPlayer(playerResultSet.getInt("isCurrentPlayer") > 0);
-                player.setAccount(playerAccount);
-
-                game.addPlayer(player);
-            }
-
-            invitedGames.add(game);
+            invitedGames.add(this.getGame(resultSet));
         }
 
         return invitedGames;
+    }
+
+    private Game getGame(ResultSet resultSet) throws SQLException {
+        var game = new Game();
+
+        game.setId(resultSet.getInt("idgame"));
+        game.setCreatedOn(resultSet.getTimestamp("created_on").toLocalDateTime());
+
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player p WHERE spel_idspel = ? AND p.playstatus_playstatus IN (?, ?);");
+        playerPreparedStatement.setInt(1, resultSet.getInt("idgame"));
+        playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
+        playerPreparedStatement.setString(3, PlayStatus.CHALLENGER.getPlayState());
+        ResultSet playerResultSet = playerPreparedStatement.executeQuery();
+
+        while (playerResultSet.next()) {
+            PlayStatus playerPlayStatus = PlayStatus.DONE_PLAYING;
+            var playerAccount = new Account(playerResultSet.getString("username"));
+
+            for (PlayStatus playStatus : PlayStatus.values()) {
+                if (playStatus.getPlayState().equals(playerResultSet.getString("playstatus_playstatus"))) {
+                    playerPlayStatus = playStatus;
+                }
+            }
+
+            var player = new Player();
+
+            player.setId(playerResultSet.getInt("idplayer"));
+            player.setPlayStatus(playerPlayStatus);
+            player.setCurrentPlayer(playerResultSet.getInt("isCurrentPlayer") > 0);
+            player.setAccount(playerAccount);
+
+            game.addPlayer(player);
+        }
+
+        playerResultSet.close();
+        playerPreparedStatement.close();
+
+        return game;
     }
 
     @Override
