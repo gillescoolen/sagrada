@@ -20,21 +20,16 @@ public class LobbyController {
     private VBox vbLobbyItems;
 
     private final Account user;
-    private final DatabaseConnection databaseConnection = new DatabaseConnection();
+    private final DatabaseConnection databaseConnection;
 
-    public LobbyController(Account account) {
+    public LobbyController(DatabaseConnection databaseConnection, Account account) {
+        this.databaseConnection = databaseConnection;
         this.user = account;
     }
 
     @FXML
     protected void initialize() {
         var getGamesTimer = new Timer();
-
-        try {
-            this.databaseConnection.connect();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
         getGamesTimer.schedule(new TimerTask() {
             @Override
