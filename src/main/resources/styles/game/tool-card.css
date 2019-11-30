@@ -10,7 +10,14 @@
 }
 
 .favor-token {
-    -fx-fill: black;
+    -fx-fill: white;
+    -fx-stroke-width: 1;
+    -fx-stroke: black;
+}
+
+.favor-token-text {
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
 }
 
 .tool-card-vbox {

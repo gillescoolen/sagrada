@@ -10,5 +10,8 @@
         <Text styleClass="tool-card-description" wrappingWidth="150"
               text="After drafting, swap the drafted die with a die from the Round Track"/>
     </VBox>
-    <Ellipse styleClass="favor-token" fill="DODGERBLUE" radiusX="20.0" radiusY="20.0" stroke="BLACK" strokeType="INSIDE" AnchorPane.bottomAnchor="-10.0" AnchorPane.rightAnchor="-10.0" />
+    <StackPane AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
+        <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>
+        <Text styleClass="favor-token-text" text="1"/>
+    </StackPane>
 </AnchorPane>
