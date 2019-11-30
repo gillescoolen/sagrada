@@ -14,8 +14,9 @@
       prefWidth="1200" prefHeight="720"
       fx:controller="sagrada.controller.GameController">
 
-    <fx:include source="game/gameUsers.fxml"/>
+    <!-- <fx:include source="game/gameUsers.fxml"/> -->
     <VBox styleClass="game-vbox" alignment="CENTER_RIGHT">
+
         <!-- Tool cards -->
         <Text styleClass="title-tool-cards">Tool Cards</Text>
         <HBox alignment="CENTER_RIGHT" styleClass="game-hbox">
@@ -23,6 +24,13 @@
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>
         </HBox>
+
+        <!-- Public Objective card -->
+        <Text styleClass="title-tool-cards">Public Objective Card</Text>
+        <HBox alignment="CENTER_RIGHT" styleClass="game-hbox">
+            <fx:include source="game/publicObjectiveCard.fxml"/>
+        </HBox>
+
         <!-- Private Objective card -->
         <Text styleClass="title-tool-cards">Private Objective Card</Text>
         <HBox alignment="CENTER_RIGHT" styleClass="game-hbox">

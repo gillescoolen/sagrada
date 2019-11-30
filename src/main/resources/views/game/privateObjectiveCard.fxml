@@ -4,8 +4,8 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane styleClass="priv-obj-card-wrapper" stylesheets="/styles/game/private-objective-card.css" prefHeight="200.0" prefWidth="150.0" maxWidth="150" xmlns="http://javafx.com/javafx/11.0.1">
-    <VBox styleClass="priv-obj-card-vbox" prefHeight="200.0" prefWidth="150.0" maxWidth="150.0">
+<AnchorPane styleClass="priv-obj-card-wrapper" stylesheets="/styles/game/private-objective-card.css" xmlns="http://javafx.com/javafx/11.0.1">
+    <VBox styleClass="priv-obj-card-vbox" prefHeight="125.0" prefWidth="200.0" maxWidth="200.0">
         <Text styleClass="priv-obj-card-title" text="Shades of Green"/>
         <Text wrappingWidth="150" text="Private Sum of values on green dice"/>
     </VBox>
