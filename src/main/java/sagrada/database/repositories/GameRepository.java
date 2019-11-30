@@ -6,6 +6,8 @@ import sagrada.model.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -88,6 +90,23 @@ public class GameRepository extends Repository<Game> {
         return game;
     }
 
+    public Integer getLatestGameId() throws SQLException {
+        Integer id = null;
+
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM game WHERE idgame = (SELECT MAX(idgame) FROM game);");
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            id = resultSet.getInt("idgame");
+        }
+
+        resultSet.close();
+        preparedStatement.close();
+
+        return id;
+    }
+
     @Override
     public Game findById(int id) throws SQLException {
         return null;
@@ -115,7 +134,12 @@ public class GameRepository extends Repository<Game> {
 
     @Override
     public void add(Game model) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("INSERT INTO game (created_on) VALUES (?)");
 
+        preparedStatement.setTimestamp(1, Timestamp.valueOf(model.getCreatedOn()));
+
+        preparedStatement.executeUpdate();
+        preparedStatement.close();
     }
 
     @Override

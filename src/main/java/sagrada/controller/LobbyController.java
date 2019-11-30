@@ -7,13 +7,13 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.GameRepository;
-import sagrada.model.Account;
-import sagrada.model.Game;
-import sagrada.model.Player;
+import sagrada.database.repositories.PlayerRepository;
+import sagrada.model.*;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -92,9 +92,25 @@ public class LobbyController {
     }
 
     public void createGame() {
-
         Player player = new Player();
-        Game game = new Game();
+        player.setAccount(this.user);
+        player.setPlayStatus(PlayStatus.CHALLENGER);
+        player.setPrivateObjectiveCard(new PrivateObjectiveCard(Color.BLUE));
 
+        Game game = new Game();
+        game.setCreatedOn(LocalDateTime.now());
+
+        try {
+            GameRepository gameRepository = new GameRepository(this.databaseConnection);
+            gameRepository.add(game);
+
+            game.setId(gameRepository.getLatestGameId());
+
+            PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
+            playerRepository.add(player, game);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

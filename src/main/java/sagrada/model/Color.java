@@ -1,11 +1,11 @@
 package sagrada.model;
 
 public enum Color {
-    RED("red"),
-    GREEN("green"),
-    BLUE("blue"),
-    YELLOW("yellow"),
-    PURPLE("purple");
+    RED("rood"),
+    GREEN("groen"),
+    BLUE("blauw"),
+    YELLOW("geel"),
+    PURPLE("paars");
 
     private final String color;
 

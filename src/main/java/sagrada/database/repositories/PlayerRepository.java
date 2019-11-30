@@ -49,7 +49,7 @@ public class PlayerRepository extends Repository<Player> {
         preparedStatement.setString(1, player.getAccount().getUsername());
         preparedStatement.setInt(2, game.getId());
         preparedStatement.setString(3, player.getPlayStatus().getPlayState());
-        preparedStatement.setByte(4, ((byte)1));
+        preparedStatement.setByte(4, ((byte)0));
         preparedStatement.setString(5, player.getPrivateObjectiveCard().getColor().getColor());
 
         preparedStatement.executeUpdate();
