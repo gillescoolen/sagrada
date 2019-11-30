@@ -16,6 +16,7 @@ public class LobbyItemController {
 
     private final Game game;
     private final Account account;
+    private final static int MAX_PLAYERS = 4;
 
     public LobbyItemController(Game game, Account account) {
         this.game = game;
@@ -26,7 +27,7 @@ public class LobbyItemController {
     protected void initialize() {
         this.lobbyItem.setId(Integer.toString(this.game.getId()));
         this.lbName.setText(this.game.getOwner().getAccount().getUsername() + "'s Game");
-        this.lbSpotsLeft.setText(4 - this.game.getPlayers().size() + " spot(s) left");
+        this.lbSpotsLeft.setText(MAX_PLAYERS - this.game.getPlayers().size() + " spot(s) left!");
 
         this.lobbyItem.setOnMouseClicked(c -> this.lobbyItemClicked());
     }
