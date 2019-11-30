@@ -23,6 +23,8 @@ public class LobbyController {
     private VBox vbLobbyGames;
     @FXML
     private VBox vbLobbyInvites;
+    @FXML
+    private Button btnCreateGame;
 
     private final Account user;
     private final DatabaseConnection databaseConnection;
