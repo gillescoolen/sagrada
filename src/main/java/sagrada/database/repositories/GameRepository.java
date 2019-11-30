@@ -109,7 +109,22 @@ public class GameRepository extends Repository<Game> {
 
     @Override
     public Game findById(int id) throws SQLException {
-        return null;
+        Game game = new Game();
+        PlayerRepository playerRepository = new PlayerRepository(this.connection);
+
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM game WHERE idgame = ?");
+        preparedStatement.setInt(1, id);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            game.setId(resultSet.getInt("idgame"));
+            int _id = resultSet.getInt("turn_idplayer");
+            game.setPlayerTurn(_id == 0 ? null : playerRepository.findById(_id));
+            game.setCreatedOn((resultSet.getTimestamp("created_on").toLocalDateTime()));
+        }
+
+        return game;
     }
 
     @Override

@@ -33,7 +33,7 @@ public class LobbyItemController {
     }
 
     private void lobbyItemClicked() {
-
+        System.out.println("Game " + this.lobbyItem.getId() + " has been clicked");
     }
 
 }
