@@ -24,6 +24,8 @@ public class LobbyController {
 
     private final Account user;
     private final DatabaseConnection databaseConnection;
+    private final Timer getGamesTimer = new Timer();
+    private final Timer getInvitesTimer = new Timer();
 
     public LobbyController(DatabaseConnection databaseConnection, Account account) {
         this.databaseConnection = databaseConnection;
@@ -32,17 +34,13 @@ public class LobbyController {
 
     @FXML
     protected void initialize() {
-        var getGamesTimer = new Timer();
-        var getInvitesTimer = new Timer();
-
-        getGamesTimer.schedule(new TimerTask() {
+        this.getGamesTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> getGames());
             }
         }, 0, 5000);
-
-        getInvitesTimer.schedule(new TimerTask() {
+        this.getInvitesTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> getInvites());
