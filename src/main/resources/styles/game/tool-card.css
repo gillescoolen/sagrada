@@ -1,0 +1,30 @@
+.tool-card-wrapper {
+    -fx-background-color: rgb(255,255,205);
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.5, 0.0, 0.0);
+    -fx-view-order: 1;
+}
+
+.tool-card-wrapper:hover {
+    -fx-view-order: 0;
+}
+
+.tool-card-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.favor-token {
+    -fx-fill: white;
+    -fx-stroke-width: 1;
+    -fx-stroke: black;
+}
+
+.favor-token-text {
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+.tool-card-vbox {
+    -fx-padding: 15px;
+}

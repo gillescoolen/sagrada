@@ -21,13 +21,19 @@ public class WindowPatternCardController {
     }
 
     private void initializeWindow() {
-        for (Node rowNode : this.window.getChildren()) {
-            var row = ((HBox) rowNode);
+        var i = 0;
 
-            for (Node buttonNode : row.getChildren()) {
-                var button = ((Button) buttonNode);
-                this.windowSquares.add(button);
+        for (Node rowNode : this.window.getChildren()) {
+            if (i > 0) {
+                var row = ((HBox) rowNode);
+
+                for (Node buttonNode : row.getChildren()) {
+                    var button = ((Button) buttonNode);
+                    this.windowSquares.add(button);
+                }
             }
+
+            ++i;
         }
     }
 }
