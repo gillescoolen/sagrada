@@ -11,11 +11,6 @@
       prefWidth="1400" prefHeight="720"
       fx:controller="sagrada.controller.GameController">
 
-    <!-- Player list -->
-<!--    <VBox alignment="TOP_LEFT">-->
-<!--        <fx:include source="game/gameUsers.fxml"/>-->
-<!--    </VBox>-->
-
     <!-- Button controls -->
     <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
 
@@ -30,9 +25,9 @@
             </VBox>
         </HBox>
 
-        <HBox styleClass="controlButtons" spacing="15">
-            <Button styleClass="btnControls" prefWidth="150">SKIP TURN</Button>
-            <Button styleClass="btnControls" prefWidth="150" disable="true">ROLL DICE</Button>
+        <HBox styleClass="control-buttons" spacing="15">
+            <Button styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
+            <Button styleClass="btn-controls" prefWidth="150" disable="true">ROLL DICE</Button>
         </HBox>
     </VBox>
 

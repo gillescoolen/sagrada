@@ -27,7 +27,7 @@
 }
 
 // Button
-.btnControls {
+.btn-controls {
     -fx-background-radius: 0px;
     -fx-background-color: red;
     -fx-text-fill: white;
@@ -36,6 +36,6 @@
     -fx-cursor: hand;
 }
 
-.controlButtons {
+.control-buttons {
     -fx-spacing: 15px;
 }
