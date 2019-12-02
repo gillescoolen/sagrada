@@ -4,12 +4,12 @@ package sagrada.model;
  * This is *patterncardfield* in the database.
  */
 public class Square {
-    private final Position position;
+    private Position position;
     private Color color;
     private Integer value;
     private Die die;
 
-    public Square(Position position) {
+    public void setPosition(Position position) {
         this.position = position;
     }
 

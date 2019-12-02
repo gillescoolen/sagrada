@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public class AccountRepository extends Repository<Account> {
+public final class AccountRepository extends Repository<Account> {
 
     public AccountRepository(DatabaseConnection connection) {
         super(connection);

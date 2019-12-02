@@ -15,14 +15,8 @@
     <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
 
         <HBox styleClass="wpc-hbox" prefWidth="500" prefHeight="400">
-            <VBox styleClass="wpc-vbox">
-                <fx:include source="game/windowPatternCard.fxml"/>
-                <fx:include source="game/windowPatternCard.fxml"/>
-            </VBox>
-            <VBox styleClass="wpc-vbox">
-                <fx:include source="game/windowPatternCard.fxml"/>
-                <fx:include source="game/windowPatternCard.fxml"/>
-            </VBox>
+            <VBox styleClass="wpc-vbox" fx:id="rowOne"/>
+            <VBox styleClass="wpc-vbox" fx:id="rowTwo"/>
         </HBox>
 
         <HBox styleClass="control-buttons" spacing="15">
