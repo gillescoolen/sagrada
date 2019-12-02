@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1"
+      stylesheets="/styles/lobby/lobby-list.css"
+      prefWidth="1200"
+      prefHeight="720">
+    <VBox styleClass="side-column" prefHeight="720.0" prefWidth="350.0">
+        <Text styleClass="title" text="Invites"/>
+        <VBox styleClass="lobby-list" fx:id="vbLobbyInvites"/>
+    </VBox>
+    <VBox styleClass="main-column" prefHeight="720.0" prefWidth="850.0">
+        <Text styleClass="title" text="Lobby's"/>
+        <VBox styleClass="lobby-list" fx:id="vbLobbyGames"/>
+    </VBox>
+</HBox>
+

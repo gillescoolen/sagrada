@@ -1,11 +1,11 @@
 .title {
-  -fx-font-size: 36px;
+    -fx-font-size: 36px;
 }
 
 .wrapper {
-  -fx-padding: 10px;
-  -fx-spacing: 25px;
-  -fx-alignment: center;
+    -fx-padding: 10px;
+    -fx-spacing: 25px;
+    -fx-alignment: center;
 }
 
 .textfield {
@@ -18,4 +18,14 @@
     -fx-pref-height: 40px;
     -fx-pref-width: 400px;
     -fx-spacing: 25px;
+}
+
+.warning {
+    -fx-font-size: 20;
+    -fx-text-fill: red;
+}
+
+.success {
+    -fx-font-size: 20;
+    -fx-text-fill: green;
 }

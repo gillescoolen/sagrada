@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<HBox minHeight="24.0" prefWidth="450.0" maxWidth="450.0" stylesheets="/styles/chat.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" >
+  <Label fx:id="author" prefWidth="100.0" maxWidth="100.0" wrapText="true"/>
+  <Label fx:id="message" prefWidth="350.0" maxWidth="350.0" wrapText="true"/>
+</HBox>

@@ -7,6 +7,10 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    compile 'mysql:mysql-connector-java:5.1.36'
+}
+
 javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
