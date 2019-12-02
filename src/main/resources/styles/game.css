@@ -3,7 +3,7 @@
 }
 
 .game-hbox {
-    -fx-spacing: -100px;
+    -fx-spacing: -75px;
 }
 
 .game-vbox {
@@ -15,6 +15,15 @@
 .title-tool-cards {
     -fx-font-size: 20px;
     -fx-font-weight: bold;
+}
+
+// Window pattern card
+.wpc-vbox {
+    -fx-spacing: 25px;
+}
+
+.wpc-hbox {
+    -fx-spacing: 25px;
 }
 
 // Button

@@ -8,7 +8,7 @@
       xmlns:fx="http://javafx.com/fxml"
       stylesheets="/styles/game.css"
       styleClass="game-wrapper"
-      prefWidth="1200" prefHeight="720"
+      prefWidth="1400" prefHeight="720"
       fx:controller="sagrada.controller.GameController">
 
     <!-- Player list -->
@@ -18,6 +18,18 @@
 
     <!-- Button controls -->
     <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
+
+        <HBox styleClass="wpc-hbox" prefWidth="500" prefHeight="400">
+            <VBox styleClass="wpc-vbox">
+                <fx:include source="game/windowPatternCard.fxml"/>
+                <fx:include source="game/windowPatternCard.fxml"/>
+            </VBox>
+            <VBox styleClass="wpc-vbox">
+                <fx:include source="game/windowPatternCard.fxml"/>
+                <fx:include source="game/windowPatternCard.fxml"/>
+            </VBox>
+        </HBox>
+
         <HBox styleClass="controlButtons" spacing="15">
             <Button styleClass="btnControls" prefWidth="150">SKIP TURN</Button>
             <Button styleClass="btnControls" prefWidth="150" disable="true">ROLL DICE</Button>
