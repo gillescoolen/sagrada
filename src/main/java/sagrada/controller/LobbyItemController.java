@@ -31,7 +31,6 @@ public class LobbyItemController {
 
     @FXML
     protected void initialize() {
-        this.lobbyItem.setId(Integer.toString(this.game.getId()));
         this.lbName.setText(this.game.getOwner().getAccount().getUsername() + "'s Game");
 
         int spots = MAX_PLAYERS - this.game.getPlayers().size();
@@ -47,20 +46,30 @@ public class LobbyItemController {
     }
 
     private void lobbyItemClicked() {
-        PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
-        Player player = new Player();
+        // If you are in a game just go to the game page.
+        // Otherwise create player and go to game page.
+        if (this.containsName(this.game.getPlayers(), this.account.getUsername())) {
+            this.goToGame();
+        } else {
+            PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
+            Player player = new Player();
 
-        player.setAccount(this.account);
-        player.setCurrentPlayer(false);
-        player.setPrivateObjectiveCard(new PrivateObjectiveCard(Color.BLUE));
-        player.setPlayStatus(PlayStatus.ACCEPTED);
+            player.setAccount(this.account);
+            player.setCurrentPlayer(false);
+            player.setPrivateObjectiveCard(new PrivateObjectiveCard(Color.BLUE));
+            player.setPlayStatus(PlayStatus.ACCEPTED);
 
-        try {
-            playerRepository.add(player, this.game);
-            System.out.println("You joined game " + this.game.getId());
-        } catch (SQLException e) {
-            e.printStackTrace();
+            try {
+                playerRepository.add(player, this.game);
+                this.goToGame();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    private void goToGame() {
+        // do something
     }
 
     private boolean containsName(final List<Player> list, final String name) {
