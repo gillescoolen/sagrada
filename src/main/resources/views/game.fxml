@@ -1,13 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="sagrada.controller.GameController">
+<?import javafx.scene.text.Text?>
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      stylesheets="/styles/game.css"
+      styleClass="game-wrapper"
+      prefWidth="1400" prefHeight="720"
+      fx:controller="sagrada.controller.GameController">
 
-</AnchorPane>
+    <!-- Button controls -->
+    <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
+
+        <HBox styleClass="wpc-hbox" prefWidth="500" prefHeight="400">
+            <VBox styleClass="wpc-vbox">
+                <fx:include source="game/windowPatternCard.fxml"/>
+                <fx:include source="game/windowPatternCard.fxml"/>
+            </VBox>
+            <VBox styleClass="wpc-vbox">
+                <fx:include source="game/windowPatternCard.fxml"/>
+                <fx:include source="game/windowPatternCard.fxml"/>
+            </VBox>
+        </HBox>
+
+        <HBox styleClass="control-buttons" spacing="15">
+            <Button styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
+            <Button styleClass="btn-controls" prefWidth="150" disable="true">ROLL DICE</Button>
+        </HBox>
+    </VBox>
+
+    <!-- Cards -->
+    <VBox styleClass="game-vbox" alignment="CENTER_RIGHT">
+        <!-- Tool cards -->
+        <Text styleClass="title-tool-cards">Tool Cards</Text>
+        <HBox alignment="CENTER_RIGHT" styleClass="game-hbox">
+            <fx:include source="game/toolCard.fxml"/>
+            <fx:include source="game/toolCard.fxml"/>
+            <fx:include source="game/toolCard.fxml"/>
+        </HBox>
+
+        <!-- Public Objective card -->
+        <Text styleClass="title-tool-cards">Public Objective Card</Text>
+        <HBox alignment="CENTER_RIGHT" styleClass="game-hbox">
+            <fx:include source="game/publicObjectiveCard.fxml"/>
+        </HBox>
+
+        <!-- Private Objective card -->
+        <Text styleClass="title-tool-cards">Private Objective Card</Text>
+        <HBox alignment="CENTER_RIGHT" styleClass="game-hbox">
+            <fx:include source="game/privateObjectiveCard.fxml"/>
+        </HBox>
+    </VBox>
+</HBox>
