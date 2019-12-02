@@ -8,6 +8,7 @@ import sagrada.database.repositories.PlayerRepository;
 import sagrada.model.*;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class LobbyItemController {
     @FXML
@@ -32,7 +33,15 @@ public class LobbyItemController {
     protected void initialize() {
         this.lobbyItem.setId(Integer.toString(this.game.getId()));
         this.lbName.setText(this.game.getOwner().getAccount().getUsername() + "'s Game");
-        this.lbSpotsLeft.setText(MAX_PLAYERS - this.game.getPlayers().size() + " spot(s) left!");
+
+        int spots = MAX_PLAYERS - this.game.getPlayers().size();
+        this.lbSpotsLeft.setText(spots + " spot(s) left!");
+
+        if (spots == 0 || !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
+            this.lobbyItem.setDisable(true);
+            this.lobbyItem.getStyleClass().clear();
+            this.lobbyItem.getStyleClass().add("item-full");
+        }
 
         this.lobbyItem.setOnMouseClicked(c -> this.lobbyItemClicked());
     }
@@ -54,4 +63,7 @@ public class LobbyItemController {
         }
     }
 
+    private boolean containsName(final List<Player> list, final String name) {
+        return list.stream().filter(p -> p.getAccount().getUsername().equals(name)).findFirst().isPresent();
+    }
 }
