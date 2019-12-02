@@ -82,7 +82,7 @@ public class LobbyController {
             for (var game : games) {
                 if (game.getOwner() != null) {
                     var loader = new FXMLLoader(view);
-                    loader.setController(new LobbyItemController(game, this.user));
+                    loader.setController(new LobbyItemController(game, this.user, this.databaseConnection));
                     items.getChildren().add(loader.load());
                 }
             }
@@ -96,6 +96,7 @@ public class LobbyController {
         player.setAccount(this.user);
         player.setPlayStatus(PlayStatus.CHALLENGER);
         player.setPrivateObjectiveCard(new PrivateObjectiveCard(Color.BLUE));
+        player.setCurrentPlayer(false);
 
         Game game = new Game();
         game.setCreatedOn(LocalDateTime.now());

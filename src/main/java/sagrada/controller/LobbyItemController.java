@@ -3,8 +3,11 @@ package sagrada.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import sagrada.model.Account;
-import sagrada.model.Game;
+import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.PlayerRepository;
+import sagrada.model.*;
+
+import java.sql.SQLException;
 
 public class LobbyItemController {
     @FXML
@@ -16,11 +19,13 @@ public class LobbyItemController {
 
     private final Game game;
     private final Account account;
+    private final DatabaseConnection databaseConnection;
     private final static int MAX_PLAYERS = 4;
 
-    public LobbyItemController(Game game, Account account) {
+    public LobbyItemController(Game game, Account account, DatabaseConnection connection) {
         this.game = game;
         this.account = account;
+        this.databaseConnection = connection;
     }
 
     @FXML
@@ -33,7 +38,20 @@ public class LobbyItemController {
     }
 
     private void lobbyItemClicked() {
-        System.out.println("Game " + this.lobbyItem.getId() + " has been clicked");
+        PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
+        Player player = new Player();
+
+        player.setAccount(this.account);
+        player.setCurrentPlayer(false);
+        player.setPrivateObjectiveCard(new PrivateObjectiveCard(Color.BLUE));
+        player.setPlayStatus(PlayStatus.ACCEPTED);
+
+        try {
+            playerRepository.add(player, this.game);
+            System.out.println("You joined game " + this.game.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
