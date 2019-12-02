@@ -5,7 +5,6 @@
 <?import javafx.scene.text.Text?>
 
 <VBox xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="sagrada.controller.WindowPatternCardController"
       stylesheets="/styles/game/window-pattern-card.css"
       styleClass="window"
       fx:id="window">

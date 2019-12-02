@@ -1,12 +1,17 @@
 package sagrada.database.repositories;
 
 import sagrada.database.DatabaseConnection;
+import sagrada.model.Color;
 import sagrada.model.PatternCard;
+import sagrada.model.Position;
+import sagrada.model.Square;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public final class PatternCardRepository extends Repository<PatternCard> {
 
@@ -34,10 +39,41 @@ public final class PatternCardRepository extends Repository<PatternCard> {
         final int difficulty = resultSet.getInt("difficulty");
         final int standard = resultSet.getInt("standard");
 
+        List<Square> squares = new ArrayList<>();
+
+        PreparedStatement squarePreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM patterncardfield WHERE patterncard_idpatterncard = ? ORDER BY position_y, position_x;\n");
+
+        squarePreparedStatement.setInt(1, idPatternCard);
+        ResultSet squareResultSet = squarePreparedStatement.executeQuery();
+
+        while (squareResultSet.next()) {
+            Color actualColor = null;
+            var square = new Square();
+
+            final int xPosition = squareResultSet.getInt("position_x");
+            final int yPosition = squareResultSet.getInt("position_y");
+            final String color = squareResultSet.getString("color");
+            final int value = squareResultSet.getInt("value");
+
+            var position = new Position(xPosition, yPosition);
+
+            for (var colorEnum : Color.values()) {
+                if (colorEnum.getDutchColorName().equals(color)) {
+                    actualColor = colorEnum;
+                }
+            }
+
+            square.setPosition(position);
+            square.setColor(actualColor);
+            square.setValue(value);
+
+            squares.add(square);
+        }
+
         resultSet.close();
         preparedStatement.close();
 
-        return new PatternCard(idPatternCard, name, difficulty, standard);
+        return new PatternCard(idPatternCard, name, difficulty, standard, squares);
     }
 
     @Override

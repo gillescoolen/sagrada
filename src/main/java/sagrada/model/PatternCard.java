@@ -8,15 +8,14 @@ public class PatternCard extends Card {
     private final int difficulty;
     private final int standard;
 
-    private static final int AMOUNT_OF_SQUARES = 20;
+    private final List<Square> squares;
 
-    private final List<Square> squares = new ArrayList<>(AMOUNT_OF_SQUARES);
-
-    public PatternCard(int id, String name, int difficulty, int standard) {
+    public PatternCard(int id, String name, int difficulty, int standard, List<Square> squares) {
         super(name);
         this.id = id;
         this.difficulty = difficulty;
         this.standard = standard;
+        this.squares = squares;
     }
 
     public int getId() {

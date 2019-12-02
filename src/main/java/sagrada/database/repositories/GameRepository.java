@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class GameRepository extends Repository<Game> {
+public final class GameRepository extends Repository<Game> {
     public GameRepository(DatabaseConnection connection) {
         super(connection);
     }
