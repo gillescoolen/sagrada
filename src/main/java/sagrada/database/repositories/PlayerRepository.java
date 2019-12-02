@@ -47,6 +47,9 @@ public class PlayerRepository extends Repository<Player> {
             player.setScore(resultSet.getInt("score"));
         }
 
+        preparedStatement.close();
+        resultSet.close();
+
         return player;
     }
 
@@ -75,7 +78,6 @@ public class PlayerRepository extends Repository<Player> {
     }
 
     public void add(Player player, Game game) throws SQLException {
-
         PreparedStatement preparedStatement = this.connection.getConnection()
                 .prepareStatement("INSERT INTO player (username, spel_idspel, playstatus_playstatus, isCurrentPlayer, private_objectivecard_color) " +
                         "VALUES(?,?,?,?,?)");
@@ -84,7 +86,7 @@ public class PlayerRepository extends Repository<Player> {
         preparedStatement.setInt(2, game.getId());
         preparedStatement.setString(3, player.getPlayStatus().getPlayState());
         preparedStatement.setByte(4, ((byte) (player.isCurrentPlayer() ? 1 : 0)));
-        preparedStatement.setString(5, player.getPrivateObjectiveCard().getColor().getColor());
+        preparedStatement.setString(5, player.getPrivateObjectiveCard().getColor().getDutchColorName());
 
         preparedStatement.executeUpdate();
         preparedStatement.close();

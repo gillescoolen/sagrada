@@ -124,6 +124,9 @@ public final class GameRepository extends Repository<Game> {
             game.setCreatedOn((resultSet.getTimestamp("created_on").toLocalDateTime()));
         }
 
+        resultSet.close();
+        preparedStatement.close();
+
         return game;
     }
 

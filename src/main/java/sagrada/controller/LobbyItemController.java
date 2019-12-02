@@ -46,8 +46,6 @@ public class LobbyItemController {
     }
 
     private void lobbyItemClicked() {
-        // If you are in a game just go to the game page.
-        // Otherwise create player and go to game page.
         if (this.containsName(this.game.getPlayers(), this.account.getUsername())) {
             this.goToGame();
         } else {
@@ -72,7 +70,7 @@ public class LobbyItemController {
         // do something
     }
 
-    private boolean containsName(final List<Player> list, final String name) {
-        return list.stream().filter(p -> p.getAccount().getUsername().equals(name)).findFirst().isPresent();
+    private boolean containsName(final List<Player> players, final String name) {
+        return players.stream().filter(p -> p.getAccount().getUsername().equals(name)).findFirst().isPresent();
     }
 }

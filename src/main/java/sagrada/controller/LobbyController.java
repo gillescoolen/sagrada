@@ -38,8 +38,8 @@ public class LobbyController {
 
     @FXML
     protected void initialize() {
-        this.getGamesTimer.schedule(new TimerTask() {
         this.btnCreateGame.setOnMouseClicked(e -> this.createGame());
+        this.getGamesTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> getGames());
