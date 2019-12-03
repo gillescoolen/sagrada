@@ -19,16 +19,16 @@
         <VBox prefHeight="400.0" prefWidth="300.0" styleClass="left-column">
             <Label text="Invite player" styleClass="title"/>
             <HBox styleClass="invite-box">
-                <TextField promptText="Name of the player"/>
-                <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="91.0" text="Invite"/>
+                <TextField fx:id="tfPlayerInvite" promptText="Name of the player"/>
+                <Button fx:id="btnInvite" mnemonicParsing="false" prefHeight="26.0" prefWidth="91.0" text="Invite"/>
             </HBox>
             <Separator prefWidth="200.0"/>
             <Label text="Invited players"/>
-            <ListView prefHeight="300.0" prefWidth="260.0"/>
+            <ListView fx:id="lvInvitedPlayers" prefHeight="300.0" prefWidth="260.0"/>
         </VBox>
         <VBox prefHeight="200.0" prefWidth="300.0" styleClass="right-column">
             <Pane prefHeight="200.0" prefWidth="200.0"/>
-            <Button mnemonicParsing="false" prefHeight="195.0" prefWidth="300.0" text="START GAME"/>
+            <Button fx:id="btnStartGame" mnemonicParsing="false" prefHeight="195.0" prefWidth="300.0" text="START GAME"/>
             <Pane prefHeight="200.0" prefWidth="200.0"/>
         </VBox>
     </HBox>

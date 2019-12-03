@@ -6,7 +6,9 @@ import sagrada.model.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class PlayerRepository extends Repository<Player> {
     public PlayerRepository(DatabaseConnection connection) {
@@ -15,7 +17,7 @@ public class PlayerRepository extends Repository<Player> {
 
     @Override
     public Player findById(int id) throws SQLException {
-        Player player = new Player();
+        Player player = null;
         AccountRepository accountRepository = new AccountRepository(this.connection);
         PatternCardRepository patternCardRepository = new PatternCardRepository(this.connection);
 
@@ -25,32 +27,31 @@ public class PlayerRepository extends Repository<Player> {
         ResultSet resultSet = preparedStatement.executeQuery();
 
         while (resultSet.next()) {
-            player.setId(resultSet.getInt("idplayer"));
-            player.setAccount(accountRepository.findByUsername(resultSet.getString("username")));
-            player.setSequenceNumber(resultSet.getInt("seqnr"));
-
-            for (Color color : Color.values()) {
-                if (color.getColor().equals(resultSet.getString("private_objectivecard_color"))) {
-                    player.setPrivateObjectiveCard(new PrivateObjectiveCard(color));
-                }
-            }
-
-            player.setCurrentPlayer(resultSet.getBoolean("isCurrentPlayer"));
-            player.setPatternCard(patternCardRepository.findById(resultSet.getInt("patterncard_idpatterncard")));
-
-            for (PlayStatus playStatus : PlayStatus.values()) {
-                if (player.getPlayStatus().getPlayState().equals(resultSet.getString("playstatus_playstatus"))) {
-                    player.setPlayStatus(playStatus);
-                }
-            }
-
-            player.setScore(resultSet.getInt("score"));
+            player = createPlayer(resultSet);
         }
 
         preparedStatement.close();
         resultSet.close();
 
         return player;
+    }
+
+    public List<Player> getInvitedPlayers(Game game) throws SQLException {
+        List<Player> players = new ArrayList<>();
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus = 'challengee'");
+        preparedStatement.setInt(1, game.getId());
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            Player player = createPlayer(resultSet);
+            players.add(player);
+        }
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return players;
     }
 
     public void update(int id) throws SQLException {
@@ -118,5 +119,35 @@ public class PlayerRepository extends Repository<Player> {
 
         preparedStatement.executeUpdate();
         preparedStatement.close();
+    }
+
+    public Player createPlayer(ResultSet resultSet) throws SQLException {
+        Player player = new Player();
+
+        AccountRepository accountRepository = new AccountRepository(this.connection);
+        PatternCardRepository patternCardRepository = new PatternCardRepository(this.connection);
+
+        player.setId(resultSet.getInt("idplayer"));
+        player.setAccount(accountRepository.findByUsername(resultSet.getString("username")));
+        player.setSequenceNumber(resultSet.getInt("seqnr"));
+
+        for (Color color : Color.values()) {
+            if (color.getColor().equals(resultSet.getString("private_objectivecard_color"))) {
+                player.setPrivateObjectiveCard(new PrivateObjectiveCard(color));
+            }
+        }
+
+        player.setCurrentPlayer(resultSet.getBoolean("isCurrentPlayer"));
+        player.setPatternCard(patternCardRepository.findById(resultSet.getInt("patterncard_idpatterncard")));
+
+        for (PlayStatus playStatus : PlayStatus.values()) {
+            if (player.getPlayStatus().getPlayState().equals(resultSet.getString("playstatus_playstatus"))) {
+                player.setPlayStatus(playStatus);
+            }
+        }
+
+        player.setScore(resultSet.getInt("score"));
+
+        return player;
     }
 }
