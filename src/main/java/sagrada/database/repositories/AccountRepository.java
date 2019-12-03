@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public class AccountRepository extends Repository<Account> {
+public final class AccountRepository extends Repository<Account> {
 
     public AccountRepository(DatabaseConnection connection) {
         super(connection);
@@ -22,6 +22,10 @@ public class AccountRepository extends Repository<Account> {
 
         if (resultSet.getFetchSize() > 1) {
             throw new SQLException("Multiple results, expected 1.");
+        }
+
+        if (!resultSet.next()) {
+            return null;
         }
 
         final String usernameAccount = resultSet.getString("username");

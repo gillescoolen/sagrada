@@ -17,7 +17,6 @@
     -fx-font-weight: bold;
 }
 
-// Window pattern card
 .wpc-vbox {
     -fx-spacing: 25px;
 }
@@ -26,7 +25,6 @@
     -fx-spacing: 25px;
 }
 
-// Button
 .btn-controls {
     -fx-background-radius: 0px;
     -fx-background-color: red;
