@@ -1,16 +1,13 @@
 package sagrada.model.card;
 
-import sagrada.model.Color;
-import sagrada.model.ObjectiveCard;
-import sagrada.model.PrivateObjectiveCard;
-import sagrada.model.ToolCard;
+import sagrada.model.*;
 import sagrada.model.card.objective.*;
 import sagrada.model.card.tool.*;
 
 public final class CardFactory {
-    public static ObjectiveCard getPublicObjectiveCard(String name, int id, String description, int points) {
+    public static PublicObjectiveCard getPublicObjectiveCard(String name, int id, String description, int points) {
 
-        ObjectiveCard objectiveCard = null;
+        PublicObjectiveCard objectiveCard = null;
 
         switch (name) {
             case "Kleurdiagonalen":

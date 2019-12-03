@@ -53,38 +53,55 @@ public class LoginController {
     private void handleLogin() {
         this.resetUi();
 
-        try {
-            var account = this.accountRepository.getUserByUsernameAndPassword(this.tfUsername.getText(), this.pfPassword.getText());
+        var username = this.tfUsername.getText();
+        var password = this.pfPassword.getText();
 
-            if (account != null) {
-                try {
-                    this.switchScene(account);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                this.messageLabel.getStyleClass().add("warning");
-                this.messageLabel.setText("Gebruikersnaam/wachtwoord is verkeerd!");
-            }
-        } catch (SQLException e) {
+        if (username.equals("") || password.equals("")) {
             this.messageLabel.getStyleClass().add("warning");
-            this.messageLabel.setText("Er ging iets fout tijdens het inloggen!");
+            this.messageLabel.setText("Gebruikersnaam of wachtwoord is niet ingevuld!");
+        } else {
+            try {
+                var account = this.accountRepository.getUserByUsernameAndPassword(username, password);
+
+                if (account != null) {
+                    try {
+                        this.switchScene(account);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    this.messageLabel.getStyleClass().add("warning");
+                    this.messageLabel.setText("Combinatie gebruikersnaam en wachtwoord is niet juist!");
+                }
+            } catch (SQLException e) {
+                this.messageLabel.getStyleClass().add("warning");
+                this.messageLabel.setText("Er ging iets fout tijdens het inloggen!");
+            }
         }
     }
 
     private void handleRegister() {
         this.resetUi();
 
-        try {
-            var account = new Account(this.tfUsername.getText(), this.pfPassword.getText());
-            this.accountRepository.add(account);
-        } catch (SQLException e) {
+        var username = this.tfUsername.getText();
+        var password = this.pfPassword.getText();
+
+        if (username.equals("") || password.equals("")) {
             this.messageLabel.getStyleClass().add("warning");
-            this.messageLabel.setText("Er ging iets fout tijdens het registreren!");
+            this.messageLabel.setText("Gebruikersnaam of wachtwoord is niet ingevuld!");
+        } else {
+            try {
+                var account = new Account(username, password);
+                this.accountRepository.add(account);
+
+                this.messageLabel.getStyleClass().add("success");
+                this.messageLabel.setText("Registreren is gelukt!");
+            } catch (SQLException e) {
+                this.messageLabel.getStyleClass().add("warning");
+                this.messageLabel.setText("Er ging iets fout tijdens het registreren!");
+            }
         }
 
-        this.messageLabel.getStyleClass().add("success");
-        this.messageLabel.setText("Registreren is gelukt!");
     }
 
     private void resetUi() {
