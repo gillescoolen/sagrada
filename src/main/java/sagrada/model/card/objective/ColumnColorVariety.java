@@ -20,8 +20,8 @@ public final class ColumnColorVariety extends PublicObjectiveCard {
             for (var yPosition = 1; yPosition < 4; ++yPosition) {
                 var square = patternCard.getSquareByXAndY(xPosition, yPosition);
 
-                if (square.getColor() != null) {
-                    rowColorSet.add(square.getColor().getColor());
+                if (square.getDie() != null) {
+                    rowColorSet.add(square.getDie().getColor().getColor());
                 }
             }
 

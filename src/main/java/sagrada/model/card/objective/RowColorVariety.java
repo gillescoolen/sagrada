@@ -20,8 +20,8 @@ public final class RowColorVariety extends PublicObjectiveCard {
             for (var xPosition = 1; xPosition < 5; ++xPosition) {
                 var square = patternCard.getSquareByXAndY(xPosition, yPosition);
 
-                if (square.getColor() != null) {
-                    rowColorSet.add(square.getColor().getColor());
+                if (square.getDie() != null) {
+                    rowColorSet.add(square.getDie().getColor().getColor());
                 }
             }
 
