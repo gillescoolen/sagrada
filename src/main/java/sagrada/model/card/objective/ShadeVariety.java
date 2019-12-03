@@ -14,10 +14,10 @@ public final class ShadeVariety extends PublicObjectiveCard {
 
     @Override
     public int calculatePoints(PatternCard patternCard) {
-        List<Integer> totals = new ArrayList<>();
+        var totals = new ArrayList<Integer>();
 
         for (int i = 0; i < 7; i++) {
-            int number = i;
+            var number = i;
             totals.add((int) patternCard.getSquares().stream().filter(square -> square.getDie().getValue() == number).count());
         }
 
