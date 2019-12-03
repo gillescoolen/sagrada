@@ -141,7 +141,7 @@ public class PlayerRepository extends Repository<Player> {
         player.setPatternCard(patternCardRepository.findById(resultSet.getInt("patterncard_idpatterncard")));
 
         for (PlayStatus playStatus : PlayStatus.values()) {
-            if (player.getPlayStatus().getPlayState().equals(resultSet.getString("playstatus_playstatus"))) {
+            if (playStatus.getPlayState().equals(resultSet.getString("playstatus_playstatus"))) {
                 player.setPlayStatus(playStatus);
             }
         }

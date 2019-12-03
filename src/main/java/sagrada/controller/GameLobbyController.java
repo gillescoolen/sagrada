@@ -1,5 +1,6 @@
 package sagrada.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -12,6 +13,8 @@ import sagrada.model.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class GameLobbyController {
@@ -27,6 +30,7 @@ public class GameLobbyController {
     private final DatabaseConnection databaseConnection;
     private final PlayerRepository playerRepository;
     private final Game game;
+    private final Timer getInvitedPlayersTimer = new Timer();
 
 
     public GameLobbyController(DatabaseConnection databaseConnection, Game game) {
@@ -40,11 +44,17 @@ public class GameLobbyController {
         this.btnInvite.setOnMouseClicked(e -> this.invitePlayer());
         this.btnStartGame.setOnMouseClicked(e -> this.startGame());
 
-        this.fillList();
+        this.getInvitedPlayersTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> fillInvitedPlayerList());
+            }
+        }, 0, 3000);
     }
 
-    private void fillList() {
+    private void fillInvitedPlayerList() {
         try {
+            this.lvInvitedPlayers.getItems().clear();
             List<Player> invited = this.playerRepository.getInvitedPlayers(this.game);
 
             for (Player player : invited) {
@@ -58,7 +68,7 @@ public class GameLobbyController {
     private void invitePlayer() {
         String playerName = this.tfPlayerInvite.getText();
         this.tfPlayerInvite.clear();
-
+        System.out.println("Hallo");
         if (!playerName.isBlank() && !playerName.isEmpty()) {
             Player player = new Player();
             AccountRepository accountRepository = new AccountRepository(this.databaseConnection);
@@ -68,6 +78,8 @@ public class GameLobbyController {
                 player.setCurrentPlayer(false);
                 player.setPrivateObjectiveCard(new PrivateObjectiveCard(Color.BLUE));
                 player.setPlayStatus(PlayStatus.INVITED);
+
+                this.playerRepository.add(player, this.game);
 
             } catch (SQLException e) {
                 e.printStackTrace();

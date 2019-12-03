@@ -74,6 +74,7 @@ public class LobbyItemController {
     private void goToGame() {
         try {
             var loader = new FXMLLoader(getClass().getResource("/views/lobby/gameLobby.fxml"));
+            loader.setController(new GameLobbyController(this.databaseConnection, this.game));
             var stage = ((Stage) this.lbName.getScene().getWindow());
             var scene = new Scene(loader.load());
             stage.setScene(scene);
