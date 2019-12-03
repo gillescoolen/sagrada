@@ -15,17 +15,17 @@ public final class ColumnColorVariety extends PublicObjectiveCard {
         var amountOfPoints = 0;
 
         for (var xPosition = 1; xPosition < 5; ++xPosition) {
-            var rowColorSet = new HashSet<String>();
+            var rowColumnSet = new HashSet<String>();
 
             for (var yPosition = 1; yPosition < 4; ++yPosition) {
                 var square = patternCard.getSquareByXAndY(xPosition, yPosition);
 
                 if (square.getDie() != null) {
-                    rowColorSet.add(square.getDie().getColor().getColor());
+                    rowColumnSet.add(square.getDie().getColor().getColor());
                 }
             }
 
-            if (rowColorSet.size() == 4) {
+            if (rowColumnSet.size() == 4) {
                 amountOfPoints += 5;
             }
         }
