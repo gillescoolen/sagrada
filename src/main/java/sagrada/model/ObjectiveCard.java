@@ -1,7 +1,5 @@
 package sagrada.model;
 
-import java.util.List;
-
 public abstract class ObjectiveCard extends Card {
     public ObjectiveCard(String name) {
         super(name);

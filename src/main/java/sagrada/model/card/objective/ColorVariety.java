@@ -6,7 +6,6 @@ import sagrada.model.PublicObjectiveCard;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public final class ColorVariety extends PublicObjectiveCard {
     public ColorVariety(int id, String name, String description, int points) {
@@ -15,7 +14,7 @@ public final class ColorVariety extends PublicObjectiveCard {
 
     @Override
     public int calculatePoints(PatternCard patternCard) {
-        List<Integer> totals = new ArrayList<>();
+        var totals = new ArrayList<Integer>();
 
         for (Color color : Color.values()) {
             totals.add((int) patternCard.getSquares().stream().filter(square -> square.getDie().getColor() == color).count());
