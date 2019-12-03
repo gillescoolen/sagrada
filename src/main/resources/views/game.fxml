@@ -10,8 +10,6 @@
       styleClass="game-wrapper"
       prefWidth="1400" prefHeight="720">
 
-    <Button fx:id="btnInvite">Invite other niggs</Button>
-
     <!-- Button controls -->
     <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
 

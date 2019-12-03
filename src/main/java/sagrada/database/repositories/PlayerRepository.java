@@ -103,24 +103,6 @@ public class PlayerRepository extends Repository<Player> {
 
     }
 
-    public void inviteOtherPlayer(String name, Game game) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("" +
-                "INSERT INTO player (username, spel_idspel, playstatus_playstatus, seqnr, isCurrentPlayer, private_objectivecard_color, patterncard_idpatterncard, score) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-
-        preparedStatement.setString(1, name);
-        preparedStatement.setInt(2, game.getId());
-        preparedStatement.setString(3, PlayStatus.INVITED.getPlayState());
-        preparedStatement.setString(4, null); // Sequence number
-        preparedStatement.setBoolean(5, false); // isCurrentPlayer
-        preparedStatement.setString(6, Color.RED.getDutchColorName()); // FIXME: The color is always red now, it should be random and not overlap with the other players!
-        preparedStatement.setInt(7, 1); // FIXME: The patterncard is always 1 now, it should be random and not overlap with the other players!
-        preparedStatement.setInt(8, 0);// score
-
-        preparedStatement.executeUpdate();
-        preparedStatement.close();
-    }
-
     public Player createPlayer(ResultSet resultSet) throws SQLException {
         Player player = new Player();
 

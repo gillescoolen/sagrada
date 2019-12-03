@@ -111,8 +111,4 @@ public class Player {
     public void setDiceBag(DiceBag diceBag) {
         this.diceBag = diceBag;
     }
-
-    public void inviteOtherPlayer(String playerName, PlayerRepository playerRepository, Game game) throws SQLException {
-        playerRepository.inviteOtherPlayer(playerName, game);
-    }
 }
