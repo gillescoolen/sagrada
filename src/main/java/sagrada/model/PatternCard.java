@@ -31,6 +31,18 @@ public class PatternCard extends Card {
         return this.standard;
     }
 
+    public Square getSquareByXAndY(int x, int y) {
+        for (var square : this.squares) {
+            var position = square.getPosition();
+
+            if (position.getX() == x && position.getY() == y) {
+                return square;
+            }
+        }
+
+        return null;
+    }
+
     public List<Square> getSquares() {
         return List.copyOf(this.squares);
     }
