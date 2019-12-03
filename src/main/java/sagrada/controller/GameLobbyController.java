@@ -57,6 +57,12 @@ public class GameLobbyController {
             this.lvInvitedPlayers.getItems().clear();
             List<Player> invited = this.playerRepository.getInvitedPlayers(this.game);
 
+            if (invited.size() != 0) {
+                this.btnStartGame.setDisable(false);
+            } else {
+                this.btnStartGame.setDisable(true);
+            }
+
             for (Player player : invited) {
                 this.lvInvitedPlayers.getItems().add(player.getAccount().getUsername());
             }
