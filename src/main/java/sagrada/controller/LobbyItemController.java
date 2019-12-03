@@ -42,7 +42,7 @@ public class LobbyItemController {
         int spots = MAX_PLAYERS - this.game.getPlayers().size();
         this.lbSpotsLeft.setText(spots + " spot(s) left!");
 
-        if (spots == 0 || !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
+        if (spots == 0 && !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
             this.lobbyItem.setDisable(true);
             this.lobbyItem.getStyleClass().clear();
             this.lobbyItem.getStyleClass().add("item-full");
