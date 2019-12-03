@@ -31,6 +31,9 @@ public class ToolCardRepository extends Repository<ToolCard> {
         final int id = resultSet.getInt("idtoolcard");
         final String description = resultSet.getString("description");
 
+        preparedStatement.close();
+        resultSet.close();
+
         return CardFactory.getToolCard(id, name, description);
     }
 

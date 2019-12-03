@@ -34,6 +34,9 @@ public final class PublicObjectiveCardRepository extends Repository<PublicObject
         final String description = resultSet.getString("description");
         final int points = resultSet.getInt("points");
 
+        resultSet.close();
+        preparedStatement.close();
+
         return CardFactory.getPublicObjectiveCard(name, id, description, points);
     }
 
