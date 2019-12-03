@@ -18,14 +18,12 @@ public final class ColorDiagonals extends PublicObjectiveCard {
         var points = 0;
 
         for (var square : patternCard.getSquares()) {
-            if (square.getColor() != null) {
-                var squareList = this.getSquareList(patternCard, square);
+            var squareList = this.getSquareList(patternCard, square);
 
-                for (var possibleSquare : squareList) {
-                    if (possibleSquare.getDie() != null && square.getDie() != null) {
-                        if (possibleSquare.getDie().getColor().equals(square.getDie().getColor())) {
-                            ++points;
-                        }
+            for (var possibleSquare : squareList) {
+                if (possibleSquare.getDie() != null && square.getDie() != null) {
+                    if (possibleSquare.getDie().getColor().equals(square.getDie().getColor())) {
+                        ++points;
                     }
                 }
             }
