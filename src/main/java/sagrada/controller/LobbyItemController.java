@@ -12,6 +12,7 @@ import sagrada.model.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LobbyItemController {
@@ -26,23 +27,21 @@ public class LobbyItemController {
     private final Account account;
     private final DatabaseConnection databaseConnection;
     private final static int MAX_PLAYERS = 4;
-    private final boolean isInvite;
 
-    public LobbyItemController(Game game, Account account, DatabaseConnection connection, boolean isInvite) {
+    public LobbyItemController(Game game, Account account, DatabaseConnection connection) {
         this.game = game;
         this.account = account;
         this.databaseConnection = connection;
-        this.isInvite = isInvite;
     }
 
     @FXML
     protected void initialize() {
         this.lbName.setText(this.game.getOwner().getAccount().getUsername() + "'s Game");
 
-        int spots = MAX_PLAYERS - this.game.getPlayers().size();
+        int spots = getSpots(this.game.getPlayers());
         this.lbSpotsLeft.setText(spots + " spot(s) left!");
 
-        if (spots == 0 && !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
+        if (spots == 0 || !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
             this.lobbyItem.setDisable(true);
             this.lobbyItem.getStyleClass().clear();
             this.lobbyItem.getStyleClass().add("item-full");
@@ -74,9 +73,8 @@ public class LobbyItemController {
 
     private void goToGame() {
         try {
-            var loader = new FXMLLoader(getClass().getResource("/views/game.fxml"));
+            var loader = new FXMLLoader(getClass().getResource("/views/lobby/gameLobby.fxml"));
             var stage = ((Stage) this.lbName.getScene().getWindow());
-            loader.setController(new GameController(this.databaseConnection, this.game));
             var scene = new Scene(loader.load());
             stage.setScene(scene);
         } catch (IOException e) {
@@ -86,5 +84,11 @@ public class LobbyItemController {
 
     private boolean containsName(final List<Player> players, final String name) {
         return players.stream().anyMatch(p -> p.getAccount().getUsername().equals(name));
+    }
+
+    private int getSpots(List<Player> players) {
+        return MAX_PLAYERS - (int)players.stream()
+                .filter(p -> p.getPlayStatus() == PlayStatus.ACCEPTED || p.getPlayStatus() == PlayStatus.CHALLENGER)
+                .count();
     }
 }
