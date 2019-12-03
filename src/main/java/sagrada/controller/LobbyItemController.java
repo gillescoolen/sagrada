@@ -1,12 +1,16 @@
 package sagrada.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.PlayerRepository;
 import sagrada.model.*;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -22,11 +26,13 @@ public class LobbyItemController {
     private final Account account;
     private final DatabaseConnection databaseConnection;
     private final static int MAX_PLAYERS = 4;
+    private final boolean isInvite;
 
-    public LobbyItemController(Game game, Account account, DatabaseConnection connection) {
+    public LobbyItemController(Game game, Account account, DatabaseConnection connection, boolean isInvite) {
         this.game = game;
         this.account = account;
         this.databaseConnection = connection;
+        this.isInvite = isInvite;
     }
 
     @FXML
@@ -67,10 +73,18 @@ public class LobbyItemController {
     }
 
     private void goToGame() {
-        // do something
+        try {
+            var loader = new FXMLLoader(getClass().getResource("/views/game.fxml"));
+            var stage = ((Stage) this.lbName.getScene().getWindow());
+            loader.setController(new GameController(this.databaseConnection, this.game));
+            var scene = new Scene(loader.load());
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean containsName(final List<Player> players, final String name) {
-        return players.stream().filter(p -> p.getAccount().getUsername().equals(name)).findFirst().isPresent();
+        return players.stream().anyMatch(p -> p.getAccount().getUsername().equals(name));
     }
 }

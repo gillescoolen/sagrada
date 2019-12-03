@@ -1,5 +1,9 @@
 package sagrada.model;
 
+import sagrada.database.repositories.GameRepository;
+import sagrada.database.repositories.PlayerRepository;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,5 +110,9 @@ public class Player {
 
     public void setDiceBag(DiceBag diceBag) {
         this.diceBag = diceBag;
+    }
+
+    public void inviteOtherPlayer(String playerName, PlayerRepository playerRepository, Game game) throws SQLException {
+        playerRepository.inviteOtherPlayer(playerName, game);
     }
 }
