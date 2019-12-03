@@ -12,18 +12,42 @@
       fx:controller="sagrada.controller.GameController">
 
     <!-- Button controls -->
-    <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
-
-        <HBox styleClass="wpc-hbox" prefWidth="500" prefHeight="400">
-            <VBox styleClass="wpc-vbox" fx:id="rowOne"/>
-            <VBox styleClass="wpc-vbox" fx:id="rowTwo"/>
+    <VBox styleClass="main-vbox" HBox.hgrow="ALWAYS">
+        <HBox alignment="CENTER" VBox.vgrow="ALWAYS" styleClass="dice-hbox">
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
         </HBox>
-
-        <HBox styleClass="control-buttons" spacing="15">
-            <Button styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
-            <Button styleClass="btn-controls" prefWidth="150" disable="true">ROLL DICE</Button>
+        <HBox styleClass="wpc-hbox" alignment="BOTTOM_RIGHT">
+            <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
+                <HBox styleClass="control-buttons" spacing="15">
+                    <Button styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
+                    <Button styleClass="btn-controls" prefWidth="150" disable="true">ROLL DICE</Button>
+                </HBox>
+            </VBox>
+            <VBox styleClass="wpc-vbox">
+                <fx:include source="game/windowPatternCard.fxml"/>
+                <fx:include source="game/windowPatternCard.fxml"/>
+            </VBox>
+            <VBox styleClass="wpc-vbox">
+                <fx:include source="game/windowPatternCard.fxml"/>
+                <fx:include source="game/windowPatternCard.fxml"/>
+            </VBox>
         </HBox>
     </VBox>
+
+    <!--
+    <HBox styleClass="control-buttons" spacing="15">
+        <Button styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
+        <Button styleClass="btn-controls" prefWidth="150" disable="true">ROLL DICE</Button>
+    </HBox>
+    -->
 
     <!-- Cards -->
     <VBox styleClass="game-vbox" alignment="CENTER_RIGHT">

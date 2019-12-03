@@ -1,0 +1,9 @@
+.single-die {
+    -fx-stroke-width: 2;
+    -fx-stroke: black;
+    -fx-fill: white;
+}
+
+.die-wrapper {
+    -fx-font-size: 20px;
+}
