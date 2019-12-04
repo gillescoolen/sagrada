@@ -38,8 +38,9 @@ public class PlayerRepository extends Repository<Player> {
 
     public List<Player> getInvitedPlayers(Game game) throws SQLException {
         List<Player> players = new ArrayList<>();
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus = 'challengee'");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus = ?");
         preparedStatement.setInt(1, game.getId());
+        preparedStatement.setString(2, PlayStatus.INVITED.getPlayState());
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -56,8 +57,9 @@ public class PlayerRepository extends Repository<Player> {
 
     public List<Player> getAcceptedPlayers(Game game) throws SQLException {
         List<Player> players = new ArrayList<>();
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player where spel_idspel = ? AND playstatus_playstatus = 'accepted'");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player where spel_idspel = ? AND playstatus_playstatus = ?");
         preparedStatement.setInt(1, game.getId());
+        preparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -98,14 +100,15 @@ public class PlayerRepository extends Repository<Player> {
 
     public void add(Player player, Game game) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection()
-                .prepareStatement("INSERT INTO player (username, spel_idspel, playstatus_playstatus, isCurrentPlayer, private_objectivecard_color) " +
-                        "VALUES(?,?,?,?,?)");
+                .prepareStatement("INSERT INTO player (username, spel_idspel, playstatus_playstatus, isCurrentPlayer, private_objectivecard_color, invalidframefield) " +
+                        "VALUES(?,?,?,?,?,?)");
 
         preparedStatement.setString(1, player.getAccount().getUsername());
         preparedStatement.setInt(2, game.getId());
         preparedStatement.setString(3, player.getPlayStatus().getPlayState());
         preparedStatement.setByte(4, ((byte) (player.isCurrentPlayer() ? 1 : 0)));
         preparedStatement.setString(5, player.getPrivateObjectiveCard().getColor().getDutchColorName());
+        preparedStatement.setByte(6,((byte) (player.hasInvalidFrameField() ? 1 : 0)));
 
         preparedStatement.executeUpdate();
         preparedStatement.close();
@@ -147,6 +150,7 @@ public class PlayerRepository extends Repository<Player> {
         }
 
         player.setScore(resultSet.getInt("score"));
+        player.setInvalidFrameField(resultSet.getBoolean("invalidframefield"));
 
         return player;
     }

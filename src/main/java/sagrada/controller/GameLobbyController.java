@@ -115,7 +115,7 @@ public class GameLobbyController {
             } catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error dialog");
-                alert.setContentText("Could not invite the player! \nPlayer is already invited or already accepted the invite.");
+                alert.setContentText("Could not invite the player! \nPlayer is already invited or already accepted the\ninvite.");
 
                 alert.showAndWait();
 
