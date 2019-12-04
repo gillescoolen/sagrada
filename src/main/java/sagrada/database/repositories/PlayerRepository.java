@@ -6,6 +6,7 @@ import sagrada.model.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,6 +26,25 @@ public class PlayerRepository extends Repository<Player> {
         preparedStatement.setInt(1, id);
 
         ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            player = createPlayer(resultSet);
+        }
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return player;
+    }
+
+    public Player getGamePlayer(String name, Game game) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND username = ?");
+        preparedStatement.setInt(1, game.getId());
+        preparedStatement.setString(2, name);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        Player player = null;
 
         while (resultSet.next()) {
             player = createPlayer(resultSet);
@@ -80,6 +100,24 @@ public class PlayerRepository extends Repository<Player> {
 
     @Override
     public void update(Player model) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection()
+                .prepareStatement("UPDATE player SET `playstatus_playstatus` = ?, `seqnr` = ?, `isCurrentPlayer` = ?, `private_objectivecard_color` = ?, patterncard_idpatterncard = ?, `score` = ?, `invalidframefield` = ? WHERE `idplayer` = ?");
+
+        preparedStatement.setString(1, model.getPlayStatus().getPlayState());
+        if (model.getSequenceNumber() == null) {
+            preparedStatement.setNull(2, Types.INTEGER);
+        } else {
+            preparedStatement.setInt(2, model.getSequenceNumber());
+        }
+
+        preparedStatement.setByte(3, ((byte) (model.isCurrentPlayer() ? 1 : 0)));
+        preparedStatement.setString(4, model.getPrivateObjectiveCard().getColor().getDutchColorName());
+
+        if (model.getPatternCard() == null) {
+            preparedStatement.setNull(5, Types.INTEGER);
+        } else {
+            preparedStatement.setInt(5, model.getPatternCard().getId());
+        }
 
     }
 
@@ -132,7 +170,8 @@ public class PlayerRepository extends Repository<Player> {
 
         player.setId(resultSet.getInt("idplayer"));
         player.setAccount(accountRepository.findByUsername(resultSet.getString("username")));
-        player.setSequenceNumber(resultSet.getInt("seqnr"));
+        int seqnr = resultSet.getInt("seqnr");
+        player.setSequenceNumber(seqnr == 0 ? null : seqnr);
 
         for (Color color : Color.values()) {
             if (color.getColor().equals(resultSet.getString("private_objectivecard_color"))) {

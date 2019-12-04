@@ -3,6 +3,7 @@ package sagrada.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -21,6 +22,8 @@ public class LobbyItemController {
     private Label lbSpotsLeft;
     @FXML
     private AnchorPane lobbyItem;
+    @FXML
+    private Button btnDecline;
 
     private final Game game;
     private final Account account;
@@ -47,6 +50,8 @@ public class LobbyItemController {
         }
 
         this.lobbyItem.setOnMouseClicked(c -> this.lobbyItemClicked());
+
+        if (this.btnDecline != null) this.btnDecline.setOnMouseClicked(c -> this.cancelInvite());
     }
 
     private void lobbyItemClicked() {
@@ -67,6 +72,19 @@ public class LobbyItemController {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void cancelInvite() {
+        try {
+            PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
+            Player playerToUpdate = playerRepository.getGamePlayer(this.account.getUsername(), this.game);
+
+            playerToUpdate.setPlayStatus(PlayStatus.DECLINED);
+
+            playerRepository.update(playerToUpdate);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
