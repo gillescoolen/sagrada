@@ -9,5 +9,8 @@ public final class FluxBrush extends ToolCard {
 
     @Override
     public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Object message) {
+        Die die = (Die) message;
+
+        die.roll();
     }
 }
