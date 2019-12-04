@@ -15,6 +15,7 @@ public class Player {
     private List<FavorToken> favorTokens = new ArrayList<>();
     private Integer score = 0;
     private DiceBag diceBag;
+    private boolean invalidFrameField = false;
 
     public void setId(int id) {
         this.id = id;
@@ -106,5 +107,13 @@ public class Player {
 
     public void setDiceBag(DiceBag diceBag) {
         this.diceBag = diceBag;
+    }
+
+    public boolean hasInvalidFrameField() {
+        return this.invalidFrameField;
+    }
+
+    public void setInvalidFrameField(boolean invalidFrameField) {
+        this.invalidFrameField = invalidFrameField;
     }
 }
