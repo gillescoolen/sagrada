@@ -9,6 +9,7 @@ import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.GameRepository;
 import sagrada.database.repositories.PlayerRepository;
 import sagrada.model.Game;
+import sagrada.model.Player;
 
 import java.sql.SQLException;
 import java.util.Optional;
@@ -31,5 +32,16 @@ public class GameController {
     @FXML
     protected void initialize() {
 
+    public Game getGame() {
+        return this.game;
+    }
+
+    GameController(DatabaseConnection connection, Game game) {
+        this.game = game;
+        this.connection = connection;
+    }
+
+    public Player getPlayer() {
+        return new Player();
     }
 }
