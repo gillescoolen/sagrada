@@ -55,6 +55,9 @@ public final class PlayerFrameRepository extends Repository<PatternCard> {
             squares.add(square);
         }
 
+        preparedStatement.close();
+        resultSet.close();
+
         return squares;
     }
 
