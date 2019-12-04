@@ -12,7 +12,6 @@ import sagrada.model.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class LobbyItemController {
@@ -52,7 +51,7 @@ public class LobbyItemController {
 
     private void lobbyItemClicked() {
         if (this.containsName(this.game.getPlayers(), this.account.getUsername())) {
-            this.goToGame();
+            this.goToNextScreen();
         } else {
             PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
             Player player = new Player();
@@ -64,20 +63,28 @@ public class LobbyItemController {
 
             try {
                 playerRepository.add(player, this.game);
-                this.goToGame();
+                this.goToNextScreen();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void goToGame() {
+    private void goToNextScreen() {
         try {
-            var loader = new FXMLLoader(getClass().getResource("/views/lobby/gameLobby.fxml"));
-            loader.setController(new GameLobbyController(this.databaseConnection, this.game));
-            var stage = ((Stage) this.lbName.getScene().getWindow());
-            var scene = new Scene(loader.load());
-            stage.setScene(scene);
+            if (this.account.getUsername().equals(this.game.getOwner().getAccount().getUsername())) {
+                var loader = new FXMLLoader(getClass().getResource("/views/lobby/gameLobbyCreator.fxml"));
+                loader.setController(new GameLobbyController(this.databaseConnection, this.game));
+                var stage = ((Stage) this.lbName.getScene().getWindow());
+                var scene = new Scene(loader.load());
+                stage.setScene(scene);
+            } else {
+                var loader = new FXMLLoader(getClass().getResource("/views/lobby/gameLobbyPlayer.fxml"));
+                var stage = ((Stage) this.lbName.getScene().getWindow());
+                var scene = new Scene(loader.load());
+                stage.setScene(scene);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

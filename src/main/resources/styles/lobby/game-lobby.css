@@ -15,3 +15,8 @@
 .right-column {
     -fx-padding: 20;
 }
+
+.wait-text {
+    -fx-alignment: baseline-center;
+    -fx-font-size: 20;
+}
