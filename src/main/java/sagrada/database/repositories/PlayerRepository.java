@@ -6,11 +6,21 @@ import sagrada.model.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class PlayerRepository extends Repository<Player> {
     public PlayerRepository(DatabaseConnection connection) {
         super(connection);
+    }
+
+    public void getPlayerFrame(Game game, Player player, PatternCard patternCard) throws SQLException {
+        patternCard.setSquares(this.getSquares(game, player));
+    }
+
+    public PatternCard getPlayerFrame(Game game, Player player) throws SQLException {
+        return new PatternCard(this.getSquares(game, player));
     }
 
     @Override
@@ -100,5 +110,41 @@ public class PlayerRepository extends Repository<Player> {
     @Override
     public void addMultiple(Collection<Player> models) throws SQLException {
 
+    }
+
+    private List<Square> getSquares(Game game, Player player) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM playerframefield WHERE idgame = ? AND player_idplayer = ? ORDER BY position_y, position_x;");
+
+        preparedStatement.setInt(1, game.getId());
+        preparedStatement.setInt(2, player.getId());
+
+        var resultSet = preparedStatement.executeQuery();
+        var squares = new ArrayList<Square>();
+
+        while (resultSet.next()) {
+            Color actualColor = null;
+            var square = new Square();
+
+            final int xPosition = resultSet.getInt("position_x");
+            final int yPosition = resultSet.getInt("position_y");
+            final String color = resultSet.getString("diecolor");
+            final int value = resultSet.getInt("dienumber");
+
+            var position = new Position(xPosition, yPosition);
+
+            for (var colorEnum : Color.values()) {
+                if (colorEnum.getDutchColorName().equals(color)) {
+                    actualColor = colorEnum;
+                }
+            }
+
+            square.setPosition(position);
+            square.setColor(actualColor);
+            square.setValue(value);
+
+            squares.add(square);
+        }
+
+        return squares;
     }
 }

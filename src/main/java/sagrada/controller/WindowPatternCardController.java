@@ -1,16 +1,22 @@
 package sagrada.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import sagrada.database.repositories.PatternCardRepository;
+import sagrada.database.repositories.PlayerRepository;
+import sagrada.model.Game;
 import sagrada.model.PatternCard;
+import sagrada.model.Player;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.function.Consumer;
 
 public class WindowPatternCardController implements Consumer<PatternCard> {
@@ -29,6 +35,29 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         }
     }
 
+    public WindowPatternCardController(PlayerRepository playerRepository, Player player, Game game) {
+        try {
+            this.windowField = playerRepository.getPlayerFrame(game, player);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        var timer = new Timer();
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    try {
+                        playerRepository.getPlayerFrame(game, player, windowField);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }, 0, 2000);
+    }
+
     @Override
     public void accept(PatternCard patternCard) {
         this.windowField = patternCard;
@@ -39,10 +68,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     protected void initialize() {
         this.initializeWindow();
         this.fillWindow();
-
-        if (this.windowField.getId() != 0) {
-            // init timer here
-        }
     }
 
     private void fillWindow() {
