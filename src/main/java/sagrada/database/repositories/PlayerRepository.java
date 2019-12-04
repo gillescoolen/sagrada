@@ -54,6 +54,24 @@ public class PlayerRepository extends Repository<Player> {
         return players;
     }
 
+    public List<Player> getAcceptedPlayers(Game game) throws SQLException {
+        List<Player> players = new ArrayList<>();
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player where spel_idspel = ? AND playstatus_playstatus = 'accepted'");
+        preparedStatement.setInt(1, game.getId());
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            Player player = createPlayer(resultSet);
+            players.add(player);
+        }
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return players;
+    }
+
     public void update(int id) throws SQLException {
 
     }
