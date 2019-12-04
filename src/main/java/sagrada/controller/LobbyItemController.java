@@ -71,6 +71,6 @@ public class LobbyItemController {
     }
 
     private boolean containsName(final List<Player> players, final String name) {
-        return players.stream().filter(p -> p.getAccount().getUsername().equals(name)).findFirst().isPresent();
+        return players.stream().anyMatch(p -> p.getAccount().getUsername().equals(name));
     }
 }

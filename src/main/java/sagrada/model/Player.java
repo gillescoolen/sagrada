@@ -11,11 +11,20 @@ public class Player {
     private boolean isCurrentPlayer = false;
     private PrivateObjectiveCard privateObjectiveCard;
     private PatternCard patternCard;
+    private PatternCard playerFrame;
     private List<PatternCard> cardOptions = new ArrayList<>();
     private List<FavorToken> favorTokens = new ArrayList<>();
     private Integer score = 0;
     private DiceBag diceBag;
     private boolean invalidFrameField = false;
+
+    public PatternCard getPlayerFrame() {
+        return this.playerFrame;
+    }
+
+    public void setPlayerFrame(PatternCard playerFrame) {
+        this.playerFrame = playerFrame;
+    }
 
     public void setId(int id) {
         this.id = id;
