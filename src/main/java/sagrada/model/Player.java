@@ -21,6 +21,7 @@ public class Player {
     private Integer score = 0;
     private DiceBag diceBag;
     private boolean invalidFrameField = false;
+    private Object message;
 
     public PatternCard getPlayerFrame() {
         return this.playerFrame;
@@ -118,8 +119,20 @@ public class Player {
         return this.diceBag.getRandomDice(amount);
     }
 
+    public DiceBag getDiceBag() {
+        return this.diceBag;
+    }
+
     public void setDiceBag(DiceBag diceBag) {
         this.diceBag = diceBag;
+    }
+
+    public Object getMessage() {
+        return this.message;
+    }
+
+    public void setMessage(Object message) {
+        this.message = message;
     }
 
     public boolean hasInvalidFrameField() {
