@@ -6,7 +6,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import sagrada.database.repositories.PatternCardRepository;
 import sagrada.database.repositories.PlayerFrameRepository;
 import sagrada.model.Game;
 import sagrada.model.PatternCard;
@@ -22,27 +21,28 @@ import java.util.function.Consumer;
 public class WindowPatternCardController implements Consumer<PatternCard> {
     @FXML
     private VBox window;
+    @FXML
+    private Button changeView;
+    @FXML
+    private Button reportMisplacement;
 
     private PatternCard windowField;
+    private PatternCard patternCard;
+    private PatternCard playerFrame;
+    private boolean showPatternCard = false;
 
     private final List<Button> windowSquares = new ArrayList<>();
 
-    public WindowPatternCardController(PatternCardRepository patternCardRepository, int windowPatternCardId) {
-        try {
-            this.windowField = patternCardRepository.findById(windowPatternCardId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public WindowPatternCardController(PlayerFrameRepository playerFrameRepository, Player player, Game game) {
+        var timer = new Timer();
+
         try {
-            this.windowField = playerFrameRepository.getPlayerFrame(game, player);
+            this.patternCard = player.getPatternCard();
+            this.playerFrame = playerFrameRepository.getPlayerFrame(game, player);
+            this.windowField = this.playerFrame;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        var timer = new Timer();
 
         timer.schedule(new TimerTask() {
             @Override
@@ -60,12 +60,13 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
     @Override
     public void accept(PatternCard patternCard) {
-        this.windowField = patternCard;
+        this.playerFrame = patternCard;
         this.fillWindow();
     }
 
     @FXML
     protected void initialize() {
+        this.changeView.setOnAction((e) -> this.changeView());
         this.initializeWindow();
         this.fillWindow();
     }
@@ -102,5 +103,10 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
             ++i;
         }
+    }
+
+    private void changeView() {
+        this.showPatternCard = !this.showPatternCard;
+        this.windowField = this.showPatternCard ? this.patternCard : this.playerFrame;
     }
 }
