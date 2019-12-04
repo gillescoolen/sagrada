@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public class ToolCardRepository extends Repository<ToolCard> {
+public final class ToolCardRepository extends Repository<ToolCard> {
     public ToolCardRepository(DatabaseConnection connection) {
         super(connection);
     }

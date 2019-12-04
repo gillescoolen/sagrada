@@ -7,7 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import sagrada.database.repositories.PatternCardRepository;
-import sagrada.database.repositories.PlayerRepository;
+import sagrada.database.repositories.PlayerFrameRepository;
 import sagrada.model.Game;
 import sagrada.model.PatternCard;
 import sagrada.model.Player;
@@ -35,9 +35,9 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         }
     }
 
-    public WindowPatternCardController(PlayerRepository playerRepository, Player player, Game game) {
+    public WindowPatternCardController(PlayerFrameRepository playerFrameRepository, Player player, Game game) {
         try {
-            this.windowField = playerRepository.getPlayerFrame(game, player);
+            this.windowField = playerFrameRepository.getPlayerFrame(game, player);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -49,7 +49,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             public void run() {
                 Platform.runLater(() -> {
                     try {
-                        playerRepository.getPlayerFrame(game, player, windowField);
+                        playerFrameRepository.getPlayerFrame(game, player, windowField);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
