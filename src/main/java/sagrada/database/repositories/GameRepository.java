@@ -129,6 +129,15 @@ public final class GameRepository extends Repository<Game> {
         return game;
     }
 
+    public boolean checkIfGameHasStarted(Game game) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM game WHERE idgame = ? AND turn_idplayer IS NOT NULL;");
+        preparedStatement.setInt(1, game.getId());
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        return resultSet.next();
+    }
+
     @Override
     public void update(Game model) throws SQLException {
 

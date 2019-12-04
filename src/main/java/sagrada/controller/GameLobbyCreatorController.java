@@ -8,6 +8,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.AccountRepository;
+import sagrada.database.repositories.GameRepository;
 import sagrada.database.repositories.PlayerRepository;
 import sagrada.model.*;
 
@@ -17,7 +18,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class GameLobbyController {
+public class GameLobbyCreatorController {
     @FXML
     private TextField tfPlayerInvite;
     @FXML
@@ -32,9 +33,10 @@ public class GameLobbyController {
     private final DatabaseConnection databaseConnection;
     private final PlayerRepository playerRepository;
     private final Game game;
+    private final static int POLL_TIME = 3000;
     private final Timer getInvitedAndAcceptedPlayersTimer = new Timer();
 
-    public GameLobbyController(DatabaseConnection databaseConnection, Game game) {
+    public GameLobbyCreatorController(DatabaseConnection databaseConnection, Game game) {
         this.databaseConnection = databaseConnection;
         this.playerRepository = new PlayerRepository(this.databaseConnection);
         this.game = game;
@@ -51,7 +53,7 @@ public class GameLobbyController {
                 Platform.runLater(() -> fillList(lvInvitedPlayers, true));
                 Platform.runLater(() -> fillList(lvAcceptedPlayers, false));
             }
-        }, 0, 3000);
+        }, 0, POLL_TIME);
     }
 
     private void fillList(ListView<String> listView, boolean invited) {

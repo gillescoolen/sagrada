@@ -74,12 +74,13 @@ public class LobbyItemController {
         try {
             if (this.account.getUsername().equals(this.game.getOwner().getAccount().getUsername())) {
                 var loader = new FXMLLoader(getClass().getResource("/views/lobby/gameLobbyCreator.fxml"));
-                loader.setController(new GameLobbyController(this.databaseConnection, this.game));
+                loader.setController(new GameLobbyCreatorController(this.databaseConnection, this.game));
                 var stage = ((Stage) this.lbName.getScene().getWindow());
                 var scene = new Scene(loader.load());
                 stage.setScene(scene);
             } else {
                 var loader = new FXMLLoader(getClass().getResource("/views/lobby/gameLobbyPlayer.fxml"));
+                loader.setController(new GameLobbyPlayerController(this.databaseConnection, this.game));
                 var stage = ((Stage) this.lbName.getScene().getWindow());
                 var scene = new Scene(loader.load());
                 stage.setScene(scene);
