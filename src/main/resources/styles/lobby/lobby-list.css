@@ -3,14 +3,18 @@
 }
 
 .side-column {
-  -fx-padding: 25;
-  -fx-background-color: #ededed;  
+  -fx-background: #ededed;
+}
 
+.side-column-item {
+  -fx-alignment: baseline-center;
 }
 
 .main-column {
-  -fx-padding: 25;
-  -fx-background-color: #ffffff;
+  -fx-background: #ffffff;
+}
+
+.main-column-item {
   -fx-alignment: baseline-center;
 }
 
