@@ -2,6 +2,7 @@ package sagrada.controller;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -11,7 +12,6 @@ import sagrada.database.repositories.PlayerRepository;
 import sagrada.model.*;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,7 +33,6 @@ public class GameLobbyController {
     private final PlayerRepository playerRepository;
     private final Game game;
     private final Timer getInvitedAndAcceptedPlayersTimer = new Timer();
-
 
     public GameLobbyController(DatabaseConnection databaseConnection, Game game) {
         this.databaseConnection = databaseConnection;
@@ -83,13 +82,22 @@ public class GameLobbyController {
     private void invitePlayer() {
         String playerName = this.tfPlayerInvite.getText();
         this.tfPlayerInvite.clear();
-        System.out.println("Hallo");
         if (!playerName.isBlank() && !playerName.isEmpty()) {
             Player player = new Player();
             AccountRepository accountRepository = new AccountRepository(this.databaseConnection);
 
             try {
-                player.setAccount(accountRepository.findByUsername(playerName));
+                Account account = accountRepository.findByUsername(playerName);
+
+                if (account == null) {
+                    throw new SQLException("Account not found.");
+                }
+
+                if (this.lvInvitedPlayers.getItems().contains(playerName) || this.lvAcceptedPlayers.getItems().contains(playerName)) {
+                    throw new Exception("Player is invited or accepted.");
+                }
+
+                player.setAccount(account);
                 player.setCurrentPlayer(false);
                 player.setPrivateObjectiveCard(new PrivateObjectiveCard(Color.BLUE));
                 player.setPlayStatus(PlayStatus.INVITED);
@@ -97,12 +105,26 @@ public class GameLobbyController {
                 this.playerRepository.add(player, this.game);
 
             } catch (SQLException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error dialog");
+                alert.setContentText("Could not invite the player! \nConnection not found or player not found.");
+
+                alert.showAndWait();
+
+                e.printStackTrace();
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error dialog");
+                alert.setContentText("Could not invite the player! \nPlayer is already invited or already accepted the invite.");
+
+                alert.showAndWait();
+
                 e.printStackTrace();
             }
         }
     }
 
     private void startGame() {
-        // do something
+        // TODO: GitHub issue #56 Start game from invite page
     }
 }
