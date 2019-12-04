@@ -58,10 +58,6 @@ public class Die {
     }
 
     public void roll() {
-        if (this.value != null) {
-            throw new RuntimeException("Cannot roll the die twice");
-        }
-
         Random random = new Random();
         this.setValue(random.nextInt(6) + 1);
     }
