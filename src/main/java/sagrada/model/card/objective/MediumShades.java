@@ -10,6 +10,6 @@ public final class MediumShades extends PublicObjectiveCard {
 
     @Override
     public int calculatePoints(PatternCard patternCard) {
-        return 0;
+        return this.calculateSets(patternCard, 3, 4) * this.getPoints();
     }
 }

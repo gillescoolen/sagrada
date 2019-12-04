@@ -10,6 +10,6 @@ public final class DeepShades extends PublicObjectiveCard {
 
     @Override
     public int calculatePoints(PatternCard patternCard) {
-        return 0;
+        return this.calculateSets(patternCard, 5, 6) * this.getPoints();
     }
 }
