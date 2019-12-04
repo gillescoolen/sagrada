@@ -31,6 +31,31 @@ public class Die {
         this.color = color;
     }
 
+    public void flip() {
+        if (this.value == null) {
+            throw new RuntimeException("Cannot flip a die which has no value");
+        }
+
+        switch (this.value) {
+            case 1:
+                this.setValue(6);
+                break;
+            case 2:
+                this.setValue(5);
+                break;
+            case 3:
+                this.setValue(4);
+                break;
+            case 4:
+                this.setValue(3);
+                break;
+            case 5:
+                this.setValue(2);
+                break;
+            case 6:
+                this.setValue(1);
+        }
+    }
 
     public void roll() {
         if (this.value != null) {
@@ -43,5 +68,10 @@ public class Die {
 
     public void setUsedToolCard(ToolCard usedToolCard) {
         this.usedToolCard = usedToolCard;
+    }
+
+    @Override
+    public String toString() {
+        return this.color.getColor() + " - " + this.value;
     }
 }
