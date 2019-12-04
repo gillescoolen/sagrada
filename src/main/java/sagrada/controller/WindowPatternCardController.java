@@ -11,8 +11,9 @@ import sagrada.model.PatternCard;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
-public class WindowPatternCardController {
+public class WindowPatternCardController implements Consumer<PatternCard> {
     @FXML
     private VBox window;
 
@@ -28,14 +29,24 @@ public class WindowPatternCardController {
         }
     }
 
+    @Override
+    public void accept(PatternCard patternCard) {
+        this.windowField = patternCard;
+        this.fillWindow();
+    }
+
     @FXML
     protected void initialize() {
+        this.initializeWindow();
         this.fillWindow();
+
+        if (this.windowField.getId() != 0) {
+            // init timer here
+        }
     }
 
     private void fillWindow() {
         var i = 0;
-        this.initializeWindow();
 
         for (var square : this.windowField.getSquares()) {
             var button = this.windowSquares.get(i);
