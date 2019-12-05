@@ -1,11 +1,8 @@
 package sagrada.database.repositories;
 
 import sagrada.database.DatabaseConnection;
-import sagrada.model.ObjectiveCard;
-import sagrada.model.PatternCard;
 import sagrada.model.PublicObjectiveCard;
 import sagrada.model.card.CardFactory;
-import sagrada.model.card.objective.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,10 +38,6 @@ public final class PublicObjectiveCardRepository extends Repository<PublicObject
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM public_objectivecard WHERE `name` = ?");
         preparedStatement.setString(1, name);
         ResultSet resultSet = preparedStatement.executeQuery();
-
-        if (resultSet.getFetchSize() > 1) {
-            throw new SQLException("Multiple results, expected 1.");
-        }
 
         if (!resultSet.next()) {
             return null;
