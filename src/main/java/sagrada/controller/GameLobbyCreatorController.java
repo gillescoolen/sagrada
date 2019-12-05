@@ -1,17 +1,23 @@
 package sagrada.controller;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.AccountRepository;
 import sagrada.database.repositories.GameRepository;
 import sagrada.database.repositories.PlayerRepository;
 import sagrada.model.*;
+import sagrada.util.Observable;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Timer;
@@ -19,6 +25,8 @@ import java.util.TimerTask;
 
 
 public class GameLobbyCreatorController {
+    @FXML
+    private VBox vbPanel;
     @FXML
     private TextField tfPlayerInvite;
     @FXML
@@ -46,6 +54,15 @@ public class GameLobbyCreatorController {
 
     @FXML
     protected void initialize() {
+        try {
+            var loader = new FXMLLoader(getClass().getResource("/views/backButton.fxml"));
+            loader.setController(new BackButtonController(this.test()));
+            this.vbPanel.getChildren().add(0, loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         this.btnInvite.setOnMouseClicked(e -> this.invitePlayer());
         this.btnStartGame.setOnMouseClicked(e -> this.startGame());
 
@@ -56,6 +73,10 @@ public class GameLobbyCreatorController {
                 Platform.runLater(() -> fillList(lvAcceptedPlayers, false));
             }
         }, 0, POLL_TIME);
+    }
+
+    private void test() {
+
     }
 
     private void fillList(ListView<String> listView, boolean invited) {
