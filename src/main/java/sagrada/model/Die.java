@@ -31,17 +31,25 @@ public class Die {
         this.color = color;
     }
 
-
-    public void roll() {
-        if (this.value != null) {
-            throw new RuntimeException("Cannot roll the die twice");
+    public void flip() {
+        if (this.value == null) {
+            throw new RuntimeException("Cannot flip a die which has no value");
         }
 
+        this.setValue(7 - this.value);
+    }
+
+    public void roll() {
         Random random = new Random();
         this.setValue(random.nextInt(6) + 1);
     }
 
     public void setUsedToolCard(ToolCard usedToolCard) {
         this.usedToolCard = usedToolCard;
+    }
+
+    @Override
+    public String toString() {
+        return this.color.getColor() + " - " + this.value;
     }
 }
