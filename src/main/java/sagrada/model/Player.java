@@ -1,5 +1,9 @@
 package sagrada.model;
 
+import sagrada.database.repositories.GameRepository;
+import sagrada.database.repositories.PlayerRepository;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +11,7 @@ public class Player {
     private int id;
     private Account account;
     private PlayStatus playStatus;
-    private int sequenceNumber; // seqnr
+    private Integer sequenceNumber; // seqnr
     private boolean isCurrentPlayer = false;
     private PrivateObjectiveCard privateObjectiveCard;
     private PatternCard patternCard;
@@ -42,11 +46,11 @@ public class Player {
         return this.account;
     }
 
-    public int getSequenceNumber() {
+    public Integer getSequenceNumber() {
         return this.sequenceNumber;
     }
 
-    public void setSequenceNumber(int sequenceNumber) {
+    public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
 

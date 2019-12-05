@@ -107,7 +107,6 @@ public class LobbyController {
 
             PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
             playerRepository.add(player, game);
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
