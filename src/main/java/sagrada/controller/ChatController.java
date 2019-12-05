@@ -1,16 +1,19 @@
 package sagrada.controller;
 
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import sagrada.database.DatabaseConnection;
-import sagrada.database.repositories.GameRepository;
-import sagrada.model.Account;
+import sagrada.database.repositories.ChatRepository;
+import sagrada.model.ChatLine;
+import sagrada.model.Player;
+
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Timer;
 
 public class ChatController {
@@ -21,13 +24,17 @@ public class ChatController {
     @FXML
     private ListView lvMessageBox;
 
-    private final Account user;
+    private final Player player;
+
     private final Timer getMessages = new Timer();
+
+    private final ChatRepository chatRepository;
     private final DatabaseConnection databaseConnection;
 
-    public ChatController(DatabaseConnection databaseConnection, Account user ) {
-        this.user = user;
+    public ChatController(DatabaseConnection databaseConnection, Player player) {
+        this.player = player;
         this.databaseConnection = databaseConnection;
+        this.chatRepository = new ChatRepository(databaseConnection);
     }
 
     @FXML
@@ -37,19 +44,26 @@ public class ChatController {
 
     /**
      * Send a message to the database and to our client's chatbox.
+     *
      * @param message The message the user wrote.
      */
     private void sendMessage(String message) {
-        // TODO: Send message to DB
-        this.addMessage(message, this.user);
+        try {
+            this.chatRepository.add(new ChatLine(player, LocalDateTime.now(), message));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        this.addMessage(message, this.player);
     }
 
     /**
      * Add a message tot the chatbox.
+     *
      * @param message The message the user wrote.
-     * @param author The user that wrote the message.
+     * @param author  The user that wrote the message.
      */
-    private void addMessage(String message, Account author) {
+    private void addMessage(String message, Player author) {
         try {
             URL template = this.getClass().getResource("/views/chat/chatMessage.fxml");
             FXMLLoader loader = new FXMLLoader(template);

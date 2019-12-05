@@ -7,7 +7,6 @@ import sagrada.database.DatabaseConnection;
 import sagrada.model.Account;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class GameController {
     @FXML
@@ -27,7 +26,7 @@ public class GameController {
     protected void initialize() {
         try {
             var loader = new FXMLLoader(getClass().getResource("/views/chat/chatBox.fxml"));
-            loader.setController(new ChatController(databaseConnection, user));
+            loader.setController(new ChatController(databaseConnection, user, chatRepository));
             this.rowOne.getChildren().add(loader.load());
         } catch (IOException e) {
             e.printStackTrace();
