@@ -41,7 +41,7 @@ public class LobbyItemController {
     protected void initialize() {
         this.lbName.setText(this.game.getOwner().getAccount().getUsername() + "'s Game");
 
-        int spots = getSpots(this.game.getPlayers());
+        int spots = this.getSpots(this.game.getPlayers());
         this.lbSpotsLeft.setText(spots + " spot(s) left!");
 
         if (this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {

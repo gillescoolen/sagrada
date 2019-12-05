@@ -23,7 +23,7 @@ public class GameController {
     private final Game game;
     private final DatabaseConnection connection;
 
-    GameController(DatabaseConnection connection, Game game) {
+    public GameController(DatabaseConnection connection, Game game) {
         this.game = game;
         this.connection = connection;
     }

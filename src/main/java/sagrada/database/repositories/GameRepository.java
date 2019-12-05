@@ -132,12 +132,20 @@ public final class GameRepository extends Repository<Game> {
     }
 
     public boolean checkIfGameHasStarted(Game game) throws SQLException {
+        boolean started = false;
+
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM game WHERE idgame = ? AND turn_idplayer IS NOT NULL;");
         preparedStatement.setInt(1, game.getId());
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
-        return resultSet.next();
+        if (resultSet.next()) {
+            started = true;
+        }
+
+        resultSet.close();
+
+        return started;
     }
 
     @Override
