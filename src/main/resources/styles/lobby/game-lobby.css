@@ -1,0 +1,22 @@
+.left-column {
+    -fx-spacing: 5;
+    -fx-padding: 20;
+}
+
+.title {
+    -fx-font-weight: bold;
+    -fx-font-size: 13;
+}
+
+.invite-box {
+    -fx-spacing: 10;
+}
+
+.right-column {
+    -fx-padding: 20;
+}
+
+.wait-text {
+    -fx-alignment: baseline-center;
+    -fx-font-size: 20;
+}

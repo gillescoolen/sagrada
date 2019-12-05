@@ -1,12 +1,18 @@
 package sagrada.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
 import sagrada.database.DatabaseConnection;
-import sagrada.model.Account;
+import sagrada.database.repositories.GameRepository;
+import sagrada.database.repositories.PlayerRepository;
+import sagrada.model.Game;
 
-import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Optional;
+
 
 public class GameController {
     @FXML
@@ -14,12 +20,12 @@ public class GameController {
     @FXML
     private VBox rowTwo;
 
-    private Account user;
-    private DatabaseConnection databaseConnection;
+    private final Game game;
+    private final DatabaseConnection connection;
 
-    public GameController(DatabaseConnection databaseConnection, Account account) {
-        this.user = account;
-        this.databaseConnection = databaseConnection;
+    public GameController(DatabaseConnection connection, Game game) {
+        this.game = game;
+        this.connection = connection;
     }
 
     @FXML

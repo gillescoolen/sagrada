@@ -41,7 +41,7 @@ public final class PatternCardRepository extends Repository<PatternCard> {
 
         List<Square> squares = new ArrayList<>();
 
-        PreparedStatement squarePreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM patterncardfield WHERE patterncard_idpatterncard = ? ORDER BY position_y, position_x;\n");
+        PreparedStatement squarePreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM patterncardfield WHERE patterncard_idpatterncard = ? ORDER BY position_y, position_x;");
 
         squarePreparedStatement.setInt(1, idPatternCard);
         ResultSet squareResultSet = squarePreparedStatement.executeQuery();
