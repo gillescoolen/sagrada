@@ -11,6 +11,12 @@
     -fx-opacity: 1.0;
 }
 
+.item-accepted {
+    -fx-border-radius: 20;
+    -fx-border-color: green;
+    -fx-border-insets: 5;
+}
+
 .hSpacer {
     -fx-spacing: 10;
     -fx-padding: 20;
