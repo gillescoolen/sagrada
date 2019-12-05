@@ -30,12 +30,6 @@ public class GameController {
 
     @FXML
     protected void initialize() {
-        try {
-            var loader = new FXMLLoader(getClass().getResource("/views/chat/chatBox.fxml"));
-            loader.setController(new ChatController(databaseConnection, user, chatRepository));
-            this.rowOne.getChildren().add(loader.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        
     }
 }
