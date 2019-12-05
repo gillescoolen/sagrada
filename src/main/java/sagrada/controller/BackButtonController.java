@@ -10,19 +10,18 @@ public class BackButtonController {
     @FXML
     private Button btnBack;
 
-    private final Method method;
+    private final Runnable method;
 
-    public BackButtonController(Method method) {
+    public BackButtonController(Runnable method) {
         this.method = method;
     }
 
     @FXML
     protected void initialize() {
-
+        this.btnBack.setOnMouseClicked(c -> btnClick());
     }
 
     public void btnClick() {
-
+        this.method.run();
     }
-
 }
