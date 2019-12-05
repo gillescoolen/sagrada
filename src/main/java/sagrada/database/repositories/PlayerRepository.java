@@ -6,13 +6,67 @@ import sagrada.model.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-public class PlayerRepository extends Repository<Player> {
+public final class PlayerRepository extends Repository<Player> {
     public PlayerRepository(DatabaseConnection connection) {
         super(connection);
+    }
+
+    public List<Player> getAllGamePlayers(int gameId) throws SQLException {
+        var players = new ArrayList<Player>();
+        var privateObjectiveColors = Arrays.asList(Color.values());
+        var random = new Random();
+        var sequenceNumber = 1;
+
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ?");
+        playerPreparedStatement.setInt(1, gameId);
+        ResultSet playerResultSet = playerPreparedStatement.executeQuery();
+
+        if (playerResultSet.getFetchSize() < 2) {
+            return null;
+        }
+
+        var patternCardRepository = new PatternCardRepository(this.connection);
+        var patternCards = patternCardRepository.getAllPatternCards();
+
+        while (playerResultSet.next()) {
+            var player = new Player();
+            var playerId = playerResultSet.getInt("idplayer");
+            var randomColor = privateObjectiveColors.get(random.nextInt(privateObjectiveColors.size()));
+            privateObjectiveColors.remove(randomColor);
+
+            PreparedStatement playerUpdatePreparedStatement = this.connection.getConnection().prepareStatement("UPDATE player SET private_objectivecard_color = ?, seqnr = ?, isCurrentPlayer = ?, score = ?, invalidframefield = ? WHERE idplayer = ?");
+
+            playerUpdatePreparedStatement.setString(1, randomColor.getDutchColorName());
+            playerUpdatePreparedStatement.setInt(2, sequenceNumber);
+            playerUpdatePreparedStatement.setInt(3, sequenceNumber == 1 ? 1 : 0);
+            playerUpdatePreparedStatement.setInt(4, 0);
+            playerUpdatePreparedStatement.setInt(5, 0);
+            playerUpdatePreparedStatement.setInt(6, playerId);
+
+            playerUpdatePreparedStatement.executeUpdate();
+
+            player.setPrivateObjectiveCard(new PrivateObjectiveCard(randomColor));
+            player.setCurrentPlayer(sequenceNumber == 1);
+            player.setId(playerId);
+            player.setInvalidFrameField(false);
+            player.setScore(0);
+            player.setPlayStatus(PlayStatus.ACCEPTED);
+            player.setSequenceNumber(sequenceNumber);
+
+            for (int insertAmount = 0; insertAmount < 4; ++insertAmount) {
+                var randomPatternCard = patternCards.get(random.nextInt(patternCards.size()));
+                patternCardRepository.setOption(playerId, randomPatternCard.getId());
+                player.addCardOption(randomPatternCard);
+                patternCards.remove(randomPatternCard);
+            }
+
+            players.add(player);
+            ++sequenceNumber;
+        }
+
+        return players;
     }
 
     @Override

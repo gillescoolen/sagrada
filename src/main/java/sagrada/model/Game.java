@@ -46,6 +46,7 @@ public class Game {
     }
 
     public void addPlayers(List<Player> players) {
+        this.players.clear();
         this.players.addAll(players);
     }
 
