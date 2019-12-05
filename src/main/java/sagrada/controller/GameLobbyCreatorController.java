@@ -152,14 +152,25 @@ public class GameLobbyCreatorController {
     }
 
     private void startGame() {
-        if (game.getPlayers().size() > 2) {
+        var savedGame = this.game;
+
+        if (savedGame.getPlayers().size() >= 2) {
             try {
                 var loader = new FXMLLoader(getClass().getResource("/views/game.fxml"));
                 var stage = ((Stage) this.btnInvite.getScene().getWindow());
-                loader.setController(new GameController(this.databaseConnection, this.game));
+                loader.setController(new GameController(this.databaseConnection, savedGame, this.account));
                 var scene = new Scene(loader.load());
+
+                var gameRepository = new GameRepository(this.databaseConnection);
+
+                for (var player : savedGame.getPlayers()) {
+                    if (savedGame.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername())) {
+                        gameRepository.startGame(player.getId(), savedGame.getId());
+                    }
+                }
+
                 stage.setScene(scene);
-            } catch (IOException e) {
+            } catch (IOException | SQLException e) {
                 e.printStackTrace();
             }
         }

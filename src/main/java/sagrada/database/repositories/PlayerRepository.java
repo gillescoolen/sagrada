@@ -14,20 +14,28 @@ public final class PlayerRepository extends Repository<Player> {
         super(connection);
     }
 
+    public boolean isPatternCardChosen(Game game) throws SQLException {
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT COUNT(patterncard_idpatterncard) AS amountOfChosenCards FROM player WHERE spel_idspel = ? AND playstatus_playstatus = ?");
+
+        playerPreparedStatement.setInt(1, game.getId());
+        playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
+
+        ResultSet resultSet = playerPreparedStatement.executeQuery();
+
+        return resultSet.getInt("amountOfChosenCards") == game.getPlayers().size();
+    }
+
     public List<Player> getAllGamePlayers(int gameId) throws SQLException {
         var players = new ArrayList<Player>();
-        var privateObjectiveColors = Arrays.asList(Color.values());
         var random = new Random();
+        var privateObjectiveColors = new ArrayList<>(Arrays.asList(Color.values()));
         var sequenceNumber = 1;
 
-        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus = ?");
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN (?, ?)");
         playerPreparedStatement.setInt(1, gameId);
         playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
+        playerPreparedStatement.setString(3, PlayStatus.CHALLENGER.getPlayState());
         ResultSet playerResultSet = playerPreparedStatement.executeQuery();
-
-        if (playerResultSet.getFetchSize() < 2) {
-            return null;
-        }
 
         var patternCardRepository = new PatternCardRepository(this.connection);
         var patternCards = patternCardRepository.getAllPatternCards();
@@ -56,6 +64,7 @@ public final class PlayerRepository extends Repository<Player> {
             player.setScore(0);
             player.setPlayStatus(PlayStatus.ACCEPTED);
             player.setSequenceNumber(sequenceNumber);
+            player.setAccount(new Account(playerResultSet.getString("username")));
 
             for (int insertAmount = 0; insertAmount < 4; ++insertAmount) {
                 var randomPatternCard = patternCards.get(random.nextInt(patternCards.size()));

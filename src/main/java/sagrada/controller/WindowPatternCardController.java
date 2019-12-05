@@ -33,6 +33,10 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
     private final List<Button> windowSquares = new ArrayList<>();
 
+    public WindowPatternCardController(PatternCard patternCard) {
+        this.windowField = patternCard;
+    }
+
     public WindowPatternCardController(PlayerFrameRepository playerFrameRepository, Player player, Game game) {
         var timer = new Timer();
 
@@ -66,7 +70,13 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
     @FXML
     protected void initialize() {
-        this.changeView.setOnAction((e) -> this.changeView());
+        if (this.playerFrame == null) {
+            this.changeView.setDisable(true);
+        } else {
+            this.changeView.setDisable(false);
+            this.changeView.setOnAction((e) -> this.changeView());
+        }
+
         this.initializeWindow();
         this.fillWindow();
     }

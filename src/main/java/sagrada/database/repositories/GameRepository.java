@@ -16,6 +16,13 @@ public final class GameRepository extends Repository<Game> {
         super(connection);
     }
 
+    public void startGame(int turnPlayerId, int gameId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE game SET turn_idplayer = ? WHERE idgame = ?");
+        preparedStatement.setInt(1, turnPlayerId);
+        preparedStatement.setInt(2, gameId);
+        preparedStatement.execute();
+    }
+
     public List<Game> getAll() throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM game g ORDER BY g.created_on DESC LIMIT 20;");
         ResultSet resultSet = preparedStatement.executeQuery();

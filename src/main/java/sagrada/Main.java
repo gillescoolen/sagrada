@@ -9,6 +9,8 @@ import javafx.stage.Stage;
 import sagrada.controller.LoginController;
 import sagrada.database.DatabaseConnection;
 
+import java.sql.SQLException;
+
 public class Main extends Application {
     private DatabaseConnection databaseConnection;
 
@@ -26,6 +28,13 @@ public class Main extends Application {
 
         primaryStage.setOnCloseRequest(event -> {
             Platform.exit();
+
+            try {
+                databaseConnection.getConnection().close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
             System.exit(0);
         });
 
