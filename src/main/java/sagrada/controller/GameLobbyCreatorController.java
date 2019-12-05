@@ -2,16 +2,20 @@ package sagrada.controller;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.AccountRepository;
 import sagrada.database.repositories.GameRepository;
 import sagrada.database.repositories.PlayerRepository;
 import sagrada.model.*;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Timer;
@@ -148,6 +152,16 @@ public class GameLobbyCreatorController {
     }
 
     private void startGame() {
-        // TODO: GitHub issue #56 Start game from invite page
+        if (game.getPlayers().size() > 2) {
+            try {
+                var loader = new FXMLLoader(getClass().getResource("/views/game.fxml"));
+                var stage = ((Stage) this.btnInvite.getScene().getWindow());
+                loader.setController(new GameController(this.databaseConnection, this.game));
+                var scene = new Scene(loader.load());
+                stage.setScene(scene);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

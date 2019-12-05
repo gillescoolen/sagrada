@@ -20,8 +20,9 @@ public final class PlayerRepository extends Repository<Player> {
         var random = new Random();
         var sequenceNumber = 1;
 
-        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ?");
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus = ?");
         playerPreparedStatement.setInt(1, gameId);
+        playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
         ResultSet playerResultSet = playerPreparedStatement.executeQuery();
 
         if (playerResultSet.getFetchSize() < 2) {
