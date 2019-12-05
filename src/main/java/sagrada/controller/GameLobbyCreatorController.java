@@ -32,13 +32,15 @@ public class GameLobbyCreatorController {
 
     private final DatabaseConnection databaseConnection;
     private final PlayerRepository playerRepository;
+    private final Account account;
     private final Game game;
     private final static int POLL_TIME = 3000;
     private final Timer getInvitedAndAcceptedPlayersTimer = new Timer();
 
-    public GameLobbyCreatorController(DatabaseConnection databaseConnection, Game game) {
+    public GameLobbyCreatorController(DatabaseConnection databaseConnection, Game game, Account account) {
         this.databaseConnection = databaseConnection;
         this.playerRepository = new PlayerRepository(this.databaseConnection);
+        this.account = account;
         this.game = game;
     }
 
@@ -84,45 +86,64 @@ public class GameLobbyCreatorController {
     private void invitePlayer() {
         String playerName = this.tfPlayerInvite.getText();
         this.tfPlayerInvite.clear();
-        if (!playerName.isBlank() && !playerName.isEmpty()) {
-            Player player = new Player();
-            AccountRepository accountRepository = new AccountRepository(this.databaseConnection);
 
-            try {
-                Account account = accountRepository.findByUsername(playerName);
+        if (playerName.isBlank() && playerName.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning dialog");
+            alert.setContentText("Please input the name of the player \nyou want to invite.");
 
-                if (account == null) {
-                    throw new SQLException("Account not found.");
-                }
+            alert.showAndWait();
 
-                if (this.lvInvitedPlayers.getItems().contains(playerName) || this.lvAcceptedPlayers.getItems().contains(playerName)) {
-                    throw new Exception("Player is invited or accepted.");
-                }
+            return;
+        }
 
-                player.setAccount(account);
-                player.setCurrentPlayer(false);
-                player.setPrivateObjectiveCard(new PrivateObjectiveCard(Color.BLUE));
-                player.setPlayStatus(PlayStatus.INVITED);
+        Player player = new Player();
+        AccountRepository accountRepository = new AccountRepository(this.databaseConnection);
 
-                this.playerRepository.add(player, this.game);
+        try {
+            Account account = accountRepository.findByUsername(playerName);
 
-            } catch (SQLException e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error dialog");
-                alert.setContentText("Could not invite the player! \nConnection not found or player not found.");
+            if (account == null) {
+                throw new SQLException("Account not found.");
+            }
+
+            if (account.getUsername().equals(this.account.getUsername())) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning dialog");
+                alert.setContentText("You can't invite yourself!");
 
                 alert.showAndWait();
 
-                e.printStackTrace();
-            } catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error dialog");
+                return;
+            }
+
+            if (this.lvInvitedPlayers.getItems().contains(playerName) || this.lvAcceptedPlayers.getItems().contains(playerName)) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning dialog");
                 alert.setContentText("Could not invite the player! \nPlayer is already invited or already accepted the\ninvite.");
 
                 alert.showAndWait();
 
-                e.printStackTrace();
+                return;
             }
+
+            player.setAccount(account);
+            player.setCurrentPlayer(false);
+            player.setPrivateObjectiveCard(new PrivateObjectiveCard(Color.BLUE));
+            player.setPlayStatus(PlayStatus.INVITED);
+
+            this.playerRepository.add(player, this.game);
+
+        } catch (SQLException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error dialog");
+            alert.setContentText("Could not invite the player! \nConnection not found or player not found.");
+
+            alert.showAndWait();
+
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

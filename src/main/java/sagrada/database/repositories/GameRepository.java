@@ -143,6 +143,7 @@ public final class GameRepository extends Repository<Game> {
             started = true;
         }
 
+        preparedStatement.close();
         resultSet.close();
 
         return started;
