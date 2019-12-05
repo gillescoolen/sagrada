@@ -36,10 +36,11 @@ public final class GameRepository extends Repository<Game> {
     }
 
     public List<Game> getInvitedGames(Account account) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player p JOIN game g ON p.spel_idspel = g.idgame WHERE p.username = ? AND p.playstatus_playstatus = ? ORDER BY g.created_on DESC LIMIT 20;");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player p JOIN game g ON p.spel_idspel = g.idgame WHERE p.username = ? AND p.playstatus_playstatus IN (?, ?) ORDER BY g.created_on DESC LIMIT 20;");
 
         preparedStatement.setString(1, account.getUsername());
         preparedStatement.setString(2, PlayStatus.INVITED.getPlayState());
+        preparedStatement.setString(3, PlayStatus.ACCEPTED.getPlayState());
 
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Game> invitedGames = new ArrayList<>();

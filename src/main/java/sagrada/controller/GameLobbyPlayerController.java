@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.GameRepository;
-import sagrada.database.repositories.PlayerRepository;
 import sagrada.model.Game;
 
 import java.sql.SQLException;

@@ -14,6 +14,7 @@ import sagrada.model.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 public class LobbyItemController {
     @FXML
@@ -43,7 +44,11 @@ public class LobbyItemController {
         int spots = getSpots(this.game.getPlayers());
         this.lbSpotsLeft.setText(spots + " spot(s) left!");
 
-        if (spots == 0 || !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
+        if (this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
+            this.lobbyItem.getStyleClass().clear();
+            this.lobbyItem.getStyleClass().add("item-accepted");
+            if (this.btnDecline != null) this.btnDecline.setDisable(true);
+        } else if (spots == 0 || !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
             this.lobbyItem.setDisable(true);
             this.lobbyItem.getStyleClass().clear();
             this.lobbyItem.getStyleClass().add("item-full");
@@ -55,24 +60,7 @@ public class LobbyItemController {
     }
 
     private void lobbyItemClicked() {
-        if (this.containsName(this.game.getPlayers(), this.account.getUsername())) {
-            this.goToNextScreen();
-        } else {
-            PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
-            Player player = new Player();
-
-            player.setAccount(this.account);
-            player.setCurrentPlayer(false);
-            player.setPrivateObjectiveCard(new PrivateObjectiveCard(Color.BLUE));
-            player.setPlayStatus(PlayStatus.ACCEPTED);
-
-            try {
-                playerRepository.add(player, this.game);
-                this.goToNextScreen();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        goToNextScreen();
     }
 
     private void cancelInvite() {
@@ -93,6 +81,11 @@ public class LobbyItemController {
                 var scene = new Scene(loader.load());
                 stage.setScene(scene);
             } else {
+                if (!this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
+                    PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
+                    playerRepository.acceptInvite(this.account.getUsername(), this.game);
+                }
+
                 var loader = new FXMLLoader(getClass().getResource("/views/lobby/gameLobbyPlayer.fxml"));
                 loader.setController(new GameLobbyPlayerController(this.databaseConnection, this.game));
                 var stage = ((Stage) this.lbName.getScene().getWindow());
@@ -100,13 +93,17 @@ public class LobbyItemController {
                 stage.setScene(scene);
             }
 
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
     }
 
     private boolean containsName(final List<Player> players, final String name) {
         return players.stream().anyMatch(p -> p.getAccount().getUsername().equals(name));
+    }
+
+    private boolean containsNameAndAccepted(final List<Player> players, final String name) {
+        return players.stream().anyMatch(p -> p.getAccount().getUsername().equals(name) && p.getPlayStatus() == PlayStatus.ACCEPTED);
     }
 
     private int getSpots(List<Player> players) {

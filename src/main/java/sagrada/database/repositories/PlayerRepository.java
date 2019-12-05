@@ -171,11 +171,19 @@ public class PlayerRepository extends Repository<Player> {
     }
 
     public void declineInvite(String name, Game game) throws SQLException {
-        Player playerToUpdate = this.getGamePlayer(name, game);
+        Player playerToDecline = this.getGamePlayer(name, game);
 
-        playerToUpdate.setPlayStatus(PlayStatus.DECLINED);
+        playerToDecline.setPlayStatus(PlayStatus.DECLINED);
 
-        this.update(playerToUpdate);
+        this.update(playerToDecline);
+    }
+
+    public void acceptInvite(String name, Game game) throws SQLException {
+        Player playerToAccept = this.getGamePlayer(name, game);
+
+        playerToAccept.setPlayStatus(PlayStatus.ACCEPTED);
+
+        this.update(playerToAccept);
     }
 
     public Player createPlayer(ResultSet resultSet) throws SQLException {
