@@ -116,24 +116,6 @@ public final class GameRepository extends Repository<Game> {
         return id;
     }
 
-    public List<ObjectiveCard> getObjectiveCards() throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM public_objectivecard ORDER BY RAND() LIMIT 3;");
-
-        ResultSet resultSet = preparedStatement.executeQuery();
-        List<ObjectiveCard> publicObjectiveCards = new ArrayList<>();
-
-        while (resultSet.next()) {
-            publicObjectiveCards.add(CardFactory.getPublicObjectiveCard(
-                    resultSet.getString("name"),
-                    resultSet.getInt("idpublic_objectivecard"),
-                    resultSet.getString("description"),
-                    resultSet.getInt("points")
-            ));
-        }
-
-        return publicObjectiveCards;
-    }
-
     @Override
     public Game findById(int id) throws SQLException {
         Game game = new Game();

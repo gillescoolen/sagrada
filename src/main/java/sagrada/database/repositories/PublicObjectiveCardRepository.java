@@ -20,13 +20,18 @@ public final class PublicObjectiveCardRepository extends Repository<PublicObject
     }
 
     public List<PublicObjectiveCard> getRandom() throws SQLException {
-        var publicObjectiveCards = new ArrayList<PublicObjectiveCard>();
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM public_objectivecard ORDER BY RAND() LIMIT 3;");
 
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM public_objectivecard ORDER BY RAND() LIMIT 3");
         ResultSet resultSet = preparedStatement.executeQuery();
+        List<PublicObjectiveCard> publicObjectiveCards = new ArrayList<>();
 
         while (resultSet.next()) {
-
+            publicObjectiveCards.add(CardFactory.getPublicObjectiveCard(
+                    resultSet.getString("name"),
+                    resultSet.getInt("idpublic_objectivecard"),
+                    resultSet.getString("description"),
+                    resultSet.getInt("points")
+            ));
         }
 
         return publicObjectiveCards;
