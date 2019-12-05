@@ -14,10 +14,6 @@ public class GrindingStoneFacade implements ToolCardFacade {
     public void use(GameController controller) {
         Die die = this.question(controller);
 
-        if (die == null) {
-            return;
-        }
-
         Player player = controller.getPlayer();
         Game game = controller.getGame();
         game.getToolCards().stream()
@@ -34,6 +30,10 @@ public class GrindingStoneFacade implements ToolCardFacade {
         dialog.setContentText("Kies dobbelsteen:");
 
         Optional<Die> result = dialog.showAndWait();
+
+        if (result.isEmpty()) {
+            return this.question(controller);
+        }
 
         return result.orElse(null);
     }
