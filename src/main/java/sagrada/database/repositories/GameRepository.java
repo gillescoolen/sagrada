@@ -57,10 +57,11 @@ public final class GameRepository extends Repository<Game> {
         game.setId(resultSet.getInt("idgame"));
         game.setCreatedOn(resultSet.getTimestamp("created_on").toLocalDateTime());
 
-        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player p WHERE spel_idspel = ? AND p.playstatus_playstatus IN (?, ?);");
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player p WHERE spel_idspel = ? AND p.playstatus_playstatus IN (?, ?, ?);");
         playerPreparedStatement.setInt(1, resultSet.getInt("idgame"));
         playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
         playerPreparedStatement.setString(3, PlayStatus.CHALLENGER.getPlayState());
+        playerPreparedStatement.setString(4, PlayStatus.INVITED.getPlayState());
         ResultSet playerResultSet = playerPreparedStatement.executeQuery();
 
         while (playerResultSet.next()) {

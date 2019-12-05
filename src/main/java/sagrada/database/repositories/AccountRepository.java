@@ -34,7 +34,7 @@ public final class AccountRepository extends Repository<Account> {
         resultSet.close();
         preparedStatement.close();
 
-        return new Account(username, password);
+        return new Account(usernameAccount, password);
     }
 
     public Account getUserByUsernameAndPassword(String username, String password) throws SQLException {

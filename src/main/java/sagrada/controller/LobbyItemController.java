@@ -78,11 +78,7 @@ public class LobbyItemController {
     private void cancelInvite() {
         try {
             PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
-            Player playerToUpdate = playerRepository.getGamePlayer(this.account.getUsername(), this.game);
-
-            playerToUpdate.setPlayStatus(PlayStatus.DECLINED);
-
-            playerRepository.update(playerToUpdate);
+            playerRepository.declineInvite(this.account.getUsername(), this.game);
         } catch (SQLException e) {
             e.printStackTrace();
         }

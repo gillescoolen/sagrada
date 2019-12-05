@@ -99,26 +99,34 @@ public class PlayerRepository extends Repository<Player> {
     }
 
     @Override
-    public void update(Player model) throws SQLException {
+    public void update(Player player) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection()
                 .prepareStatement("UPDATE player SET `playstatus_playstatus` = ?, `seqnr` = ?, `isCurrentPlayer` = ?, `private_objectivecard_color` = ?, patterncard_idpatterncard = ?, `score` = ?, `invalidframefield` = ? WHERE `idplayer` = ?");
 
-        preparedStatement.setString(1, model.getPlayStatus().getPlayState());
-        if (model.getSequenceNumber() == null) {
+        preparedStatement.setString(1, player.getPlayStatus().getPlayState());
+        if (player.getSequenceNumber() == null) {
             preparedStatement.setNull(2, Types.INTEGER);
         } else {
-            preparedStatement.setInt(2, model.getSequenceNumber());
+            preparedStatement.setInt(2, player.getSequenceNumber());
         }
 
-        preparedStatement.setByte(3, ((byte) (model.isCurrentPlayer() ? 1 : 0)));
-        preparedStatement.setString(4, model.getPrivateObjectiveCard().getColor().getDutchColorName());
+        preparedStatement.setByte(3, ((byte) (player.isCurrentPlayer() ? 1 : 0)));
 
-        if (model.getPatternCard() == null) {
+        preparedStatement.setString(4, player.getPrivateObjectiveCard().getColor().getDutchColorName());
+
+        if (player.getPatternCard() == null) {
             preparedStatement.setNull(5, Types.INTEGER);
         } else {
-            preparedStatement.setInt(5, model.getPatternCard().getId());
+            preparedStatement.setInt(5, player.getPatternCard().getId());
         }
 
+        preparedStatement.setInt(6, player.getScore());
+        preparedStatement.setByte(7, ((byte) (player.hasInvalidFrameField() ? 1 : 0)));
+        preparedStatement.setInt(8, player.getId());
+
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
     }
 
     @Override
@@ -162,6 +170,14 @@ public class PlayerRepository extends Repository<Player> {
 
     }
 
+    public void declineInvite(String name, Game game) throws SQLException {
+        Player playerToUpdate = this.getGamePlayer(name, game);
+
+        playerToUpdate.setPlayStatus(PlayStatus.DECLINED);
+
+        this.update(playerToUpdate);
+    }
+
     public Player createPlayer(ResultSet resultSet) throws SQLException {
         Player player = new Player();
 
@@ -174,13 +190,18 @@ public class PlayerRepository extends Repository<Player> {
         player.setSequenceNumber(seqnr == 0 ? null : seqnr);
 
         for (Color color : Color.values()) {
-            if (color.getColor().equals(resultSet.getString("private_objectivecard_color"))) {
+            if (color.getDutchColorName().equals(resultSet.getString("private_objectivecard_color"))) {
                 player.setPrivateObjectiveCard(new PrivateObjectiveCard(color));
             }
         }
 
         player.setCurrentPlayer(resultSet.getBoolean("isCurrentPlayer"));
-        player.setPatternCard(patternCardRepository.findById(resultSet.getInt("patterncard_idpatterncard")));
+
+        int patternCardId = resultSet.getInt("patterncard_idpatterncard");
+
+        if (patternCardId != 0) {
+            player.setPatternCard(patternCardRepository.findById(patternCardId));
+        }
 
         for (PlayStatus playStatus : PlayStatus.values()) {
             if (playStatus.getPlayState().equals(resultSet.getString("playstatus_playstatus"))) {
