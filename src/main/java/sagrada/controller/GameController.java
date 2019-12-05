@@ -30,15 +30,10 @@ public class GameController {
     }
 
     @FXML
-    protected void initialize() {
+    protected void initialize() {}
 
     public Game getGame() {
         return this.game;
-    }
-
-    GameController(DatabaseConnection connection, Game game) {
-        this.game = game;
-        this.connection = connection;
     }
 
     public Player getPlayer() {
