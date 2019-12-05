@@ -10,11 +10,26 @@ import sagrada.model.card.objective.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public final class PublicObjectiveCardRepository extends Repository<PublicObjectiveCard> {
     public PublicObjectiveCardRepository(DatabaseConnection connection) {
         super(connection);
+    }
+
+    public List<PublicObjectiveCard> getRandom() throws SQLException {
+        var publicObjectiveCards = new ArrayList<PublicObjectiveCard>();
+
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM public_objectivecard ORDER BY RAND() LIMIT 3");
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+
+        }
+
+        return publicObjectiveCards;
     }
 
     public PublicObjectiveCard findByName(String name) throws SQLException {
