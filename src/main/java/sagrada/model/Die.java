@@ -36,25 +36,7 @@ public class Die {
             throw new RuntimeException("Cannot flip a die which has no value");
         }
 
-        switch (this.value) {
-            case 1:
-                this.setValue(6);
-                break;
-            case 2:
-                this.setValue(5);
-                break;
-            case 3:
-                this.setValue(4);
-                break;
-            case 4:
-                this.setValue(3);
-                break;
-            case 5:
-                this.setValue(2);
-                break;
-            case 6:
-                this.setValue(1);
-        }
+        this.setValue(7 - this.value);
     }
 
     public void roll() {
