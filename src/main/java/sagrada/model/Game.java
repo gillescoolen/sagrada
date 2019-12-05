@@ -105,7 +105,7 @@ public class Game {
     public Player getPlayerByName(String name) {
         return this.players
                 .stream()
-                .filter(player -> player.getAccount().getUsername() == name)
+                .filter(player -> player.getAccount().getUsername().equals(name))
                 .findFirst()
                 .orElse(null);
     }
