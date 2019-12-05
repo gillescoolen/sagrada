@@ -102,6 +102,14 @@ public class Game {
                 .orElse(null);
     }
 
+    public Player getPlayerByName(String name) {
+        return this.players
+                .stream()
+                .filter(player -> player.getAccount().getUsername() == name)
+                .findFirst()
+                .orElse(null);
+    }
+
     public void createPlayers() {
         // TODO: implement
     }

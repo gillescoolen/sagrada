@@ -22,7 +22,7 @@ public class StartGame {
 
     private void initializePlayers() {
         try {
-            this.game.addPlayers(this.playerRepository.getAllGamePlayers(this.game.getId()));
+            this.game.addPlayers(this.playerRepository.getAllGamePlayers(this.game));
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -25,14 +25,14 @@ public final class PlayerRepository extends Repository<Player> {
         return resultSet.getInt("amountOfChosenCards") == game.getPlayers().size();
     }
 
-    public List<Player> getAllGamePlayers(int gameId) throws SQLException {
+    public List<Player> getAllGamePlayers(Game game) throws SQLException {
         var players = new ArrayList<Player>();
         var random = new Random();
         var privateObjectiveColors = new ArrayList<>(Arrays.asList(Color.values()));
         var sequenceNumber = 1;
 
         PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN (?, ?)");
-        playerPreparedStatement.setInt(1, gameId);
+        playerPreparedStatement.setInt(1, game.getId());
         playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
         playerPreparedStatement.setString(3, PlayStatus.CHALLENGER.getPlayState());
         ResultSet playerResultSet = playerPreparedStatement.executeQuery();
@@ -41,7 +41,7 @@ public final class PlayerRepository extends Repository<Player> {
         var patternCards = patternCardRepository.getAllPatternCards();
 
         while (playerResultSet.next()) {
-            var player = new Player();
+            var player = game.getPlayerByName(playerResultSet.getString("username"));
             var playerId = playerResultSet.getInt("idplayer");
             var randomColor = privateObjectiveColors.get(random.nextInt(privateObjectiveColors.size()));
             privateObjectiveColors.remove(randomColor);
