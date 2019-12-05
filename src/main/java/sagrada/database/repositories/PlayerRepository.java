@@ -62,7 +62,6 @@ public final class PlayerRepository extends Repository<Player> {
             player.setId(playerId);
             player.setInvalidFrameField(false);
             player.setScore(0);
-            player.setPlayStatus(PlayStatus.ACCEPTED);
             player.setSequenceNumber(sequenceNumber);
             player.setAccount(new Account(playerResultSet.getString("username")));
 

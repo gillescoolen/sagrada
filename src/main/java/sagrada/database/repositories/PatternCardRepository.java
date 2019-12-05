@@ -30,12 +30,12 @@ public final class PatternCardRepository extends Repository<PatternCard> {
 
     public List<PatternCard> getAllPatternCards() throws SQLException {
         var patternCards = new ArrayList<PatternCard>();
-        var squares = new ArrayList<Square>();
 
         PreparedStatement patternCardPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM patterncard");
         ResultSet patternCardResultSet = patternCardPreparedStatement.executeQuery();
 
         while (patternCardResultSet.next()) {
+            var squares = new ArrayList<Square>();
             var id = patternCardResultSet.getInt("idpatterncard");
             var name = patternCardResultSet.getString("name");
             var difficulty = patternCardResultSet.getInt("difficulty");

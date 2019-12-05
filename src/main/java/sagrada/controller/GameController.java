@@ -38,8 +38,8 @@ public class GameController {
 
     @FXML
     protected void initialize() {
-        for (var player : game.getPlayers()) {
-            if (player.getAccount() == account) {
+        for (var player : this.game.getPlayers()) {
+            if (player.getAccount().getUsername().equals(this.account.getUsername())) {
                 try {
                     this.initializeWindowOptions(player);
                 } catch (IOException e) {
