@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import sagrada.component.BackButton;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.AccountRepository;
 import sagrada.database.repositories.PlayerRepository;
@@ -55,14 +56,7 @@ public class GameLobbyCreatorController {
 
     @FXML
     protected void initialize() {
-        try {
-            var loader = new FXMLLoader(getClass().getResource("/views/backButton.fxml"));
-            loader.setController(new BackButtonController(this::backToLobbyScreen));
-            this.vbPanel.getChildren().add(0, loader.load());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        this.addBackButton();
 
         this.btnInvite.setOnMouseClicked(e -> this.invitePlayer());
         this.btnStartGame.setOnMouseClicked(e -> this.startGame());
@@ -74,6 +68,14 @@ public class GameLobbyCreatorController {
                 Platform.runLater(() -> fillList(lvAcceptedPlayers, false));
             }
         }, 0, POLL_TIME);
+    }
+
+    private void addBackButton() {
+        try {
+            this.vbPanel.getChildren().add(0, new BackButton(this::backToLobbyScreen).load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void backToLobbyScreen() {
