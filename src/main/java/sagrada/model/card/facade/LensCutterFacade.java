@@ -39,7 +39,7 @@ public class LensCutterFacade implements ToolCardFacade {
         }
 
         List<Integer> availableTracks = IntStream.rangeClosed(1, controller.getGame().getRoundTrack().getCurrent()).boxed().collect(Collectors.toList());
-        ChoiceDialog<Integer> roundDialog = new ChoiceDialog<>(1, availableTracks);
+        ChoiceDialog<Integer> roundDialog = new ChoiceDialog<>(availableTracks.get(0), availableTracks);
         roundDialog.setTitle("Rondsnijder");
         roundDialog.setHeaderText("Dobbelsteen wissel met RoundTrack");
         roundDialog.setContentText("Kies ronde dobbelsteen:");
