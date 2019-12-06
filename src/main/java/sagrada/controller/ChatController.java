@@ -75,6 +75,6 @@ public class ChatController {
         FXMLLoader loader = new FXMLLoader(template);
         loader.setController(new ChatMessageController(message, author));
         lvMessageBox.getItems().add(loader.load());
-        }
     }
 }
+
