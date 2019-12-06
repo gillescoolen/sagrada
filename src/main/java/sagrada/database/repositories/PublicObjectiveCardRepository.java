@@ -1,6 +1,7 @@
 package sagrada.database.repositories;
 
 import sagrada.database.DatabaseConnection;
+import sagrada.model.PatternCard;
 import sagrada.model.PublicObjectiveCard;
 import sagrada.model.card.CardFactory;
 
@@ -86,5 +87,28 @@ public final class PublicObjectiveCardRepository extends Repository<PublicObject
     @Override
     public void addMultiple(Collection<PublicObjectiveCard> models) throws SQLException {
 
+    }
+
+    public void addMultiple(Collection<PublicObjectiveCard> publicObjectiveCards, int gameId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(
+                "INSERT INTO gamepublic_objectivecard (idspel, iddoelkaart_gedeeld) VALUES (?, ?);"
+        );
+
+        var count = 0;
+
+        for (var publicObjectiveCard : publicObjectiveCards) {
+            preparedStatement.setInt(1, gameId);
+            preparedStatement.setInt(2, publicObjectiveCard.getId());
+
+            preparedStatement.addBatch();
+
+            ++count;
+
+            if (count % BATCH_SIZE == 0 || count == publicObjectiveCards.size()) {
+                preparedStatement.executeBatch();
+            }
+        }
+
+        preparedStatement.close();
     }
 }

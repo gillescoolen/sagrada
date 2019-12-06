@@ -2,6 +2,8 @@ package sagrada.util;
 
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.PlayerRepository;
+import sagrada.database.repositories.PublicObjectiveCardRepository;
+import sagrada.database.repositories.ToolCardRepository;
 import sagrada.model.Game;
 
 import java.sql.SQLException;
@@ -9,11 +11,17 @@ import java.sql.SQLException;
 public class StartGame {
     private final Game game;
     private final PlayerRepository playerRepository;
+    private final PublicObjectiveCardRepository publicObjectiveCardRepository;
+    private final ToolCardRepository toolCardRepository;
 
     public StartGame(Game game, DatabaseConnection databaseConnection) {
         this.game = game;
         this.playerRepository = new PlayerRepository(databaseConnection);
+        this.publicObjectiveCardRepository = new PublicObjectiveCardRepository(databaseConnection);
+        this.toolCardRepository = new ToolCardRepository(databaseConnection);
+
         this.initializePlayers();
+        this.initializeCards();
     }
 
     public Game getCreatedGame() {
@@ -29,6 +37,14 @@ public class StartGame {
     }
 
     private void initializeCards() {
+        try {
+            var publicObjectiveCards = this.publicObjectiveCardRepository.getRandom();
+            this.publicObjectiveCardRepository.addMultiple(publicObjectiveCards, this.game.getId());
 
+            var toolCards = this.toolCardRepository.getRandom();
+            this.toolCardRepository.addMultiple(toolCards, this.game.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

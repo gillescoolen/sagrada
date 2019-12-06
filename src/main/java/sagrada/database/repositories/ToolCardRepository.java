@@ -85,4 +85,27 @@ public final class ToolCardRepository extends Repository<ToolCard> {
     public void addMultiple(Collection<ToolCard> models) throws SQLException {
 
     }
+
+    public void addMultiple(Collection<ToolCard> toolCards, int gameId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(
+                "INSERT INTO gametoolcard (idtoolcard, idgame) VALUES (?, ?);"
+        );
+
+        var count = 0;
+
+        for (var toolCard : toolCards) {
+            preparedStatement.setInt(1, toolCard.getId());
+            preparedStatement.setInt(2, gameId);
+
+            preparedStatement.addBatch();
+
+            ++count;
+
+            if (count % BATCH_SIZE == 0 || count == toolCards.size()) {
+                preparedStatement.executeBatch();
+            }
+        }
+
+        preparedStatement.close();
+    }
 }
