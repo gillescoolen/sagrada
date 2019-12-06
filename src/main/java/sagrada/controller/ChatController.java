@@ -27,46 +27,46 @@ public class ChatController {
     @FXML
     private Button sendButton;
     @FXML
-    private ListView<ChatLine> lvMessageBox;
+    private ListView lvMessageBox;
 
     private LocalDateTime lastFetched;
 
     private final Game game;
     private final Player player;
-
-    private final Timer getMessagesTimer = new Timer();
-
     private final ChatRepository chatRepository;
+    private final Timer getMessagesTimer = new Timer();
 
     public ChatController(DatabaseConnection databaseConnection, Player player, Game game) {
         this.game = game;
         this.player = player;
-        this.lastFetched = LocalDateTime.now();
         this.chatRepository = new ChatRepository(databaseConnection);
+        this.lastFetched = game.getCreatedOn();
     }
 
     @FXML
     public void initialize() {
         this.sendButton.setOnMouseClicked(c -> sendMessage(this.messageField.getText()));
+
+        this.getMessages();
+
         this.getMessagesTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> getMessages());
             }
-        }, 0, 5000);
-
+        }, 0, 2000);
     }
 
     /**
-     * Send a message to the database and to our client's chatbox.
+     * Send a message to the database.
      *
      * @param message The message the user wrote.
      */
     private void sendMessage(String message) {
         try {
-            this.addMessage(message, this.player.getAccount().getUsername());
             this.chatRepository.add(new ChatLine(player, LocalDateTime.now(), message));
-        } catch (SQLException | IOException e) {
+            this.messageField.clear();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -74,13 +74,13 @@ public class ChatController {
     /**
      * Add a message tot the chatbox.
      *
-     * @param message The message the user wrote.
-     * @param author  The user that wrote the message.
+     * @param message  The message the user wrote.
+     * @param username The name of the user that wrote the message.
      */
-    private void addMessage(String message, String author) throws IOException {
+    private void addMessage(String message, String username) throws IOException {
         URL template = this.getClass().getResource("/views/chat/chatMessage.fxml");
         FXMLLoader loader = new FXMLLoader(template);
-        loader.setController(new ChatMessageController(message, author));
+        loader.setController(new ChatMessageController(message, username));
         lvMessageBox.getItems().add(loader.load());
     }
 
@@ -90,17 +90,14 @@ public class ChatController {
     private void getMessages() {
         try {
             List<ChatLinePair> lines = this.chatRepository.getMultiple(this.lastFetched, this.game.getId());
-            this.lastFetched = LocalDateTime.now();
 
             for (ChatLinePair line : lines) {
-                try {
-                    this.addMessage(line.getMessage(), line.getUsername());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                this.addMessage(line.getMessage(), line.getUsername());
             }
 
-        } catch (SQLException e) {
+            this.lastFetched = LocalDateTime.now();
+
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
     }
