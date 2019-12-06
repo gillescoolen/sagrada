@@ -1,0 +1,7 @@
+.single-track {
+    -fx-background-color: rgb(145, 185, 255);
+    -fx-background-radius: 50%;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+}
