@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 public abstract class Repository<T> {
+    // FIXME: should be private, should only be accessed with a getter.
     protected final DatabaseConnection connection;
     protected final static int BATCH_SIZE = 10;
 

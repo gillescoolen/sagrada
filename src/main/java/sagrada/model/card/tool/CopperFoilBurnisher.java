@@ -1,11 +1,6 @@
 package sagrada.model.card.tool;
 
-import sagrada.model.DiceBag;
-import sagrada.model.Die;
-import sagrada.model.PatternCard;
-import sagrada.model.ToolCard;
-
-import java.util.List;
+import sagrada.model.*;
 
 public final class CopperFoilBurnisher extends ToolCard {
     public CopperFoilBurnisher(int id, String name, String description) {
@@ -13,6 +8,7 @@ public final class CopperFoilBurnisher extends ToolCard {
     }
 
     @Override
-    public void use(List<Die> dice, DiceBag diceBag, PatternCard patternCard) {
+    public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Object message) {
+        this.incrementCost();
     }
 }

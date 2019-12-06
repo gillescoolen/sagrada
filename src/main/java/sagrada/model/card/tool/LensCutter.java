@@ -1,11 +1,6 @@
 package sagrada.model.card.tool;
 
-import sagrada.model.DiceBag;
-import sagrada.model.Die;
-import sagrada.model.PatternCard;
-import sagrada.model.ToolCard;
-
-import java.util.List;
+import sagrada.model.*;
 
 public final class LensCutter extends ToolCard {
     public LensCutter(int id, String name, String description) {
@@ -13,6 +8,17 @@ public final class LensCutter extends ToolCard {
     }
 
     @Override
-    public void use(List<Die> dice, DiceBag diceBag, PatternCard patternCard) {
+    public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Object message) {
+        Object[] values = (Object[]) message;
+
+        Die draftDie = (Die) values[0];
+
+        int round = (int) values[1];
+        Die roundTrackDie = roundTrack.getDieByKey(round);
+
+        roundTrack.updateTrack(round, draftDie);
+        draftPool.updateDraft(draftDie, roundTrackDie);
+
+        this.incrementCost();
     }
 }

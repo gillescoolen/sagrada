@@ -1,12 +1,12 @@
 package sagrada.model;
 
 public enum PlayStatus {
-    CHALLENGER("challenger"),
-    INVITED("challengee"),
-    ACCEPTED("accepted"),
-    DECLINED("refused"),
-    DONE_PLAYING("finished"),
-    CANCELLED("aborted");
+    CHALLENGER("uitdager"),
+    INVITED("uitgedaagde"),
+    ACCEPTED("geaccepteerd"),
+    DECLINED("geweigerd"),
+    DONE_PLAYING("klaar"),
+    CANCELLED("afgesloten");
 
     private final String playState;
 

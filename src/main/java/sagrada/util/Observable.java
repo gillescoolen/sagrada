@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
-public class Observer<T> {
+public class Observable<T> {
     private final List<Consumer<T>> observers = new CopyOnWriteArrayList<>();
     private T last;
 

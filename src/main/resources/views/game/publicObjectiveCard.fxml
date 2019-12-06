@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Text?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane styleClass="pub-obj-card-wrapper" prefWidth="200.0" maxWidth="200" stylesheets="/styles/game/public-objective-card.css" xmlns="http://javafx.com/javafx/11.0.1">
-    <VBox styleClass="pub-obj-card-vbox" prefHeight="125.0">
-        <Text wrappingWidth="200" styleClass="pub-obj-card-title" text="Row Color Variety"/>
-        <Text wrappingWidth="200" text="Rows with no repeated colors"/>
+<AnchorPane styleClass="pub-obj-card-wrapper" stylesheets="/styles/game/public-objective-card.css"
+            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml">
+    <VBox styleClass="pub-obj-card-vbox" prefHeight="150.0" prefWidth="150.0" maxWidth="150.0">
+        <Text fx:id="name" styleClass="pub-obj-card-title" wrappingWidth="150.0"/>
+        <Text fx:id="description" wrappingWidth="150.0"/>
     </VBox>
     <StackPane AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0">
         <Rectangle styleClass="public-points" height="30" width="30"/>
-        <Text styleClass="public-points-text" text="6"/>
+        <Text fx:id="points" styleClass="public-points-text"/>
     </StackPane>
 </AnchorPane>

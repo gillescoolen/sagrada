@@ -1,5 +1,9 @@
 package sagrada.model;
 
+import sagrada.database.repositories.GameRepository;
+import sagrada.database.repositories.PlayerRepository;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,14 +11,25 @@ public class Player {
     private int id;
     private Account account;
     private PlayStatus playStatus;
-    private int sequenceNumber; // seqnr
+    private Integer sequenceNumber; // seqnr
     private boolean isCurrentPlayer = false;
     private PrivateObjectiveCard privateObjectiveCard;
     private PatternCard patternCard;
+    private PatternCard playerFrame;
     private List<PatternCard> cardOptions = new ArrayList<>();
     private List<FavorToken> favorTokens = new ArrayList<>();
     private Integer score = 0;
     private DiceBag diceBag;
+    private boolean invalidFrameField = false;
+    private Object message;
+
+    public PatternCard getPlayerFrame() {
+        return this.playerFrame;
+    }
+
+    public void setPlayerFrame(PatternCard playerFrame) {
+        this.playerFrame = playerFrame;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -32,11 +47,11 @@ public class Player {
         return this.account;
     }
 
-    public int getSequenceNumber() {
+    public Integer getSequenceNumber() {
         return this.sequenceNumber;
     }
 
-    public void setSequenceNumber(int sequenceNumber) {
+    public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
 
@@ -104,7 +119,27 @@ public class Player {
         return this.diceBag.getRandomDice(amount);
     }
 
+    public DiceBag getDiceBag() {
+        return this.diceBag;
+    }
+
     public void setDiceBag(DiceBag diceBag) {
         this.diceBag = diceBag;
+    }
+
+    public Object getMessage() {
+        return this.message;
+    }
+
+    public void setMessage(Object message) {
+        this.message = message;
+    }
+
+    public boolean hasInvalidFrameField() {
+        return this.invalidFrameField;
+    }
+
+    public void setInvalidFrameField(boolean invalidFrameField) {
+        this.invalidFrameField = invalidFrameField;
     }
 }
