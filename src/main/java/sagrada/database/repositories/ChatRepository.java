@@ -2,15 +2,14 @@ package sagrada.database.repositories;
 
 import sagrada.database.DatabaseConnection;
 import sagrada.model.*;
+import sagrada.util.ChatLinePair;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class ChatRepository extends Repository<ChatLine> {
     public ChatRepository(DatabaseConnection connection) {
@@ -18,16 +17,24 @@ public class ChatRepository extends Repository<ChatLine> {
     }
 
 
-    public void getMultiple(LocalDateTime time, Integer id) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM game JOIN player p on game.idgame = p.spel_idspel JOIN chatline c on p.idplayer = c.player_idplayer WHERE idgame = ? AND time > ?");
+    public List<ChatLinePair> getMultiple(LocalDateTime time, Integer id) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT username, message FROM game JOIN player p on game.idgame = p.spel_idspel JOIN chatline c on p.idplayer = c.player_idplayer WHERE idgame = ? AND time > ?");
 
         preparedStatement.setInt(1, id);
         preparedStatement.setTimestamp(2, Timestamp.valueOf(time));
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
-        preparedStatement.close();
+        List<ChatLinePair> lines = new ArrayList<ChatLinePair>();
+
+        while (resultSet.next()) {
+            lines.add(new ChatLinePair(resultSet.getString("username"), resultSet.getString("message")));
+        }
+
         resultSet.close();
+        preparedStatement.close();
+
+        return lines;
     }
 
     @Override
