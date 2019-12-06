@@ -31,11 +31,13 @@ public class GameController {
 
     private final Game game;
     private final Player player;
+    private final DatabaseConnection connection;
     private final PlayerRepository playerRepository;
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
         var publicObjectiveCardRepository = new PublicObjectiveCardRepository(connection);
         var toolCardRepository = new ToolCardRepository(connection);
+        this.connection = connection;
 
         if (game.getOwner().getAccount().getUsername().equals(account.getUsername())) {
             var startGame = new StartGame(game, connection);
@@ -76,6 +78,12 @@ public class GameController {
                     e.printStackTrace();
                 }
             }
+        }
+
+        try {
+            this.initializeChat();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -128,6 +136,12 @@ public class GameController {
             loader.setController(new ToolCardController(toolCard));
             this.toolCardBox.getChildren().add(loader.load());
         }
+    }
+
+    private void initializeChat() throws IOException {
+        var loader = new FXMLLoader(getClass().getResource("/views/chat/chatBox.fxml"));
+        loader.setController(new ChatController(this.connection, this.player, this.game));
+        this.rowOne.getChildren().add(loader.load());
     }
 
     public Game getGame() {

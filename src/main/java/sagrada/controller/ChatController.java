@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.ChatRepository;
 import sagrada.model.ChatLine;
+import sagrada.model.Game;
 import sagrada.model.Player;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class ChatController {
     @FXML
     private ListView lvMessageBox;
 
+    private final Game game;
     private final Player player;
 
     private final Timer getMessages = new Timer();
@@ -31,7 +33,8 @@ public class ChatController {
     private final ChatRepository chatRepository;
     private final DatabaseConnection databaseConnection;
 
-    public ChatController(DatabaseConnection databaseConnection, Player player) {
+    public ChatController(DatabaseConnection databaseConnection, Player player, Game game) {
+        this.game = game;
         this.player = player;
         this.databaseConnection = databaseConnection;
         this.chatRepository = new ChatRepository(databaseConnection);
