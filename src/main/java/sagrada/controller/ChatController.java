@@ -56,8 +56,12 @@ public class ChatController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        try {
 
-        this.addMessage(message, this.player);
+            this.addMessage(message, this.player);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -66,14 +70,11 @@ public class ChatController {
      * @param message The message the user wrote.
      * @param author  The user that wrote the message.
      */
-    private void addMessage(String message, Player author) {
-        try {
-            URL template = this.getClass().getResource("/views/chat/chatMessage.fxml");
-            FXMLLoader loader = new FXMLLoader(template);
-            loader.setController(new ChatMessageController(message, author));
-            lvMessageBox.getItems().add(loader.load());
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void addMessage(String message, Player author) throws IOException {
+        URL template = this.getClass().getResource("/views/chat/chatMessage.fxml");
+        FXMLLoader loader = new FXMLLoader(template);
+        loader.setController(new ChatMessageController(message, author));
+        lvMessageBox.getItems().add(loader.load());
         }
     }
 }
