@@ -7,7 +7,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.PlayerFrameRepository;
+import sagrada.database.repositories.PlayerRepository;
 import sagrada.model.Game;
 import sagrada.model.PatternCard;
 import sagrada.model.Player;
@@ -34,15 +36,21 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     private PatternCard patternCard;
     private PatternCard playerFrame;
     private boolean showPatternCard = false;
+    private DatabaseConnection connection;
 
     private final List<Button> windowSquares = new ArrayList<>();
 
-    public WindowPatternCardController(PatternCard patternCard) {
+    public WindowPatternCardController(DatabaseConnection connection, PatternCard patternCard, Player player) {
         this.windowField = patternCard;
+        this.connection = connection;
+        this.player = player;
     }
 
-    public WindowPatternCardController(PlayerFrameRepository playerFrameRepository, Player player, Game game) {
+    public WindowPatternCardController(DatabaseConnection connection, Player player, Game game) {
         var timer = new Timer();
+        this.connection = connection;
+
+        PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(connection);
 
         try {
             this.patternCard = player.getPatternCard();
@@ -79,6 +87,8 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             this.changeView.setDisable(true);
             this.name.setText(this.windowField.getName());
             this.reportMisplacement.setText("Choose");
+
+            this.reportMisplacement.setOnMouseClicked(e -> this.choosePatternCard());
         } else {
             this.changeView.setDisable(false);
             this.name.setText(this.player.getAccount().getUsername());
@@ -89,6 +99,17 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         this.changeView.setText("Switch view");
         this.initializeWindow();
         this.fillWindow();
+    }
+
+    private void choosePatternCard() {
+        PlayerRepository playerRepository = new PlayerRepository(this.connection);
+        this.player.setPatternCard(this.windowField);
+
+        try {
+            playerRepository.bindPatternCardToPlayer(this.player);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void fillWindow() {

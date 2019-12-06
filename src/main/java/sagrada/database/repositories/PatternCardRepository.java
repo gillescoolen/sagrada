@@ -28,6 +28,25 @@ public final class PatternCardRepository extends Repository<PatternCard> {
         patternCardOptionPreparedStatement.executeUpdate();
     }
 
+    public List<PatternCard> getCardOptionsByPlayerId(int playerId) throws SQLException {
+        PreparedStatement patternCardPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM patterncardoption WHERE player_idplayer = ?");
+        patternCardPreparedStatement.setInt(1, playerId);
+        ResultSet patternCardResultSet = patternCardPreparedStatement.executeQuery();
+
+        List<PatternCard> patternCards = new ArrayList<>();
+
+        while (patternCardResultSet.next()) {
+            var patternCardId = patternCardResultSet.getInt("patterncard_idpatterncard");
+            var patternCard = this.findById(patternCardId);
+            patternCards.add(patternCard);
+        }
+
+        patternCardPreparedStatement.close();
+        patternCardResultSet.close();
+
+        return patternCards;
+    }
+
     public List<PatternCard> getAllPatternCards() throws SQLException {
         var patternCards = new ArrayList<PatternCard>();
 
