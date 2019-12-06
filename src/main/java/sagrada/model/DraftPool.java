@@ -15,8 +15,16 @@ public class DraftPool {
         this.dice.add(die);
     }
 
+    public void removeDice(Die die) {
+        this.dice.remove(die);
+    }
+
     public void addAllDice(List<Die> dice) {
         this.dice.addAll(dice);
+    }
+
+    public void removeAllDice() {
+        this.dice.clear();
     }
 
     public void updateDraft(Die oldDieIndex, Die newDie) {
