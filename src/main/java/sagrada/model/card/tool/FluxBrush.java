@@ -12,5 +12,6 @@ public final class FluxBrush extends ToolCard {
         Die die = (Die) message;
 
         die.roll();
+        this.incrementCost();
     }
 }

@@ -19,6 +19,63 @@ public final class PatternCardRepository extends Repository<PatternCard> {
         super(connection);
     }
 
+    public void setOption(int playerId, int patternCardId) throws SQLException {
+        PreparedStatement patternCardOptionPreparedStatement = this.connection.getConnection().prepareStatement("INSERT INTO patterncardoption (patterncard_idpatterncard, player_idplayer) VALUES (?, ?)");
+
+        patternCardOptionPreparedStatement.setInt(1, patternCardId);
+        patternCardOptionPreparedStatement.setInt(2, playerId);
+
+        patternCardOptionPreparedStatement.executeUpdate();
+    }
+
+    public List<PatternCard> getAllPatternCards() throws SQLException {
+        var patternCards = new ArrayList<PatternCard>();
+
+        PreparedStatement patternCardPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM patterncard");
+        ResultSet patternCardResultSet = patternCardPreparedStatement.executeQuery();
+
+        while (patternCardResultSet.next()) {
+            var squares = new ArrayList<Square>();
+            var id = patternCardResultSet.getInt("idpatterncard");
+            var name = patternCardResultSet.getString("name");
+            var difficulty = patternCardResultSet.getInt("difficulty");
+            var standard = patternCardResultSet.getInt("standard");
+
+            PreparedStatement squarePreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM patterncardfield WHERE patterncard_idpatterncard = ? ORDER BY position_y, position_x;");
+
+            squarePreparedStatement.setInt(1, id);
+            ResultSet squareResultSet = squarePreparedStatement.executeQuery();
+
+            while (squareResultSet.next()) {
+                Color actualColor = null;
+                var square = new Square();
+
+                final int xPosition = squareResultSet.getInt("position_x");
+                final int yPosition = squareResultSet.getInt("position_y");
+                final String color = squareResultSet.getString("color");
+                final int value = squareResultSet.getInt("value");
+
+                var position = new Position(xPosition, yPosition);
+
+                for (var colorEnum : Color.values()) {
+                    if (colorEnum.getDutchColorName().equals(color)) {
+                        actualColor = colorEnum;
+                    }
+                }
+
+                square.setPosition(position);
+                square.setColor(actualColor);
+                square.setValue(value);
+
+                squares.add(square);
+            }
+
+            patternCards.add(new PatternCard(id, name, difficulty, standard, squares));
+        }
+
+        return patternCards;
+    }
+
     @Override
     public PatternCard findById(int id) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM patterncard WHERE idpatterncard = ?;");

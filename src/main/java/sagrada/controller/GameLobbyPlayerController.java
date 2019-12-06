@@ -21,6 +21,8 @@ import java.util.TimerTask;
 public class GameLobbyPlayerController {
     @FXML
     private VBox vbPanel;
+    @FXML
+    private AnchorPane panel;
     private final DatabaseConnection databaseConnection;
     private final Game game;
     private final Account account;
@@ -83,6 +85,14 @@ public class GameLobbyPlayerController {
     }
 
     private void goToGame() {
-        // TODO: Go to game screen
+        try {
+            var loader = new FXMLLoader(getClass().getResource("/views/game.fxml"));
+            var stage = ((Stage) this.panel.getScene().getWindow());
+            loader.setController(new GameController(this.databaseConnection, this.game, this.account));
+            var scene = new Scene(loader.load());
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

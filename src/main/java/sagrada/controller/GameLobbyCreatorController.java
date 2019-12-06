@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import sagrada.component.BackButton;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.AccountRepository;
+import sagrada.database.repositories.GameRepository;
 import sagrada.database.repositories.PlayerRepository;
 import sagrada.model.*;
 
@@ -180,6 +181,25 @@ public class GameLobbyCreatorController {
     }
 
     private void startGame() {
-        // TODO: GitHub issue #56 Start game from invite page
+        if (this.game.getPlayers().size() >= 2) {
+            try {
+                var loader = new FXMLLoader(getClass().getResource("/views/game.fxml"));
+                var stage = ((Stage) this.btnInvite.getScene().getWindow());
+                loader.setController(new GameController(this.databaseConnection, this.game, this.account));
+                var scene = new Scene(loader.load());
+
+                var gameRepository = new GameRepository(this.databaseConnection);
+
+                for (var player : this.game.getPlayers()) {
+                    if (this.game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername())) {
+                        gameRepository.startGame(player.getId(), this.game.getId());
+                    }
+                }
+
+                stage.setScene(scene);
+            } catch (IOException | SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

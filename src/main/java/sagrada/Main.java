@@ -28,11 +28,13 @@ public class Main extends Application {
 
         primaryStage.setOnCloseRequest(event -> {
             Platform.exit();
+
             try {
                 this.databaseConnection.getConnection().close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+
             System.exit(0);
         });
 

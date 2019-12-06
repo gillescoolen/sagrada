@@ -12,5 +12,6 @@ public final class GrindingStone extends ToolCard {
         Die die = (Die) message;
 
         die.flip();
+        this.incrementCost();
     }
 }
