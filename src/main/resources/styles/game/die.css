@@ -1,7 +1,12 @@
 .single-die {
     -fx-stroke-width: 2;
     -fx-stroke: black;
-    -fx-fill: white;
+    -fx-background-color: white;
+}
+
+.single-die:hover {
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.8, 0.0, 0.0);
 }
 
 .die-wrapper {

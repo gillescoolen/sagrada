@@ -48,3 +48,7 @@
     -fx-spacing: 15px;
 }
 
+.test {
+    -fx-background-color: green;
+}
+
