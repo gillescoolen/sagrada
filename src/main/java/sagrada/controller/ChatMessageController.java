@@ -2,8 +2,6 @@ package sagrada.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import sagrada.model.Account;
-import sagrada.model.Player;
 
 public class ChatMessageController {
     @FXML
@@ -12,17 +10,17 @@ public class ChatMessageController {
     private Label lbAuthor;
 
     private String message;
-    private String author;
+    private String username;
 
 
     public ChatMessageController(String message, String author) {
-        this.author = author;
+        this.username = author;
         this.message = message;
     }
 
     @FXML
     public void initialize() {
         this.lbMessage.setText(message);
-        this.lbAuthor.setText(author);
+        this.lbAuthor.setText(username);
     }
 }
