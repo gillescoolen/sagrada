@@ -11,6 +11,7 @@ import sagrada.model.Player;
 import sagrada.util.StartGame;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class GameController {
     @FXML
@@ -51,6 +52,16 @@ public class GameController {
 
     private void initializeWindowOptions(Player player) throws IOException {
         var i = 1;
+
+        if (player.getCardOptions().size() == 0) {
+            try {
+                var players = this.playerRepository.getAllGamePlayers(this.game);
+                this.game.addPlayers(players);
+                player = this.game.getPlayerByName(player.getAccount().getUsername());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
         for (var patternCard : player.getCardOptions()) {
             var controller = new WindowPatternCardController(patternCard);
