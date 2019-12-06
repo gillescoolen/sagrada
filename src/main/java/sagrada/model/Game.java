@@ -8,6 +8,8 @@ public class Game {
     private int id;
     private Player playerTurn;
     private LocalDateTime createdOn;
+    private RoundTrack roundTrack;
+    private DraftPool draftPool;
     private final List<Player> players = new ArrayList<>(2);
 
     private final List<ToolCard> toolCards = new ArrayList<>(3);
@@ -94,6 +96,10 @@ public class Game {
         this.favorTokens.remove(favorToken);
     }
 
+    public DraftPool getDraftPool() {
+        return this.draftPool;
+    }
+
     public Player getOwner() {
         return this.players
                 .stream()
@@ -108,6 +114,14 @@ public class Game {
                 .filter(player -> player.getAccount().getUsername().equals(name))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public RoundTrack getRoundTrack() {
+        return this.roundTrack;
+    }
+
+    public void setRoundTrack(RoundTrack roundTrack) {
+        this.roundTrack = roundTrack;
     }
 
     public void createPlayers() {
