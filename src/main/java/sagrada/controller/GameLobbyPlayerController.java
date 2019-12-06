@@ -22,7 +22,7 @@ public class GameLobbyPlayerController {
     @FXML
     private VBox vbPanel;
     @FXML
-    private  AnchorPane pane;
+    private AnchorPane panel;
     private final DatabaseConnection databaseConnection;
     private final Game game;
     private final Account account;
@@ -87,7 +87,7 @@ public class GameLobbyPlayerController {
     private void goToGame() {
         try {
             var loader = new FXMLLoader(getClass().getResource("/views/game.fxml"));
-            var stage = ((Stage) this.pane.getScene().getWindow());
+            var stage = ((Stage) this.panel.getScene().getWindow());
             loader.setController(new GameController(this.databaseConnection, this.game, this.account));
             var scene = new Scene(loader.load());
             stage.setScene(scene);
