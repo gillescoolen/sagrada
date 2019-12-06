@@ -19,6 +19,7 @@
 
 .wpc-vbox {
     -fx-spacing: 25px;
+    -fx-background-color: blue;
 }
 
 .wpc-hbox {
@@ -39,4 +40,8 @@
 
 .dice-hbox {
     -fx-spacing: 15px;
+}
+
+.main-vbox {
+    -fx-background-color:red;
 }
