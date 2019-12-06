@@ -11,7 +11,6 @@ import sagrada.database.repositories.PublicObjectiveCardRepository;
 import sagrada.database.repositories.ToolCardRepository;
 import sagrada.model.Account;
 import sagrada.model.Game;
-import sagrada.model.PatternCard;
 import sagrada.model.Player;
 import sagrada.util.StartGame;
 
@@ -97,16 +96,33 @@ public class GameController {
                     try {
                         List<Player> players = playerRepository.getAllGamePlayers(game);
 
-                        players.forEach(p -> {
-                            PatternCard patternCard =  p.getPatternCard();
+                        boolean notEveryoneHasChosen = players.stream().anyMatch(p -> p.getPatternCard() == null);
 
-                            if (patternCard != null) {
-                                System.out.println("Card: " + p.getPatternCard().getId() + " for " + p.getId());
-                            } else {
-                                System.out.println("Player: " + p.getId() + " has no pattern card yet");
-                            }
-                        });
-                    } catch (SQLException e) {
+                        if (notEveryoneHasChosen) {
+                            return;
+                        }
+
+                        Player currentPlayer = players.stream()
+                                .filter(p -> p.getAccount().getUsername().equals(player.getAccount().getUsername()))
+                                .findFirst()
+                                .orElse(null);
+
+                        if (currentPlayer == null) {
+                            return;
+                        }
+
+                        Player gamePlayer = game.getPlayerByName(currentPlayer.getAccount().getUsername());
+
+                        if (gamePlayer == null) {
+                            var controller = new WindowPatternCardController(connection, currentPlayer.getPatternCard(), currentPlayer);
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
+
+                            loader.setController(controller);
+                            rowOne.getChildren().add(loader.load());
+
+                            playerPatternCardsTimer.cancel();
+                        }
+                    } catch (SQLException | IOException e) {
                         e.printStackTrace();
                     }
                 });
@@ -141,7 +157,7 @@ public class GameController {
                 ++i;
             }
         } else {
-            var controller = new WindowPatternCardController(this.connection, this.player.getPatternCard(), this.player);
+            var controller = new WindowPatternCardController(this.connection, player.getPatternCard(), this.player);
             var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
 
             loader.setController(controller);
