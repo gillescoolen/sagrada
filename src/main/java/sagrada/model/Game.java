@@ -48,6 +48,7 @@ public class Game {
     }
 
     public void addPlayers(List<Player> players) {
+        this.players.clear();
         this.players.addAll(players);
     }
 
@@ -103,6 +104,14 @@ public class Game {
         return this.players
                 .stream()
                 .filter(player -> player.getPlayStatus() == PlayStatus.CHALLENGER)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public Player getPlayerByName(String name) {
+        return this.players
+                .stream()
+                .filter(player -> player.getAccount().getUsername().equals(name))
                 .findFirst()
                 .orElse(null);
     }

@@ -7,20 +7,140 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-public class PlayerRepository extends Repository<Player> {
+public final class PlayerRepository extends Repository<Player> {
     public PlayerRepository(DatabaseConnection connection) {
         super(connection);
+    }
+
+    public boolean isPatternCardChosen(Game game) throws SQLException {
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT COUNT(patterncard_idpatterncard) AS amountOfChosenCards FROM player WHERE spel_idspel = ? AND playstatus_playstatus = ? AND playstatus_playstatus = ?");
+
+        playerPreparedStatement.setInt(1, game.getId());
+        playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
+        playerPreparedStatement.setString(3, PlayStatus.CHALLENGER.getPlayState());
+
+        ResultSet resultSet = playerPreparedStatement.executeQuery();
+
+        return resultSet.getInt("amountOfChosenCards") == game.getPlayers().size();
+    }
+
+    public List<Player> prepareAllGamePlayers(Game game) throws SQLException {
+        var players = new ArrayList<Player>();
+        var random = new Random();
+        var privateObjectiveColors = new ArrayList<>(Arrays.asList(Color.values()));
+        var sequenceNumber = 1;
+
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN (?, ?)");
+        playerPreparedStatement.setInt(1, game.getId());
+        playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
+        playerPreparedStatement.setString(3, PlayStatus.CHALLENGER.getPlayState());
+        ResultSet playerResultSet = playerPreparedStatement.executeQuery();
+
+        var patternCardRepository = new PatternCardRepository(this.connection);
+        var patternCards = patternCardRepository.getAllPatternCards();
+
+        while (playerResultSet.next()) {
+            var player = game.getPlayerByName(playerResultSet.getString("username"));
+            var playerId = playerResultSet.getInt("idplayer");
+            var randomColor = privateObjectiveColors.get(random.nextInt(privateObjectiveColors.size()));
+            privateObjectiveColors.remove(randomColor);
+
+            PreparedStatement playerUpdatePreparedStatement = this.connection.getConnection().prepareStatement("UPDATE player SET private_objectivecard_color = ?, seqnr = ?, isCurrentPlayer = ?, score = ?, invalidframefield = ? WHERE idplayer = ?");
+
+            playerUpdatePreparedStatement.setString(1, randomColor.getDutchColorName());
+            playerUpdatePreparedStatement.setInt(2, sequenceNumber);
+            playerUpdatePreparedStatement.setInt(3, sequenceNumber == 1 ? 1 : 0);
+            playerUpdatePreparedStatement.setInt(4, 0);
+            playerUpdatePreparedStatement.setInt(5, 0);
+            playerUpdatePreparedStatement.setInt(6, playerId);
+
+            playerUpdatePreparedStatement.executeUpdate();
+
+            player.setPrivateObjectiveCard(new PrivateObjectiveCard(randomColor));
+            player.setCurrentPlayer(sequenceNumber == 1);
+            player.setId(playerId);
+            player.setInvalidFrameField(false);
+            player.setScore(0);
+            player.setSequenceNumber(sequenceNumber);
+            player.setAccount(new Account(playerResultSet.getString("username")));
+
+            for (int insertAmount = 0; insertAmount < 4; ++insertAmount) {
+                var randomPatternCard = patternCards.get(random.nextInt(patternCards.size()));
+                patternCardRepository.setOption(playerId, randomPatternCard.getId());
+                player.addCardOption(randomPatternCard);
+                patternCards.remove(randomPatternCard);
+            }
+
+            playerUpdatePreparedStatement.close();
+            players.add(player);
+            ++sequenceNumber;
+        }
+
+        playerPreparedStatement.close();
+        playerResultSet.close();
+
+        return players;
+    }
+
+    public List<Player> getAllGamePlayers(Game game) throws SQLException {
+        var players = new ArrayList<Player>();
+
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN (?, ?)");
+        playerPreparedStatement.setInt(1, game.getId());
+        playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
+        playerPreparedStatement.setString(3, PlayStatus.CHALLENGER.getPlayState());
+        ResultSet playerResultSet = playerPreparedStatement.executeQuery();
+
+        var patternCardRepository = new PatternCardRepository(this.connection);
+
+        while (playerResultSet.next()) {
+            var newPlayer = new Player();
+            var playerId = playerResultSet.getInt("idplayer");
+            var sequenceNumber = playerResultSet.getInt("seqnr");
+            var privateObjectiveCardColor = playerResultSet.getString("private_objectivecard_color");
+            var currentPlayer = playerResultSet.getInt("isCurrentPlayer");
+            var cardColor = Color.BLUE;
+
+            for (var color : Color.values()) {
+                if (color.getDutchColorName().equals(privateObjectiveCardColor)) {
+                    cardColor = color;
+                }
+            }
+
+            newPlayer.setPrivateObjectiveCard(new PrivateObjectiveCard(cardColor));
+            newPlayer.setCurrentPlayer(currentPlayer == 1);
+            newPlayer.setId(playerId);
+            newPlayer.setInvalidFrameField(false);
+            newPlayer.setScore(0);
+            newPlayer.setSequenceNumber(sequenceNumber);
+            newPlayer.setAccount(new Account(playerResultSet.getString("username")));
+
+            PreparedStatement patternCardPreparedStatement = patternCardRepository.connection.getConnection().prepareStatement("SELECT * FROM patterncardoption WHERE player_idplayer = ?");
+            patternCardPreparedStatement.setInt(1, playerId);
+            ResultSet patternCardResultSet = patternCardPreparedStatement.executeQuery();
+
+            while (patternCardResultSet.next()) {
+                var patternCardId = patternCardResultSet.getInt("patterncard_idpatterncard");
+                var patternCard = patternCardRepository.findById(patternCardId);
+                newPlayer.addCardOption(patternCard);
+            }
+
+            patternCardPreparedStatement.close();
+            patternCardResultSet.close();
+            players.add(newPlayer);
+        }
+
+        playerPreparedStatement.close();
+        playerResultSet.close();
+
+        return players;
     }
 
     @Override
     public Player findById(int id) throws SQLException {
         Player player = null;
-        AccountRepository accountRepository = new AccountRepository(this.connection);
-        PatternCardRepository patternCardRepository = new PatternCardRepository(this.connection);
 
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE idplayer = ?");
         preparedStatement.setInt(1, id);

@@ -2,6 +2,7 @@ package sagrada.database.repositories;
 
 import sagrada.database.DatabaseConnection;
 import sagrada.model.*;
+import sagrada.model.card.CardFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +15,13 @@ import java.util.List;
 public final class GameRepository extends Repository<Game> {
     public GameRepository(DatabaseConnection connection) {
         super(connection);
+    }
+
+    public void startGame(int turnPlayerId, int gameId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE game SET turn_idplayer = ? WHERE idgame = ?");
+        preparedStatement.setInt(1, turnPlayerId);
+        preparedStatement.setInt(2, gameId);
+        preparedStatement.execute();
     }
 
     public List<Game> getAll() throws SQLException {

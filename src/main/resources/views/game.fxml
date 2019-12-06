@@ -27,22 +27,14 @@
     <VBox styleClass="game-vbox" alignment="CENTER_RIGHT">
         <!-- Tool cards -->
         <Text styleClass="title-tool-cards">Tool Cards</Text>
-        <HBox alignment="CENTER_RIGHT" styleClass="game-hbox">
-            <fx:include source="game/toolCard.fxml"/>
-            <fx:include source="game/toolCard.fxml"/>
-            <fx:include source="game/toolCard.fxml"/>
-        </HBox>
+        <HBox fx:id="toolCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
 
         <!-- Public Objective card -->
         <Text styleClass="title-tool-cards">Public Objective Card</Text>
-        <HBox alignment="CENTER_RIGHT" styleClass="game-hbox">
-            <fx:include source="game/publicObjectiveCard.fxml"/>
-        </HBox>
+        <HBox fx:id="publicObjectiveCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
 
         <!-- Private Objective card -->
         <Text styleClass="title-tool-cards">Private Objective Card</Text>
-        <HBox alignment="CENTER_RIGHT" styleClass="game-hbox">
-            <fx:include source="game/privateObjectiveCard.fxml"/>
-        </HBox>
+        <HBox fx:id="privateObjectiveCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
     </VBox>
 </HBox>

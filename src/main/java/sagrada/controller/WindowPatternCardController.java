@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import sagrada.database.repositories.PlayerFrameRepository;
@@ -25,13 +26,20 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     private Button changeView;
     @FXML
     private Button reportMisplacement;
+    @FXML
+    private Label name;
 
+    private Player player;
     private PatternCard windowField;
     private PatternCard patternCard;
     private PatternCard playerFrame;
     private boolean showPatternCard = false;
 
     private final List<Button> windowSquares = new ArrayList<>();
+
+    public WindowPatternCardController(PatternCard patternCard) {
+        this.windowField = patternCard;
+    }
 
     public WindowPatternCardController(PlayerFrameRepository playerFrameRepository, Player player, Game game) {
         var timer = new Timer();
@@ -40,6 +48,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             this.patternCard = player.getPatternCard();
             this.playerFrame = playerFrameRepository.getPlayerFrame(game, player);
             this.windowField = this.playerFrame;
+            this.player = player;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -66,7 +75,18 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
     @FXML
     protected void initialize() {
+        if (this.playerFrame == null) {
+            this.changeView.setDisable(true);
+            this.name.setText(this.windowField.getName());
+            this.reportMisplacement.setText("Choose");
+        } else {
+            this.changeView.setDisable(false);
+            this.name.setText(this.player.getAccount().getUsername());
+            this.reportMisplacement.setText("Change field");
+        }
+
         this.changeView.setOnAction((e) -> this.changeView());
+        this.changeView.setText("Switch view");
         this.initializeWindow();
         this.fillWindow();
     }
@@ -79,6 +99,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             var color = square.getColor();
 
             button.setText(square.getValue().toString());
+            button.setDisable(this.playerFrame == null);
 
             if (color != null) {
                 button.setStyle("-fx-background-color: " + square.getColor().getColor());

@@ -4,22 +4,28 @@ import sagrada.model.*;
 import sagrada.model.card.objective.*;
 import sagrada.model.card.tool.*;
 
+import java.text.Normalizer;
+
 public final class CardFactory {
     public static PublicObjectiveCard getPublicObjectiveCard(String name, int id, String description, int points) {
 
         PublicObjectiveCard objectiveCard = null;
 
+        name = Normalizer
+                .normalize(name, Normalizer.Form.NFD)
+                .replaceAll("[^\\p{ASCII}]", "");
+
         switch (name) {
             case "Kleurdiagonalen":
                 objectiveCard = new ColorDiagonals(id, name, description, points);
                 break;
-            case "Kleurvariëteit":
+            case "Kleurvarieteit":
                 objectiveCard = new ColorVariety(id, name, description, points);
                 break;
-            case "Kleurvariëteit per Kolom":
+            case "Kleurvarieteit per Kolom":
                 objectiveCard = new ColumnColorVariety(id, name, description, points);
                 break;
-            case "Tintvariëteit":
+            case "Tintvarieteit":
                 objectiveCard = new ShadeVariety(id, name, description, points);
                 break;
             case "Donkere Tinten":
@@ -31,13 +37,13 @@ public final class CardFactory {
             case "Halfdonkere Tinten":
                 objectiveCard = new MediumShades(id, name, description, points);
                 break;
-            case "Kleurvariëteit per Rij":
+            case "Kleurvarieteit per Rij":
                 objectiveCard = new RowColorVariety(id, name, description, points);
                 break;
-            case "Tintvariëteit per Rij":
+            case "Tintvarieteit per Rij":
                 objectiveCard = new RowShadeVariety(id, name, description, points);
                 break;
-            case "Tintvariëteit per Kolom":
+            case "Tintvarieteit per Kolom":
                 objectiveCard = new ColumnShadeVariety(id, name, description, points);
                 break;
             default:
@@ -55,6 +61,10 @@ public final class CardFactory {
     public static ToolCard getToolCard(int id, String name, String description) {
         ToolCard toolCard = null;
 
+        name = Normalizer
+                .normalize(name, Normalizer.Form.NFD)
+                .replaceAll("[^\\p{ASCII}]", "");
+
         switch (name) {
             case "Folie-aandrukker":
                 toolCard = new CopperFoilBurnisher(id, name, description);
@@ -62,7 +72,7 @@ public final class CardFactory {
             case "Snijliniaal":
                 toolCard = new CorkBackedStraightedge(id, name, description);
                 break;
-            case "Églomisé Borstel":
+            case "Eglomise Borstel":
                 toolCard = new EglomiseBrush(id, name, description);
                 break;
             case "Fluxborstel":
