@@ -190,8 +190,8 @@ public class GameController {
     private void initializeChat() throws IOException {
         var loader = new FXMLLoader(getClass().getResource("/views/chat/chatBox.fxml"));
         loader.setController(new ChatController(this.connection, this.player, this.game));
-    }
         this.rowOne.getChildren().add(loader.load());
+    }
 
     public Game getGame() {
         return this.game;
