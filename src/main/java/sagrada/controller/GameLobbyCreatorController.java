@@ -8,7 +8,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import sagrada.component.BackButton;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.AccountRepository;
 import sagrada.database.repositories.GameRepository;
@@ -23,6 +26,10 @@ import java.util.TimerTask;
 
 
 public class GameLobbyCreatorController {
+    @FXML
+    private AnchorPane apPanel;
+    @FXML
+    private VBox vbPanel;
     @FXML
     private TextField tfPlayerInvite;
     @FXML
@@ -50,6 +57,8 @@ public class GameLobbyCreatorController {
 
     @FXML
     protected void initialize() {
+        this.addBackButton();
+
         this.btnInvite.setOnMouseClicked(e -> this.invitePlayer());
         this.btnStartGame.setOnMouseClicked(e -> this.startGame());
 
@@ -60,6 +69,26 @@ public class GameLobbyCreatorController {
                 Platform.runLater(() -> fillList(lvAcceptedPlayers, false));
             }
         }, 0, POLL_TIME);
+    }
+
+    private void addBackButton() {
+        try {
+            this.vbPanel.getChildren().add(0, new BackButton(this::backToLobbyScreen).load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void backToLobbyScreen() {
+        try {
+            var loader = new FXMLLoader(getClass().getResource("/views/lobby/lobby.fxml"));
+            var stage = ((Stage) this.apPanel.getScene().getWindow());
+            loader.setController(new LobbyController(this.databaseConnection, this.account));
+            var scene = new Scene(loader.load());
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void fillList(ListView<String> listView, boolean invited) {
