@@ -55,13 +55,6 @@
         </HBox>
     </VBox>
 
-    <!--
-    <HBox styleClass="control-buttons" spacing="15">
-        <Button styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
-        <Button styleClass="btn-controls" prefWidth="150" disable="true">ROLL DICE</Button>
-    </HBox>
-    -->
-
     <!-- Cards -->
     <VBox styleClass="game-vbox" alignment="CENTER_RIGHT">
         <!-- Tool cards -->

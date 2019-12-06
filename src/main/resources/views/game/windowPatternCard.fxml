@@ -10,35 +10,35 @@
       fx:id="window">
 
     <HBox styleClass="wpc-hbox" alignment="CENTER_LEFT">
-        <Text styleClass="wpc-nametag" text="Raul de Heer"/>
-        <Button alignment="CENTER_RIGHT" styleClass="wpc-button" prefWidth="100" minHeight="25"/>
+        <Text fill="white" styleClass="wpc-nametag" text="Raul de Heer"/>
+        <Button alignment="CENTER_RIGHT" styleClass="wpc-button" text="!"/>
     </HBox>
     <HBox>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
     </HBox>
     <HBox>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
     </HBox>
     <HBox>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
     </HBox>
     <HBox>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
-        <Button prefHeight="50" prefWidth="50" styleClass="button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
     </HBox>
 </VBox>
