@@ -86,6 +86,35 @@ public final class ToolCardRepository extends Repository<ToolCard> {
 
     }
 
+    public List<ToolCard> getAllByGameId(int gameId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM gametoolcard WHERE idgame = ?");
+
+        preparedStatement.setInt(1, gameId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+        List<ToolCard> toolCards = new ArrayList<>();
+
+        while (resultSet.next()) {
+            PreparedStatement cardPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM toolcard WHERE idtoolcard = ?");
+
+            cardPreparedStatement.setInt(1, resultSet.getInt("idtoolcard"));
+
+            ResultSet cardResultSet = cardPreparedStatement.executeQuery();
+
+            if (!cardResultSet.next()) {
+                break;
+            }
+
+            toolCards.add(CardFactory.getToolCard(
+                    cardResultSet.getInt("idtoolcard"),
+                    cardResultSet.getString("name"),
+                    cardResultSet.getString("description")
+            ));
+        }
+
+        return toolCards;
+    }
+
     public void addMultiple(Collection<ToolCard> toolCards, int gameId) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(
                 "INSERT INTO gametoolcard (idtoolcard, idgame) VALUES (?, ?);"

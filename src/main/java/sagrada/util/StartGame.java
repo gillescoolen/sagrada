@@ -43,6 +43,14 @@ public class StartGame {
 
             var toolCards = this.toolCardRepository.getRandom();
             this.toolCardRepository.addMultiple(toolCards, this.game.getId());
+
+            for (var publicObjectiveCard : publicObjectiveCards) {
+                this.game.addObjectiveCard(publicObjectiveCard);
+            }
+
+            for (var toolCard : toolCards) {
+                this.game.addToolCard(toolCard);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

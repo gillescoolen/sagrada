@@ -89,6 +89,36 @@ public final class PublicObjectiveCardRepository extends Repository<PublicObject
 
     }
 
+    public List<PublicObjectiveCard> getAllByGameId(int gameId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM gamepublic_objectivecard WHERE idspel = ?");
+
+        preparedStatement.setInt(1, gameId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+        List<PublicObjectiveCard> publicObjectiveCards = new ArrayList<>();
+
+        while (resultSet.next()) {
+            PreparedStatement cardPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM public_objectivecard WHERE idpublic_objectivecard = ?");
+
+            cardPreparedStatement.setInt(1, resultSet.getInt("iddoelkaart_gedeeld"));
+
+            ResultSet cardResultSet = cardPreparedStatement.executeQuery();
+
+            if (!cardResultSet.next()) {
+                break;
+            }
+
+            publicObjectiveCards.add(CardFactory.getPublicObjectiveCard(
+                    cardResultSet.getString("name"),
+                    cardResultSet.getInt("idpublic_objectivecard"),
+                    cardResultSet.getString("description"),
+                    cardResultSet.getInt("points")
+            ));
+        }
+
+        return publicObjectiveCards;
+    }
+
     public void addMultiple(Collection<PublicObjectiveCard> publicObjectiveCards, int gameId) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(
                 "INSERT INTO gamepublic_objectivecard (idspel, iddoelkaart_gedeeld) VALUES (?, ?);"

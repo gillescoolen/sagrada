@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane styleClass="priv-obj-card-wrapper" stylesheets="/styles/game/private-objective-card.css" xmlns="http://javafx.com/javafx/11.0.1">
-    <VBox styleClass="priv-obj-card-vbox" prefHeight="125.0" prefWidth="200.0" maxWidth="200.0">
-        <Text styleClass="priv-obj-card-title" text="Shades of Green"/>
-        <Text wrappingWidth="150" text="Private Sum of values on green dice"/>
+<AnchorPane styleClass="priv-obj-card-wrapper" stylesheets="/styles/game/private-objective-card.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml">
+    <VBox styleClass="priv-obj-card-vbox" prefHeight="125.0" prefWidth="150.0" maxWidth="150">
+        <Text fx:id="name" styleClass="priv-obj-card-title"/>
+        <Text fx:id="description" wrappingWidth="150"/>
     </VBox>
-    <Rectangle styleClass="private-dice" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" fill="green" height="40" width="40"/>
+    <Rectangle fx:id="color" styleClass="private-dice" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" height="40" width="40"/>
 </AnchorPane>
