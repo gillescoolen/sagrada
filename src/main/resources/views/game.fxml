@@ -38,8 +38,7 @@
         <HBox styleClass="wpc-hbox" alignment="BOTTOM_RIGHT">
             <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
 
-                <!-- CHAT HIER -->
-                <Rectangle fill="blue" height="500" width="150"/>
+                <VBox fx:id="chatWrapper"/>
 
                 <HBox styleClass="control-buttons" spacing="15">
                     <Button styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>

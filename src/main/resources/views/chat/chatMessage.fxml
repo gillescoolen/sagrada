@@ -2,8 +2,7 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
-<HBox minHeight="24.0" prefWidth="450.0" maxWidth="450.0"
-      stylesheets="/styles/chat.css"
+<HBox minHeight="24.0" prefWidth="200.0" maxWidth="200.0"
       xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" >
   <Label fx:id="lbAuthor" prefWidth="50.0" maxWidth="50.0" wrapText="true"/>
   <Label fx:id="lbMessage" prefWidth="150.0" maxWidth="150.0" wrapText="true"/>
