@@ -12,10 +12,6 @@
     -fx-background-color: rgba(0, 0, 0, 0.1);
 }
 
-.main-vbox {
-    -fx-background-color: red;
-}
-
 .title-tool-cards {
     -fx-font-size: 20px;
     -fx-font-weight: bold;
@@ -27,12 +23,10 @@
 
 .wpc-hbox {
     -fx-spacing: 25px;
-    -fx-background-color: blue;
 }
 
 .btn-controls {
     -fx-background-radius: 0px;
-    -fx-background-color: green;
     -fx-text-fill: white;
     -fx-font-size: 18px;
     -fx-font-weight: bold;
@@ -44,11 +38,5 @@
 }
 
 .dice-hbox {
-    -fx-background-color: purple;
     -fx-spacing: 15px;
 }
-
-.test {
-    -fx-background-color: green;
-}
-
