@@ -100,6 +100,7 @@ public class GameLobbyCreatorController {
                 players = this.playerRepository.getInvitedPlayers(this.game);
             } else {
                 players = this.playerRepository.getAcceptedPlayers(this.game);
+                this.game.addPlayers(players);
 
                 if (players.size() != 0) {
                     this.btnStartGame.setDisable(false);
