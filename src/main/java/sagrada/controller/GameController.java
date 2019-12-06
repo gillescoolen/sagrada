@@ -1,5 +1,6 @@
 package sagrada.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
@@ -10,12 +11,15 @@ import sagrada.database.repositories.PublicObjectiveCardRepository;
 import sagrada.database.repositories.ToolCardRepository;
 import sagrada.model.Account;
 import sagrada.model.Game;
+import sagrada.model.PatternCard;
 import sagrada.model.Player;
-import sagrada.model.PublicObjectiveCard;
 import sagrada.util.StartGame;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameController {
     @FXML
@@ -31,9 +35,11 @@ public class GameController {
 
     private final Game game;
     private final Player player;
+    private final DatabaseConnection connection;
     private final PlayerRepository playerRepository;
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
+        this.connection = connection;
         var publicObjectiveCardRepository = new PublicObjectiveCardRepository(connection);
         var toolCardRepository = new ToolCardRepository(connection);
 
@@ -72,6 +78,8 @@ public class GameController {
                     this.initializePrivateObjectiveCard(this.game.getPlayerByName(player.getAccount().getUsername()));
                     this.initializePublicObjectiveCards();
                     this.initializeToolCards();
+
+                    this.checkForPlayerPatternCards();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -79,32 +87,65 @@ public class GameController {
         }
     }
 
+    private void checkForPlayerPatternCards() {
+        var playerPatternCardsTimer = new Timer();
+
+        playerPatternCardsTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    try {
+                        List<Player> players = playerRepository.getAllGamePlayers(game);
+
+                        players.forEach(p -> {
+                            PatternCard patternCard =  p.getPatternCard();
+
+                            if (patternCard != null) {
+                                System.out.println("Card: " + p.getPatternCard().getId() + " for " + p.getId());
+                            } else {
+                                System.out.println("Player: " + p.getId() + " has no pattern card yet");
+                            }
+                        });
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }, 0, 1000);
+    }
+
     private void initializeWindowOptions(Player player) throws IOException {
         var i = 1;
 
-        if (player.getCardOptions().size() == 0) {
-            try {
-                var players = this.playerRepository.getAllGamePlayers(this.game);
-                this.game.addPlayers(players);
-                player = this.game.getPlayerByName(player.getAccount().getUsername());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        try {
+            var players = this.playerRepository.getAllGamePlayers(this.game);
+            this.game.addPlayers(players);
+            player = this.game.getPlayerByName(player.getAccount().getUsername());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        for (var patternCard : player.getCardOptions()) {
-            var controller = new WindowPatternCardController(patternCard);
+        if (player.getCardOptions().size() > 0) {
+            for (var patternCard : player.getCardOptions()) {
+                var controller = new WindowPatternCardController(this.connection, patternCard, this.player);
+                var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
+
+                loader.setController(controller);
+
+                if (i <= 2) {
+                    this.rowOne.getChildren().add(loader.load());
+                } else {
+                    this.rowTwo.getChildren().add(loader.load());
+                }
+
+                ++i;
+            }
+        } else {
+            var controller = new WindowPatternCardController(this.connection, this.player.getPatternCard(), this.player);
             var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
 
             loader.setController(controller);
-
-            if (i <= 2) {
-                this.rowOne.getChildren().add(loader.load());
-            } else {
-                this.rowTwo.getChildren().add(loader.load());
-            }
-
-            ++i;
+            this.rowOne.getChildren().add(loader.load());
         }
     }
 

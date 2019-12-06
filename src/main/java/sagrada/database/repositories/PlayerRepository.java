@@ -102,6 +102,7 @@ public final class PlayerRepository extends Repository<Player> {
             var privateObjectiveCardColor = playerResultSet.getString("private_objectivecard_color");
             var currentPlayer = playerResultSet.getInt("isCurrentPlayer");
             var cardColor = Color.BLUE;
+            var patternCardId = playerResultSet.getInt("patterncard_idpatterncard");
 
             for (var color : Color.values()) {
                 if (color.getDutchColorName().equals(privateObjectiveCardColor)) {
@@ -117,18 +118,13 @@ public final class PlayerRepository extends Repository<Player> {
             newPlayer.setSequenceNumber(sequenceNumber);
             newPlayer.setAccount(new Account(playerResultSet.getString("username")));
 
-            PreparedStatement patternCardPreparedStatement = patternCardRepository.connection.getConnection().prepareStatement("SELECT * FROM patterncardoption WHERE player_idplayer = ?");
-            patternCardPreparedStatement.setInt(1, playerId);
-            ResultSet patternCardResultSet = patternCardPreparedStatement.executeQuery();
-
-            while (patternCardResultSet.next()) {
-                var patternCardId = patternCardResultSet.getInt("patterncard_idpatterncard");
-                var patternCard = patternCardRepository.findById(patternCardId);
-                newPlayer.addCardOption(patternCard);
+            if (patternCardId == 0) {
+                List<PatternCard> cardOptions = patternCardRepository.getCardOptionsByPlayerId(playerId);
+                cardOptions.forEach(newPlayer::addCardOption);
+            } else {
+                newPlayer.setPatternCard(patternCardRepository.findById(patternCardId));
             }
 
-            patternCardPreparedStatement.close();
-            patternCardResultSet.close();
             players.add(newPlayer);
         }
 
@@ -274,7 +270,7 @@ public final class PlayerRepository extends Repository<Player> {
         preparedStatement.setString(3, player.getPlayStatus().getPlayState());
         preparedStatement.setByte(4, ((byte) (player.isCurrentPlayer() ? 1 : 0)));
         preparedStatement.setString(5, player.getPrivateObjectiveCard().getColor().getDutchColorName());
-        preparedStatement.setByte(6,((byte) (player.hasInvalidFrameField() ? 1 : 0)));
+        preparedStatement.setByte(6, ((byte) (player.hasInvalidFrameField() ? 1 : 0)));
 
         preparedStatement.executeUpdate();
         preparedStatement.close();
@@ -341,5 +337,17 @@ public final class PlayerRepository extends Repository<Player> {
         player.setInvalidFrameField(resultSet.getBoolean("invalidframefield"));
 
         return player;
+    }
+
+    public void bindPatternCardToPlayer(Player player) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection()
+                .prepareStatement("UPDATE player SET patterncard_idpatterncard = ? WHERE idplayer = ?;");
+
+        preparedStatement.setInt(1, player.getPatternCard().getId());
+        preparedStatement.setInt(2, player.getId());
+
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
     }
 }
