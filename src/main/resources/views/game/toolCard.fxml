@@ -4,10 +4,10 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.shape.Ellipse?>
 
-<AnchorPane styleClass="tool-card-wrapper" stylesheets="/styles/game/tool-card.css" prefHeight="200.0" prefWidth="150.0" maxWidth="150" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane styleClass="tool-card-wrapper" stylesheets="/styles/game/tool-card.css" prefHeight="200.0" prefWidth="200.0" maxWidth="200" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <VBox styleClass="tool-card-vbox">
         <Text styleClass="tool-card-title" text="Lens Cutter"/>
-        <Text wrappingWidth="150" text="After drafting, swap the drafted die with a die from the Round Track"/>
+        <Text wrappingWidth="200" text="After drafting, swap the drafted die with a die from the Round Track"/>
     </VBox>
     <StackPane AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
         <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>

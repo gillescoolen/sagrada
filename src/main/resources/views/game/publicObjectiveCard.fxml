@@ -4,10 +4,10 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane styleClass="pub-obj-card-wrapper" prefWidth="150.0" maxWidth="150" stylesheets="/styles/game/public-objective-card.css" xmlns="http://javafx.com/javafx/11.0.1">
+<AnchorPane styleClass="pub-obj-card-wrapper" prefWidth="200.0" maxWidth="200" stylesheets="/styles/game/public-objective-card.css" xmlns="http://javafx.com/javafx/11.0.1">
     <VBox styleClass="pub-obj-card-vbox" prefHeight="125.0">
-        <Text wrappingWidth="150" styleClass="pub-obj-card-title" text="Row Color Variety"/>
-        <Text wrappingWidth="150" text="Rows with no repeated colors"/>
+        <Text wrappingWidth="200" styleClass="pub-obj-card-title" text="Row Color Variety"/>
+        <Text wrappingWidth="200" text="Rows with no repeated colors"/>
     </VBox>
     <StackPane AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0">
         <Rectangle styleClass="public-points" height="30" width="30"/>
