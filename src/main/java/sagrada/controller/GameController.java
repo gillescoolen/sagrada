@@ -21,7 +21,6 @@ public class GameController {
 
     private final Game game;
     private final Account account;
-    private final DatabaseConnection connection;
     private final PlayerRepository playerRepository;
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
@@ -33,7 +32,6 @@ public class GameController {
         }
 
         this.playerRepository = new PlayerRepository(connection);
-        this.connection = connection;
         this.account = account;
     }
 
