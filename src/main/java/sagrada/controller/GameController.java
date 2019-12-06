@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.GameRepository;
 import sagrada.database.repositories.PlayerRepository;
 import sagrada.database.repositories.PublicObjectiveCardRepository;
 import sagrada.database.repositories.ToolCardRepository;
@@ -32,7 +33,7 @@ public class GameController {
     @FXML
     private HBox privateObjectiveCardBox;
 
-    private final Game game;
+    private Game game;
     private final Player player;
     private final DatabaseConnection connection;
     private final PlayerRepository playerRepository;
@@ -41,14 +42,18 @@ public class GameController {
         this.connection = connection;
         var publicObjectiveCardRepository = new PublicObjectiveCardRepository(connection);
         var toolCardRepository = new ToolCardRepository(connection);
+        var gameRepository = new GameRepository(this.connection);
 
-        if (game.getOwner().getAccount().getUsername().equals(account.getUsername())) {
-            var startGame = new StartGame(game, connection);
-            this.game = startGame.getCreatedGame();
-        } else {
-            this.game = game;
+        this.playerRepository = new PlayerRepository(connection);
+        this.player = game.getPlayerByName(account.getUsername());
 
-            try {
+        try {
+            if (game.getOwner().getAccount().getUsername().equals(account.getUsername()) && !gameRepository.checkIfGameHasStarted(game)) {
+                var startGame = new StartGame(game, connection);
+                this.game = startGame.getCreatedGame();
+            } else {
+                this.game = game;
+
                 var publicObjectiveCards = publicObjectiveCardRepository.getAllByGameId(this.game.getId());
                 var toolCards = toolCardRepository.getAllByGameId(this.game.getId());
 
@@ -59,13 +64,10 @@ public class GameController {
                 for (var toolCard : toolCards) {
                     this.game.addToolCard(toolCard);
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        this.playerRepository = new PlayerRepository(connection);
-        this.player = game.getPlayerByName(account.getUsername());
     }
 
     @FXML
