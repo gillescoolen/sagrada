@@ -10,8 +10,11 @@
       fx:id="window">
 
     <HBox styleClass="wpc-hbox" alignment="CENTER_LEFT">
-        <Text fill="white" styleClass="wpc-nametag" text="Raul de Heer"/>
-        <Button alignment="CENTER_RIGHT" styleClass="wpc-button" text="!"/>
+        <Text wrappingWidth="160" fill="white" styleClass="wpc-nametag" text="Kaleidoscopic Dream ofzo lekker"/>
+        <VBox>
+            <Button prefWidth="100" prefHeight="20" styleClass="wpc-button" text="Choose"/>
+            <Button prefWidth="100" prefHeight="20" styleClass="wpc-button" text="Switch"/>
+        </VBox>
     </HBox>
     <HBox>
         <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
