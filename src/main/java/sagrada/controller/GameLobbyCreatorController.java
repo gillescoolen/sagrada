@@ -100,7 +100,7 @@ public class GameLobbyCreatorController {
                 players = this.playerRepository.getInvitedPlayers(this.game);
             } else {
                 players = this.playerRepository.getAcceptedPlayers(this.game);
-                this.game.addPlayers(players);
+                this.game.addPlayers(this.playerRepository.getAllGamePlayers(this.game));
 
                 if (players.size() != 0) {
                     this.btnStartGame.setDisable(false);
@@ -191,11 +191,7 @@ public class GameLobbyCreatorController {
 
                 var gameRepository = new GameRepository(this.databaseConnection);
 
-                for (var player : this.game.getPlayers()) {
-                    if (this.game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername())) {
-                        gameRepository.startGame(player.getId(), this.game.getId());
-                    }
-                }
+                gameRepository.startGame(this.game.getOwner().getId(), this.game.getId());
 
                 stage.setScene(scene);
             } catch (IOException | SQLException e) {
