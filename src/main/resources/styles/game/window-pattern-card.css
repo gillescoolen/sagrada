@@ -1,4 +1,4 @@
-.button {
+.sq-button {
     -fx-font-size: 18;
     -fx-background-radius: 0;
     -fx-border-color: black;
@@ -7,10 +7,11 @@
 
 .window {
     -fx-border-color: black;
-    -fx-border-width: 2;
+    -fx-border-width: 1;
 }
 
 .wpc-nametag {
+    -fx-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 18px;
 }
@@ -19,7 +20,7 @@
     -fx-background-radius: 0px;
     -fx-background-color: red;
     -fx-text-fill: white;
-    -fx-font-size: 18px;
+    -fx-font-size: 12px;
     -fx-font-weight: bold;
     -fx-cursor: hand;
 }
@@ -27,4 +28,9 @@
 .wpc-hbox {
     -fx-spacing: 15px;
     -fx-padding: 5px;
+    -fx-background-color: black;
+}
+
+.selection-btn-vbox {
+    -fx-spacing: 5px;
 }

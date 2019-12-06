@@ -4,22 +4,52 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.shape.Rectangle?>
 <HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       stylesheets="/styles/game.css"
       styleClass="game-wrapper"
       prefWidth="1400" prefHeight="720">
 
-    <!-- Button controls -->
-    <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
-        <HBox styleClass="wpc-hbox" prefWidth="500" prefHeight="400">
-            <VBox styleClass="wpc-vbox" fx:id="rowOne"/>
-            <VBox styleClass="wpc-vbox" fx:id="rowTwo"/>
+    <VBox styleClass="main-vbox" HBox.hgrow="ALWAYS">
+        <HBox alignment="CENTER" VBox.vgrow="ALWAYS" styleClass="dice-hbox">
+            <fx:include source="game/roundTrack.fxml"/>
+            <fx:include source="game/roundTrack.fxml"/>
+            <fx:include source="game/roundTrack.fxml"/>
+            <fx:include source="game/roundTrack.fxml"/>
+            <fx:include source="game/roundTrack.fxml"/>
+            <fx:include source="game/roundTrack.fxml"/>
+            <fx:include source="game/roundTrack.fxml"/>
+            <fx:include source="game/roundTrack.fxml"/>
+            <fx:include source="game/roundTrack.fxml"/>
+            <fx:include source="game/roundTrack.fxml"/>
         </HBox>
+        <HBox alignment="CENTER" VBox.vgrow="ALWAYS" styleClass="dice-hbox">
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
+            <fx:include source="game/die.fxml"/>
+        </HBox>
+        <HBox styleClass="wpc-hbox" alignment="BOTTOM_RIGHT">
+            <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
 
-        <HBox styleClass="control-buttons" spacing="15">
-            <Button styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
-            <Button styleClass="btn-controls" prefWidth="150" disable="true">ROLL DICE</Button>
+                <!-- CHAT HIER -->
+                <Rectangle fill="blue" height="500" width="150"/>
+
+                <HBox styleClass="control-buttons" spacing="15">
+                    <Button styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
+                    <Button styleClass="btn-controls" prefWidth="150" disable="true">ROLL DICE</Button>
+                </HBox>
+            </VBox>
+            <VBox fx:id="rowOne" styleClass="wpc-vbox">
+            </VBox>
+            <VBox fx:id="rowTwo" styleClass="wpc-vbox">
+            </VBox>
         </HBox>
     </VBox>
 

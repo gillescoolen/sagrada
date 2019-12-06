@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Text?>
+
+<?import javafx.scene.control.Button?>
+<StackPane styleClass="die-wrapper" stylesheets="/styles/game/die.css" xmlns="http://javafx.com/javafx/11.0.1">
+    <Button prefHeight="60" prefWidth="60" styleClass="single-die" text="1"/>
+</StackPane>
