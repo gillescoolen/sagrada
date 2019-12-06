@@ -27,6 +27,7 @@ public class GameLobbyPlayerController {
     private final Game game;
     private final Account account;
     private final static int POLL_TIME = 3000;
+    private final static int TASK_DELAY = 2000;
     private final Timer checkGameStartedTimer = new Timer();
 
     public GameLobbyPlayerController(DatabaseConnection databaseConnection, Game game, Account account) {
@@ -50,7 +51,7 @@ public class GameLobbyPlayerController {
                     }
                 });
             }
-        }, 0, POLL_TIME);
+        }, TASK_DELAY, POLL_TIME);
     }
 
     private boolean checkForGameStarted() {
