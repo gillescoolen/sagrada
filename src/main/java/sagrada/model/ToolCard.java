@@ -3,7 +3,7 @@ package sagrada.model;
 public abstract class ToolCard extends Card {
     private final int id;
     private final String description;
-    private int points = 1;
+    private int cost = 1;
 
     public ToolCard(int id, String name, String description) {
         super(name);
@@ -15,8 +15,8 @@ public abstract class ToolCard extends Card {
         return this.id;
     }
 
-    public int getPoints() {
-        return this.points;
+    public int getCost() {
+        return this.cost;
     }
 
     public String getDescription() {

@@ -22,6 +22,6 @@ public class ToolCardController {
     protected void initialize() {
         this.name.setText(this.toolCard.getName());
         this.description.setText(this.toolCard.getDescription());
-        this.points.setText(Integer.toString(this.toolCard.getPoints()));
+        this.points.setText(Integer.toString(this.toolCard.getCost()));
     }
 }
