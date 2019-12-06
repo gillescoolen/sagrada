@@ -43,13 +43,9 @@
                     <Button styleClass="btn-controls" prefWidth="150" disable="true">ROLL DICE</Button>
                 </HBox>
             </VBox>
-            <VBox styleClass="wpc-vbox">
-                <fx:include source="game/windowPatternCard.fxml"/>
-                <fx:include source="game/windowPatternCard.fxml"/>
+            <VBox fx:id="rowOne" styleClass="wpc-vbox">
             </VBox>
-            <VBox styleClass="wpc-vbox">
-                <fx:include source="game/windowPatternCard.fxml"/>
-                <fx:include source="game/windowPatternCard.fxml"/>
+            <VBox fx:id="rowTwo" styleClass="wpc-vbox">
             </VBox>
         </HBox>
     </VBox>

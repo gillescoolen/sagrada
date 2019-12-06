@@ -11,7 +11,7 @@
 }
 
 .wpc-nametag {
-    -fx-text-fill: red;
+    -fx-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 18px;
 }

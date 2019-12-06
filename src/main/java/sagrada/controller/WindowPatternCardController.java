@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.PlayerFrameRepository;
 import sagrada.database.repositories.PlayerRepository;
@@ -29,7 +30,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     @FXML
     private Button reportMisplacement;
     @FXML
-    private Label name;
+    private Text name;
 
     private Player player;
     private PatternCard windowField;
@@ -96,7 +97,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         }
 
         this.changeView.setOnAction((e) -> this.changeView());
-        this.changeView.setText("Switch view");
+        this.changeView.setText("Switch");
         this.initializeWindow();
         this.fillWindow();
     }
