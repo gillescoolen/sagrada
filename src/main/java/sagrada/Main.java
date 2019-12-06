@@ -30,7 +30,7 @@ public class Main extends Application {
             Platform.exit();
 
             try {
-                databaseConnection.getConnection().close();
+                this.databaseConnection.getConnection().close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
