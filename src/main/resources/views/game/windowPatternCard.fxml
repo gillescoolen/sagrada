@@ -11,7 +11,7 @@
 
     <HBox styleClass="wpc-hbox" alignment="CENTER_LEFT">
         <Text wrappingWidth="160" fill="white" styleClass="wpc-nametag" text="Kaleidoscopic Dream ofzo lekker"/>
-        <VBox>
+        <VBox styleClass="selection-btn-vbox">
             <Button prefWidth="100" prefHeight="20" styleClass="wpc-button" text="Choose"/>
             <Button prefWidth="100" prefHeight="20" styleClass="wpc-button" text="Switch"/>
         </VBox>

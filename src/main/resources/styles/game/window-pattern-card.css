@@ -30,3 +30,7 @@
     -fx-padding: 5px;
     -fx-background-color: black;
 }
+
+.selection-btn-vbox {
+    -fx-spacing: 5px;
+}
