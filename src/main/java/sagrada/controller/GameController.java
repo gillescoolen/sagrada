@@ -30,14 +30,12 @@ public class GameController {
     private HBox privateObjectiveCardBox;
 
     private final Game game;
-    private final Account account;
+    private final Player player;
     private final PlayerRepository playerRepository;
-    private final PublicObjectiveCardRepository publicObjectiveCardRepository;
-    private final ToolCardRepository toolCardRepository;
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
-        this.publicObjectiveCardRepository = new PublicObjectiveCardRepository(connection);
-        this.toolCardRepository = new ToolCardRepository(connection);
+        var publicObjectiveCardRepository = new PublicObjectiveCardRepository(connection);
+        var toolCardRepository = new ToolCardRepository(connection);
 
         if (game.getOwner().getAccount().getUsername().equals(account.getUsername())) {
             var startGame = new StartGame(game, connection);
@@ -46,8 +44,8 @@ public class GameController {
             this.game = game;
 
             try {
-                var publicObjectiveCards = this.publicObjectiveCardRepository.getAllByGameId(this.game.getId());
-                var toolCards = this.toolCardRepository.getAllByGameId(this.game.getId());
+                var publicObjectiveCards = publicObjectiveCardRepository.getAllByGameId(this.game.getId());
+                var toolCards = toolCardRepository.getAllByGameId(this.game.getId());
 
                 for (var publicObjectiveCard : publicObjectiveCards) {
                     this.game.addObjectiveCard(publicObjectiveCard);
@@ -62,13 +60,13 @@ public class GameController {
         }
 
         this.playerRepository = new PlayerRepository(connection);
-        this.account = account;
+        this.player = game.getPlayerByName(account.getUsername());
     }
 
     @FXML
     protected void initialize() {
         for (var player : this.game.getPlayers()) {
-            if (player.getAccount().getUsername().equals(this.account.getUsername())) {
+            if (player.getAccount().getUsername().equals(this.player.getAccount().getUsername())) {
                 try {
                     this.initializeWindowOptions(player);
                     this.initializePrivateObjectiveCard(this.game.getPlayerByName(player.getAccount().getUsername()));
@@ -130,5 +128,13 @@ public class GameController {
             loader.setController(new ToolCardController(toolCard));
             this.toolCardBox.getChildren().add(loader.load());
         }
+    }
+
+    public Game getGame() {
+        return this.game;
+    }
+
+    public Player getPlayer() {
+        return this.player;
     }
 }
