@@ -73,9 +73,13 @@ public final class PlayerRepository extends Repository<Player> {
                 patternCards.remove(randomPatternCard);
             }
 
+            playerUpdatePreparedStatement.close();
             players.add(player);
             ++sequenceNumber;
         }
+
+        playerPreparedStatement.close();
+        playerResultSet.close();
 
         return players;
     }
@@ -123,8 +127,13 @@ public final class PlayerRepository extends Repository<Player> {
                 newPlayer.addCardOption(patternCard);
             }
 
+            patternCardPreparedStatement.close();
+            patternCardResultSet.close();
             players.add(newPlayer);
         }
+
+        playerPreparedStatement.close();
+        playerResultSet.close();
 
         return players;
     }
