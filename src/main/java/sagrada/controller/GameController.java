@@ -91,7 +91,7 @@ public class GameController {
 
         try {
             this.initializeChat();
-        } catch (IOException e) {
+        } catch ( IOException e) {
             e.printStackTrace();
         }
     }

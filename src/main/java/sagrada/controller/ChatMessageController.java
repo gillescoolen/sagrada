@@ -12,17 +12,17 @@ public class ChatMessageController {
     private Label lbAuthor;
 
     private String message;
-    private Player player;
+    private String author;
 
 
-    public ChatMessageController(String message, Player player) {
-        this.player = player;
+    public ChatMessageController(String message, String author) {
+        this.author = author;
         this.message = message;
     }
 
     @FXML
     public void initialize() {
         this.lbMessage.setText(message);
-        this.lbAuthor.setText(player.getAccount().getUsername());
+        this.lbAuthor.setText(author);
     }
 }
