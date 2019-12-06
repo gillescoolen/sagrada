@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.GameRepository;
 import sagrada.database.repositories.PlayerRepository;
 import sagrada.model.*;
 
@@ -75,8 +76,17 @@ public class LobbyItemController {
     private void goToNextScreen() {
         try {
             if (this.account.getUsername().equals(this.game.getOwner().getAccount().getUsername())) {
-                var loader = new FXMLLoader(getClass().getResource("/views/lobby/gameLobbyCreator.fxml"));
-                loader.setController(new GameLobbyCreatorController(this.databaseConnection, this.game, this.account));
+                GameRepository gameRepository = new GameRepository(this.databaseConnection);
+                FXMLLoader loader;
+
+                if (gameRepository.checkIfGameHasStarted(this.game)) {
+                    loader = new FXMLLoader(getClass().getResource("/views/game.fxml"));
+                    loader.setController(new GameController(this.databaseConnection, this.game, this.account));
+                } else {
+                    loader = new FXMLLoader(getClass().getResource("/views/lobby/gameLobbyCreator.fxml"));
+                    loader.setController(new GameLobbyCreatorController(this.databaseConnection, this.game, this.account));
+                }
+
                 var stage = ((Stage) this.lbName.getScene().getWindow());
                 var scene = new Scene(loader.load());
                 stage.setScene(scene);

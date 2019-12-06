@@ -103,10 +103,17 @@ public final class PlayerRepository extends Repository<Player> {
             var currentPlayer = playerResultSet.getInt("isCurrentPlayer");
             var cardColor = Color.BLUE;
             var patternCardId = playerResultSet.getInt("patterncard_idpatterncard");
+            var playStatus = PlayStatus.ACCEPTED;
 
             for (var color : Color.values()) {
                 if (color.getDutchColorName().equals(privateObjectiveCardColor)) {
                     cardColor = color;
+                }
+            }
+
+            for (var playState : PlayStatus.values()) {
+                if (playState.getPlayState().equals(playerResultSet.getString("playstatus_playstatus"))) {
+                    playStatus = playState;
                 }
             }
 
@@ -117,6 +124,7 @@ public final class PlayerRepository extends Repository<Player> {
             newPlayer.setScore(0);
             newPlayer.setSequenceNumber(sequenceNumber);
             newPlayer.setAccount(new Account(playerResultSet.getString("username")));
+            newPlayer.setPlayStatus(playStatus);
 
             if (patternCardId == 0) {
                 List<PatternCard> cardOptions = patternCardRepository.getCardOptionsByPlayerId(playerId);

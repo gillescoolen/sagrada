@@ -75,6 +75,9 @@ public class GameLobbyPlayerController {
 
     private void backToLobbyScreen() {
         try {
+            this.checkGameStartedTimer.cancel();
+            this.checkGameStartedTimer.purge();
+
             var loader = new FXMLLoader(getClass().getResource("/views/lobby/lobby.fxml"));
             var stage = ((Stage) this.vbPanel.getScene().getWindow());
             loader.setController(new LobbyController(this.databaseConnection, this.account));
