@@ -18,5 +18,7 @@ public final class LensCutter extends ToolCard {
 
         roundTrack.updateTrack(round, draftDie);
         draftPool.updateDraft(draftDie, roundTrackDie);
+
+        this.incrementCost();
     }
 }

@@ -9,5 +9,6 @@ public final class CorkBackedStraightedge extends ToolCard {
 
     @Override
     public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Object message) {
+        this.incrementCost();
     }
 }

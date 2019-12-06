@@ -10,5 +10,6 @@ public final class GlazingHammer extends ToolCard {
     @Override
     public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Object message) {
         draftPool.reRollDraft();
+        this.incrementCost();
     }
 }

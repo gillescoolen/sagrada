@@ -24,4 +24,10 @@ public abstract class ToolCard extends Card {
     }
 
     public abstract void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Object message);
+
+    protected void incrementCost() {
+        if (this.cost < 2) {
+            this.cost = 2;
+        }
+    }
 }
