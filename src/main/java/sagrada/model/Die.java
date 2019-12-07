@@ -5,7 +5,6 @@ import java.util.Random;
 public class Die {
     private final Color color;
     private Integer value = null;
-    private ToolCard usedToolCard;
 
     public Color getColor() {
         return this.color;
@@ -23,10 +22,6 @@ public class Die {
         }
     }
 
-    public ToolCard getUsedToolCard() {
-        return this.usedToolCard;
-    }
-
     public Die(Color color) {
         this.color = color;
     }
@@ -42,10 +37,6 @@ public class Die {
     public void roll() {
         Random random = new Random();
         this.setValue(random.nextInt(6) + 1);
-    }
-
-    public void setUsedToolCard(ToolCard usedToolCard) {
-        this.usedToolCard = usedToolCard;
     }
 
     @Override

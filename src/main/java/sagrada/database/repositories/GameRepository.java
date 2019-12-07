@@ -2,7 +2,6 @@ package sagrada.database.repositories;
 
 import sagrada.database.DatabaseConnection;
 import sagrada.model.*;
-import sagrada.model.card.CardFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
