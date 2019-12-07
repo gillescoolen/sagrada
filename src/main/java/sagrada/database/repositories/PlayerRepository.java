@@ -375,4 +375,20 @@ public final class PlayerRepository extends Repository<Player> {
         nextPlayer.setCurrentPlayer(true);
         this.update(nextPlayer);
     }
+
+    public Player getPlayerByGameAndSequenceNumber(Game game, int sequenceNumber) throws SQLException {
+        PreparedStatement playerIdStatement = this.connection.getConnection().prepareStatement("SELECT idplayer FROM player WHERE spel_idspel = ? AND seqnr = ?;");
+        playerIdStatement.setInt(1, game.getId());
+        playerIdStatement.setInt(2, sequenceNumber);
+
+        ResultSet playerIdResultSet = playerIdStatement.executeQuery();
+        playerIdResultSet.next();
+
+        int playerId = playerIdResultSet.getInt("idplayer");
+
+        playerIdStatement.close();
+        playerIdResultSet.close();
+
+        return this.findById(playerId);
+    }
 }
