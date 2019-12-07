@@ -156,9 +156,9 @@ public class GameController {
                     try {
                         List<Player> players = playerRepository.getAllGamePlayers(game);
 
-                        boolean notEveryoneHasChosen = players.stream().anyMatch(p -> p.getPatternCard() == null);
+                        boolean everyoneHasChosen = players.stream().allMatch(p -> p.getPatternCard() != null);
 
-                        if (notEveryoneHasChosen) {
+                        if (!everyoneHasChosen) {
                             return;
                         }
 
