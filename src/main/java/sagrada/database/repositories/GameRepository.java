@@ -218,8 +218,22 @@ public final class GameRepository extends Repository<Game> {
 
         int playerId = playerIdResultSet.getInt("idplayer");
 
+        playerIdStatement.close();
+        playerIdResultSet.close();
+
         PlayerRepository playerRepository = new PlayerRepository(this.connection);
 
-        return playerRepository.findById(playerId);
+        Player nextPlayer = playerRepository.findById(playerId);
+
+        PreparedStatement nextPlayerGameStatement = this.connection.getConnection().prepareStatement("UPDATE game SET turn_idplayer = ? WHERE idgame = ?");
+
+        nextPlayerGameStatement.setInt(1, nextPlayer.getId());
+        nextPlayerGameStatement.setInt(2, game.getId());
+
+        nextPlayerGameStatement.executeUpdate();
+
+        nextPlayerGameStatement.close();
+
+        return nextPlayer;
     }
 }
