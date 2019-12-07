@@ -52,7 +52,6 @@ public class GameController {
 
         this.playerRepository = new PlayerRepository(connection);
         this.dieRepository = new DieRepository(connection);
-        this.player = game.getPlayerByName(account.getUsername());
 
         try {
             this.player = this.playerRepository.getGamePlayer(account.getUsername(), game);
@@ -113,7 +112,7 @@ public class GameController {
 
         try {
             this.initializeChat();
-        } catch ( IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -172,10 +171,20 @@ public class GameController {
                             return;
                         }
 
+                        rowOne.getChildren().clear();
+                        rowTwo.getChildren().clear();
+
+                        var controller = new WindowPatternCardController(connection, player.getPatternCard(), player);
+                        var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
+
+                        loader.setController(controller);
+
+                        rowOne.getChildren().add(loader.load());
+
                         gameReady = true;
                         playerPatternCardsTimer.cancel();
                         playerPatternCardsTimer.purge();
-                    } catch (SQLException e) {
+                    } catch (SQLException | IOException e) {
                         e.printStackTrace();
                     }
                 });
