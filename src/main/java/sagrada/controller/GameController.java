@@ -104,6 +104,7 @@ public class GameController {
                     this.initializeToolCards();
 
                     this.checkForPlayerPatternCards();
+                    this.startMainGameTimer();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
