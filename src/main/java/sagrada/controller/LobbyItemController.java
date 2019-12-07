@@ -51,10 +51,14 @@ public class LobbyItemController {
             if (gameRepository.checkIfGameHasStarted(this.game)) {
                 this.lobbyItem.getStyleClass().clear();
                 this.lobbyItem.getStyleClass().add("item-started");
+
                 if (this.btnDecline != null) this.btnDecline.setDisable(true);
+
+                this.lbSpotsLeft.setText("Game has started");
             } else if (this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
                 this.lobbyItem.getStyleClass().clear();
                 this.lobbyItem.getStyleClass().add("item-accepted");
+
                 if (this.btnDecline != null) this.btnDecline.setDisable(true);
             } else if (spots == 0 || !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
                 this.lobbyItem.setDisable(true);
