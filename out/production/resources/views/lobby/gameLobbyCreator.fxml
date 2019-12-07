@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:id="apPanel" prefHeight="400.0" prefWidth="600.0" stylesheets="/styles/lobby/game-lobby.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox fx:id="vbPanel" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <HBox prefHeight="400.0" prefWidth="600.0">
+            <VBox prefHeight="400.0" prefWidth="300.0" styleClass="left-column">
+                <Label styleClass="title" text="Invite player"/>
+                <HBox styleClass="invite-box">
+                    <TextField fx:id="tfPlayerInvite" promptText="Name of the player"/>
+                    <Button fx:id="btnInvite" mnemonicParsing="false" prefHeight="26.0" prefWidth="91.0" text="Invite"/>
+                </HBox>
+                <Separator prefWidth="200.0"/>
+                <Label text="Invited players"/>
+                <ListView fx:id="lvInvitedPlayers" prefHeight="150.0" prefWidth="300.0"/>
+                <Separator prefWidth="200.0"/>
+                <Label text="Accepted players"/>
+                <ListView fx:id="lvAcceptedPlayers" prefHeight="200.0" prefWidth="200.0"/>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="300.0" styleClass="right-column">
+                <Pane prefHeight="200.0" prefWidth="200.0"/>
+                <Button fx:id="btnStartGame" mnemonicParsing="false" prefHeight="195.0" prefWidth="300.0"
+                        text="START GAME"/>
+                <Pane prefHeight="200.0" prefWidth="200.0"/>
+            </VBox>
+        </HBox>
+    </VBox>
+</AnchorPane>

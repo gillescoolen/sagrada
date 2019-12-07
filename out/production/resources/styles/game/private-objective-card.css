@@ -1,0 +1,19 @@
+.priv-obj-card-wrapper {
+    -fx-background-color: rgb(255,255,205);
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.5, 0.0, 0.0);
+}
+
+.priv-obj-card-vbox {
+    -fx-padding: 15px;
+}
+
+.priv-obj-card-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.private-dice {
+    -fx-stroke-width: 1;
+    -fx-stroke: black;
+}

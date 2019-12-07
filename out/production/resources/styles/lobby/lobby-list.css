@@ -1,0 +1,23 @@
+.title {
+  -fx-font-size: 24;
+}
+
+.side-column {
+  -fx-background: #ededed;
+}
+
+.side-column-item {
+  -fx-alignment: baseline-center;
+}
+
+.main-column {
+  -fx-background: #ffffff;
+}
+
+.main-column-item {
+  -fx-alignment: baseline-center;
+}
+
+.lobby-list {
+  -fx-padding: 25;
+}
