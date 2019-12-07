@@ -54,8 +54,6 @@ public class GameController {
         this.dieRepository = new DieRepository(connection);
 
         try {
-            this.player = this.playerRepository.getGamePlayer(account.getUsername(), game);
-
             if (game.getOwner().getAccount().getUsername().equals(account.getUsername()) && !gameRepository.checkIfGameHasStarted(game)) {
                 var startGame = new StartGame(game, connection);
                 this.game = startGame.getCreatedGame();
@@ -79,6 +77,8 @@ public class GameController {
                     player.setDiceBag(diceBag);
                 }
             }
+
+            this.player = this.playerRepository.getGamePlayer(account.getUsername(), game);
         } catch (SQLException e) {
             e.printStackTrace();
         }
