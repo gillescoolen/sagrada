@@ -40,6 +40,11 @@ public class LobbyItemController {
 
     @FXML
     protected void initialize() {
+       this.fillItem();
+       this.bindButtons();
+    }
+
+    private void fillItem() {
         this.lbName.setText(this.game.getOwner().getAccount().getUsername() + "'s Game");
 
         GameRepository gameRepository = new GameRepository(this.databaseConnection);
@@ -48,27 +53,39 @@ public class LobbyItemController {
         this.lbSpotsLeft.setText(spots + " spot(s) left!");
 
         try {
-            if (gameRepository.checkIfGameHasStarted(this.game)) {
+            if (gameRepository.checkIfGameHasStarted(this.game) && !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
+                this.lbSpotsLeft.setText("Game has started");
+
+                this.lobbyItem.setDisable(true);
+                this.lobbyItem.getStyleClass().clear();
+                this.lobbyItem.getStyleClass().add("item-full");
+
+                if (this.btnDecline != null) this.btnDecline.setDisable(true);
+            } else if (gameRepository.checkIfGameHasStarted(this.game) && this.containsName(this.game.getPlayers(), this.account.getUsername())) {
+                this.lbSpotsLeft.setText("Game has started");
+
                 this.lobbyItem.getStyleClass().clear();
                 this.lobbyItem.getStyleClass().add("item-started");
 
                 if (this.btnDecline != null) this.btnDecline.setDisable(true);
+            } else {
+                if (this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
+                    this.lobbyItem.getStyleClass().clear();
+                    this.lobbyItem.getStyleClass().add("item-accepted");
 
-                this.lbSpotsLeft.setText("Game has started");
-            } else if (this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
-                this.lobbyItem.getStyleClass().clear();
-                this.lobbyItem.getStyleClass().add("item-accepted");
-
-                if (this.btnDecline != null) this.btnDecline.setDisable(true);
-            } else if (spots == 0 || !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
-                this.lobbyItem.setDisable(true);
-                this.lobbyItem.getStyleClass().clear();
-                this.lobbyItem.getStyleClass().add("item-full");
+                    if (this.btnDecline != null) this.btnDecline.setDisable(true);
+                } else if (spots == 0 || !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
+                    this.lobbyItem.setDisable(true);
+                    this.lobbyItem.getStyleClass().clear();
+                    this.lobbyItem.getStyleClass().add("item-full");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
+    private void bindButtons() {
         this.lobbyItem.setOnMouseClicked(c -> this.lobbyItemClicked());
 
         if (this.btnDecline != null) this.btnDecline.setOnMouseClicked(c -> this.cancelInvite());
