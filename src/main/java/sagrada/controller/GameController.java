@@ -32,6 +32,8 @@ public class GameController {
     private HBox publicObjectiveCardBox;
     @FXML
     private HBox privateObjectiveCardBox;
+    @FXML
+    private VBox chatWrapper;
 
     private Game game;
     private final Player player;
@@ -85,6 +87,12 @@ public class GameController {
                     e.printStackTrace();
                 }
             }
+        }
+
+        try {
+            this.initializeChat();
+        } catch ( IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -187,6 +195,12 @@ public class GameController {
             loader.setController(new ToolCardController(toolCard));
             this.toolCardBox.getChildren().add(loader.load());
         }
+    }
+
+    private void initializeChat() throws IOException {
+        var loader = new FXMLLoader(getClass().getResource("/views/chat/chatBox.fxml"));
+        loader.setController(new ChatController(this.connection, this.player, this.game));
+        this.chatWrapper.getChildren().add(loader.load());
     }
 
     public Game getGame() {

@@ -13,3 +13,8 @@
 .input {
     -fx-background-radius: 0;
 }
+
+.chat {
+    -fx-padding: 10px;
+}
+
