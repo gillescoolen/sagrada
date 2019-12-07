@@ -190,4 +190,36 @@ public final class GameRepository extends Repository<Game> {
     public void addMultiple(Collection<Game> models) throws SQLException {
 
     }
+
+    public Player getNextGamePlayer(Game game, Player currentPlayer) throws SQLException {
+        PreparedStatement maxStatement = this.connection.getConnection().prepareStatement("SELECT MAX(seqnr) as max_seqnr, MIN(seqnr) as min_seqnr FROM player where spel_idspel = ?;");
+        maxStatement.setInt(1, game.getId());
+
+        ResultSet maxResultSet = maxStatement.executeQuery();
+        maxResultSet.next();
+
+        int maxSequenceNumber = maxResultSet.getInt("max_seqnr");
+        int minSequenceNumber = maxResultSet.getInt("min_seqnr");
+        int nextSequenceNumber = currentPlayer.getSequenceNumber() + 1;
+
+        maxResultSet.close();
+        maxStatement.close();
+
+        if (currentPlayer.getSequenceNumber() >= maxSequenceNumber) {
+            nextSequenceNumber = minSequenceNumber;
+        }
+
+        PreparedStatement playerIdStatement = this.connection.getConnection().prepareStatement("SELECT idplayer FROM player WHERE spel_idspel = ? AND seqnr = ?;");
+        playerIdStatement.setInt(1, game.getId());
+        playerIdStatement.setInt(2, nextSequenceNumber);
+
+        ResultSet playerIdResultSet = playerIdStatement.executeQuery();
+        playerIdResultSet.next();
+
+        int playerId = playerIdResultSet.getInt("idplayer");
+
+        PlayerRepository playerRepository = new PlayerRepository(this.connection);
+
+        return playerRepository.findById(playerId);
+    }
 }

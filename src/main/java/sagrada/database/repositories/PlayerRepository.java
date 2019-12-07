@@ -358,4 +358,21 @@ public final class PlayerRepository extends Repository<Player> {
 
         preparedStatement.close();
     }
+
+    public void nextPlayerTurn(Player player, Game game) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection()
+                .prepareStatement("UPDATE player SET isCurrentPlayer = ? WHERE idplayer = ?;");
+
+        preparedStatement.setBoolean(1, false);
+        preparedStatement.setInt(2, player.getId());
+
+        preparedStatement.executeUpdate();
+        preparedStatement.close();
+
+        GameRepository gameRepository = new GameRepository(this.connection);
+        Player nextPlayer = gameRepository.getNextGamePlayer(game, player);
+
+        nextPlayer.setCurrentPlayer(true);
+        this.update(nextPlayer);
+    }
 }
