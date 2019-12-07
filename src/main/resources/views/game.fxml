@@ -4,7 +4,6 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.shape.Rectangle?>
 <HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       stylesheets="/styles/game.css"
@@ -41,7 +40,7 @@
                 <VBox fx:id="chatWrapper"/>
 
                 <HBox styleClass="control-buttons" spacing="15">
-                    <Button styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
+                    <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
                     <Button styleClass="btn-controls" prefWidth="150" disable="true">ROLL DICE</Button>
                 </HBox>
             </VBox>

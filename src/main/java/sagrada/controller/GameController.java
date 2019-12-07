@@ -3,6 +3,7 @@ package sagrada.controller;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import sagrada.database.DatabaseConnection;
@@ -32,12 +33,16 @@ public class GameController {
     private HBox privateObjectiveCardBox;
     @FXML
     private VBox chatWrapper;
+    @FXML
+    private Button btnSkipTurn;
 
     private Game game;
-    private final Player player;
+    private Player player;
     private final DatabaseConnection connection;
     private final PlayerRepository playerRepository;
     private final DieRepository dieRepository;
+
+    private boolean gameReady = false;
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
         this.connection = connection;
@@ -47,7 +52,6 @@ public class GameController {
 
         this.playerRepository = new PlayerRepository(connection);
         this.dieRepository = new DieRepository(connection);
-        this.player = game.getPlayerByName(account.getUsername());
 
         try {
             if (game.getOwner().getAccount().getUsername().equals(account.getUsername()) && !gameRepository.checkIfGameHasStarted(game)) {
@@ -73,6 +77,8 @@ public class GameController {
                     player.setDiceBag(diceBag);
                 }
             }
+
+            this.player = this.playerRepository.getGamePlayer(account.getUsername(), game);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -80,6 +86,14 @@ public class GameController {
 
     @FXML
     protected void initialize() {
+        btnSkipTurn.setOnMouseClicked(e -> {
+            try {
+                this.player.skipTurn(this.playerRepository, this.game);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        });
+
         for (var player : this.game.getPlayers()) {
             if (player.getAccount().getUsername().equals(this.player.getAccount().getUsername())) {
                 try {
@@ -89,6 +103,7 @@ public class GameController {
                     this.initializeToolCards();
 
                     this.checkForPlayerPatternCards();
+                    this.startMainGameTimer();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -97,9 +112,38 @@ public class GameController {
 
         try {
             this.initializeChat();
-        } catch ( IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void startMainGameTimer() {
+        Timer mainGameTimer = new Timer();
+
+        mainGameTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    if (!gameReady) {
+                        return;
+                    }
+
+                    try {
+                        var player1 = playerRepository.findById(player.getId());
+
+                        if (player1.isCurrentPlayer()) {
+                            btnSkipTurn.setDisable(false);
+                        } else {
+                            btnSkipTurn.setDisable(true);
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+
+                });
+            }
+        }, 0, 1000);
     }
 
     private void checkForPlayerPatternCards() {
@@ -112,9 +156,9 @@ public class GameController {
                     try {
                         List<Player> players = playerRepository.getAllGamePlayers(game);
 
-                        boolean notEveryoneHasChosen = players.stream().anyMatch(p -> p.getPatternCard() == null);
+                        boolean everyoneHasChosen = players.stream().allMatch(p -> p.getPatternCard() != null);
 
-                        if (notEveryoneHasChosen) {
+                        if (!everyoneHasChosen) {
                             return;
                         }
 
@@ -127,17 +171,19 @@ public class GameController {
                             return;
                         }
 
-                        Player gamePlayer = game.getPlayerByName(currentPlayer.getAccount().getUsername());
+                        rowOne.getChildren().clear();
+                        rowTwo.getChildren().clear();
 
-                        if (gamePlayer == null) {
-                            var controller = new WindowPatternCardController(connection, currentPlayer.getPatternCard(), currentPlayer);
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
+                        var controller = new WindowPatternCardController(connection, player.getPatternCard(), player);
+                        var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
 
-                            loader.setController(controller);
-                            rowOne.getChildren().add(loader.load());
+                        loader.setController(controller);
 
-                            playerPatternCardsTimer.cancel();
-                        }
+                        rowOne.getChildren().add(loader.load());
+
+                        gameReady = true;
+                        playerPatternCardsTimer.cancel();
+                        playerPatternCardsTimer.purge();
                     } catch (SQLException | IOException e) {
                         e.printStackTrace();
                     }
