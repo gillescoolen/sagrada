@@ -27,7 +27,7 @@ public class ChatController {
     @FXML
     private Button sendButton;
     @FXML
-    private ListView lvMessageBox;
+    private ListView<FXMLLoader> lvMessageBox;
 
     private LocalDateTime lastFetched;
 

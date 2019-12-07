@@ -42,17 +42,27 @@ public class LobbyItemController {
     protected void initialize() {
         this.lbName.setText(this.game.getOwner().getAccount().getUsername() + "'s Game");
 
+        GameRepository gameRepository = new GameRepository(this.databaseConnection);
+
         int spots = this.getSpots(this.game.getPlayers());
         this.lbSpotsLeft.setText(spots + " spot(s) left!");
 
-        if (this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
-            this.lobbyItem.getStyleClass().clear();
-            this.lobbyItem.getStyleClass().add("item-accepted");
-            if (this.btnDecline != null) this.btnDecline.setDisable(true);
-        } else if (spots == 0 || !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
-            this.lobbyItem.setDisable(true);
-            this.lobbyItem.getStyleClass().clear();
-            this.lobbyItem.getStyleClass().add("item-full");
+        try {
+            if (gameRepository.checkIfGameHasStarted(this.game)) {
+                this.lobbyItem.getStyleClass().clear();
+                this.lobbyItem.getStyleClass().add("item-started");
+                if (this.btnDecline != null) this.btnDecline.setDisable(true);
+            } else if (this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
+                this.lobbyItem.getStyleClass().clear();
+                this.lobbyItem.getStyleClass().add("item-accepted");
+                if (this.btnDecline != null) this.btnDecline.setDisable(true);
+            } else if (spots == 0 || !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
+                this.lobbyItem.setDisable(true);
+                this.lobbyItem.getStyleClass().clear();
+                this.lobbyItem.getStyleClass().add("item-full");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         this.lobbyItem.setOnMouseClicked(c -> this.lobbyItemClicked());
