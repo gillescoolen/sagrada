@@ -51,6 +51,7 @@ public class LobbyItemController {
             if (gameRepository.checkIfGameHasStarted(this.game)) {
                 this.lobbyItem.getStyleClass().clear();
                 this.lobbyItem.getStyleClass().add("item-started");
+                if (this.btnDecline != null) this.btnDecline.setDisable(true);
             } else if (this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
                 this.lobbyItem.getStyleClass().clear();
                 this.lobbyItem.getStyleClass().add("item-accepted");
