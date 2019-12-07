@@ -191,7 +191,7 @@ public final class GameRepository extends Repository<Game> {
 
     }
 
-    private void updateGamePlayer(Player nextPlayer, Game game) throws SQLException {
+    public void updateGamePlayer(Player nextPlayer, Game game) throws SQLException {
         PreparedStatement nextPlayerGameStatement = this.connection.getConnection().prepareStatement("UPDATE game SET turn_idplayer = ? WHERE idgame = ?");
 
         nextPlayerGameStatement.setInt(1, nextPlayer.getId());
@@ -200,32 +200,5 @@ public final class GameRepository extends Repository<Game> {
         nextPlayerGameStatement.executeUpdate();
 
         nextPlayerGameStatement.close();
-    }
-
-    public Player getNextGamePlayer(Game game, Player currentPlayer) throws SQLException {
-        PreparedStatement maxStatement = this.connection.getConnection().prepareStatement("SELECT MAX(seqnr) as max_seqnr, MIN(seqnr) as min_seqnr FROM player where spel_idspel = ?;");
-        maxStatement.setInt(1, game.getId());
-
-        ResultSet maxResultSet = maxStatement.executeQuery();
-        maxResultSet.next();
-
-        int maxSequenceNumber = maxResultSet.getInt("max_seqnr");
-        int minSequenceNumber = maxResultSet.getInt("min_seqnr");
-        int nextSequenceNumber = currentPlayer.getSequenceNumber() + 1;
-
-        maxResultSet.close();
-        maxStatement.close();
-
-        if (currentPlayer.getSequenceNumber() >= maxSequenceNumber) {
-            nextSequenceNumber = minSequenceNumber;
-        }
-
-        PlayerRepository playerRepository = new PlayerRepository(this.connection);
-        
-        Player nextPlayer = playerRepository.getPlayerByGameAndSequenceNumber(game, nextSequenceNumber);
-
-        this.updateGamePlayer(nextPlayer, game);
-
-        return nextPlayer;
     }
 }
