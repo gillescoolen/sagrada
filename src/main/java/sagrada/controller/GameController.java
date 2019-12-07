@@ -67,7 +67,7 @@ public class GameController {
                     this.game.addToolCard(toolCard);
                 }
 
-                var dice = dieRepository.getUnusedDice(this.game.getId());
+                var dice = this.dieRepository.getUnusedDice(this.game.getId());
                 var diceBag = new DiceBag(dice);
                 for (var player : this.game.getPlayers()) {
                     player.setDiceBag(diceBag);
