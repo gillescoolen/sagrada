@@ -6,11 +6,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import sagrada.database.DatabaseConnection;
-import sagrada.database.repositories.GameRepository;
-import sagrada.database.repositories.PlayerRepository;
-import sagrada.database.repositories.PublicObjectiveCardRepository;
-import sagrada.database.repositories.ToolCardRepository;
+import sagrada.database.repositories.*;
 import sagrada.model.Account;
+import sagrada.model.DiceBag;
 import sagrada.model.Game;
 import sagrada.model.Player;
 import sagrada.util.StartGame;
@@ -39,6 +37,7 @@ public class GameController {
     private final Player player;
     private final DatabaseConnection connection;
     private final PlayerRepository playerRepository;
+    private final DieRepository dieRepository;
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
         this.connection = connection;
@@ -47,6 +46,7 @@ public class GameController {
         var gameRepository = new GameRepository(this.connection);
 
         this.playerRepository = new PlayerRepository(connection);
+        this.dieRepository = new DieRepository(connection);
         this.player = game.getPlayerByName(account.getUsername());
 
         try {
@@ -65,6 +65,12 @@ public class GameController {
 
                 for (var toolCard : toolCards) {
                     this.game.addToolCard(toolCard);
+                }
+
+                var dice = dieRepository.getUnusedDice(this.game.getId());
+                var diceBag = new DiceBag(dice);
+                for (var player : this.game.getPlayers()) {
+                    player.setDiceBag(diceBag);
                 }
             }
         } catch (SQLException e) {
