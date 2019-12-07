@@ -17,8 +17,6 @@ public class Game {
 
     private final List<FavorToken> favorTokens = new ArrayList<>(24);
 
-    private final List<Die> dice = new ArrayList<>(90);
-
     public int getId() {
         return this.id;
     }
@@ -64,10 +62,6 @@ public class Game {
         this.favorTokens.add(favorToken);
     }
 
-    public void addDie(Die die) {
-        this.dice.add(die);
-    }
-
     public List<Player> getPlayers() {
         return List.copyOf(this.players);
     }
@@ -82,14 +76,6 @@ public class Game {
 
     public List<FavorToken> getFavorTokens() {
         return List.copyOf(this.favorTokens);
-    }
-
-    public List<Die> getDice() {
-        return List.copyOf(this.dice);
-    }
-
-    public void removeDie(Die die) {
-        this.dice.remove(die);
     }
 
     public void removeFavorToken(FavorToken favorToken) {
