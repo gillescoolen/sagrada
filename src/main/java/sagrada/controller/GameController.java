@@ -172,18 +172,10 @@ public class GameController {
                             return;
                         }
 
-                        Player gamePlayer = game.getPlayerByName(currentPlayer.getAccount().getUsername());
-
-                        if (gamePlayer == null) {
-                            var controller = new WindowPatternCardController(connection, currentPlayer.getPatternCard(), currentPlayer);
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
-
-                            loader.setController(controller);
-                            rowOne.getChildren().add(loader.load());
-                            gameReady = true;
-                            playerPatternCardsTimer.cancel();
-                        }
-                    } catch (SQLException | IOException e) {
+                        gameReady = true;
+                        playerPatternCardsTimer.cancel();
+                        playerPatternCardsTimer.purge();
+                    } catch (SQLException e) {
                         e.printStackTrace();
                     }
                 });
