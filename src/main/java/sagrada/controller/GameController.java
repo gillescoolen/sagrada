@@ -37,6 +37,8 @@ public class GameController {
     private VBox chatWrapper;
     @FXML
     private Button btnSkipTurn;
+    @FXML
+    private Button btnRollDice;
 
     private Game game;
     private Player player;
@@ -96,6 +98,15 @@ public class GameController {
             }
         });
 
+        btnRollDice.setOnMouseClicked(e -> {
+            this.game.getDraftPool().removeAllDice();
+            var dice = this.player.grabFromDiceBag(this.game.getDiceCount());
+
+            // TODO: set dice in database
+
+            this.game.getDraftPool().addAllDice(dice);
+        });
+
         for (var player : this.game.getPlayers()) {
             if (player.getAccount().getUsername().equals(this.player.getAccount().getUsername())) {
                 try {
@@ -139,6 +150,9 @@ public class GameController {
                         } else {
                             btnSkipTurn.setDisable(true);
                         }
+
+                        // TODO: disable button if it is not the first turn in current round
+                        btnRollDice.setDisable(false);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -253,7 +267,7 @@ public class GameController {
     }
 
     private void initializeDice() throws IOException {
-        var diceCount = this.game.getPlayers().size() * 2 + 1;
+        var diceCount = this.game.getDiceCount();
         var draftedDice = this.game.getDraftPool().getDice();
 
         for (int i = 0; i < diceCount; ++i) {

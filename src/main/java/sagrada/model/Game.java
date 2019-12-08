@@ -114,6 +114,10 @@ public class Game {
         this.roundTrack = roundTrack;
     }
 
+    public int getDiceCount() {
+        return this.players.size() * 2 + 1;
+    }
+
     public void createPlayers() {
         // TODO: implement
     }

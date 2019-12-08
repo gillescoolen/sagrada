@@ -31,7 +31,7 @@
 
                 <HBox styleClass="control-buttons" spacing="15">
                     <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
-                    <Button styleClass="btn-controls" prefWidth="150" disable="true">ROLL DICE</Button>
+                    <Button fx:id="btnRollDice" disable="true" styleClass="btn-controls" prefWidth="150">ROLL DICE</Button>
                 </HBox>
             </VBox>
             <VBox fx:id="rowOne" styleClass="wpc-vbox">
