@@ -117,6 +117,9 @@ public class GameController {
         }
     }
 
+    /**
+     * This is the main event loop for a game.
+     */
     private void startMainGameTimer() {
         Timer mainGameTimer = new Timer();
 
@@ -154,14 +157,17 @@ public class GameController {
             public void run() {
                 Platform.runLater(() -> {
                     try {
+                        // Create a list of all players participating in the current game.
                         List<Player> players = playerRepository.getAllGamePlayers(game);
 
+                        // Check if every player has chosen a pattern card.
                         boolean everyoneHasChosen = players.stream().allMatch(p -> p.getPatternCard() != null);
 
                         if (!everyoneHasChosen) {
                             return;
                         }
 
+                        // Filter our player from the participating players.
                         Player currentPlayer = players.stream()
                                 .filter(p -> p.getAccount().getUsername().equals(player.getAccount().getUsername()))
                                 .findFirst()
@@ -171,6 +177,7 @@ public class GameController {
                             return;
                         }
 
+                        // If the currentPlayer is our actual player, clear the cards.
                         rowOne.getChildren().clear();
                         rowTwo.getChildren().clear();
 
@@ -179,6 +186,7 @@ public class GameController {
 
                         loader.setController(controller);
 
+                        // Show our players card.
                         rowOne.getChildren().add(loader.load());
 
                         gameReady = true;
@@ -192,6 +200,12 @@ public class GameController {
         }, 0, 1000);
     }
 
+    /**
+     * Loads the available pattern cards for our player to choose from.
+     *
+     * @param player
+     * @throws IOException
+     */
     private void initializeWindowOptions(Player player) throws IOException {
         var i = 1;
 
@@ -203,6 +217,7 @@ public class GameController {
             e.printStackTrace();
         }
 
+        // Show available options when our player hasn't chosen a card yet.
         if (player.getCardOptions().size() > 0) {
             for (var patternCard : player.getCardOptions()) {
                 var controller = new WindowPatternCardController(this.connection, patternCard, this.player);
@@ -219,6 +234,7 @@ public class GameController {
                 ++i;
             }
         } else {
+            // Load our clients player pattern card when rejoining a game.
             var controller = new WindowPatternCardController(this.connection, player.getPatternCard(), this.player);
             var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
 
