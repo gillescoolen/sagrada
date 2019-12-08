@@ -40,7 +40,8 @@
                 <VBox fx:id="chatWrapper"/>
 
                 <HBox styleClass="control-buttons" spacing="15">
-                    <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
+                    <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150">SKIP TURN
+                    </Button>
                     <Button styleClass="btn-controls" prefWidth="150" disable="true">ROLL DICE</Button>
                 </HBox>
             </VBox>
@@ -54,7 +55,10 @@
     <!-- Cards -->
     <VBox styleClass="game-vbox" alignment="CENTER_RIGHT">
         <!-- Tool cards -->
-        <Text styleClass="title-tool-cards">Tool Cards</Text>
+        <HBox VBox.vgrow="ALWAYS" spacing="275" alignment="CENTER">
+            <Text fx:id="currentTokenAmount" styleClass="title-player-tokens">You have 0 tokens.</Text>
+            <Text styleClass="title-tool-cards">Tool Cards</Text>
+        </HBox>
         <HBox fx:id="toolCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
 
         <!-- Public Objective card -->

@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.*;
 import sagrada.model.*;
@@ -32,6 +33,8 @@ public class GameController {
     private VBox chatWrapper;
     @FXML
     private Button btnSkipTurn;
+    @FXML
+    private Text currentTokenAmount;
 
     private Game game;
     private Player player;
