@@ -8,17 +8,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.*;
-import sagrada.model.Account;
-import sagrada.model.DiceBag;
-import sagrada.model.Game;
-import sagrada.model.Player;
+import sagrada.model.*;
 import sagrada.util.StartGame;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class GameController {
     @FXML
@@ -43,6 +39,7 @@ public class GameController {
     private final DieRepository dieRepository;
 
     private boolean gameReady = false;
+    private TreeMap<Integer, PatternCard> patternCards = new TreeMap<Integer, PatternCard>();
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
         this.connection = connection;
@@ -131,6 +128,8 @@ public class GameController {
                         return;
                     }
 
+                    syncPatternCards();
+
                     try {
                         var player1 = playerRepository.findById(player.getId());
 
@@ -142,13 +141,53 @@ public class GameController {
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-
-
                 });
             }
         }, 0, 1000);
     }
 
+    /**
+     * Sync the pattern cards from our client with the ones inside the database.
+     */
+    private void syncPatternCards() {
+        var players = this.game.getPlayers();
+        var newPatternCards = new TreeMap<Integer, PatternCard>();
+
+        // Fetch the pattern cards for every player and check for differences in each one.
+        for (Player player : players) {
+            // TODO: Check if the result from getPatternCard() is up to date with the entry from the DB.
+            // Fetch the card from a player and add it to the new list.
+            newPatternCards.put(player.getId(), player.getPatternCard());
+        }
+
+        // If Pattern Cards have never been set, set them to our newPatternCards.
+        // Otherwise, check for differences between squares.
+        if (this.patternCards.size() == 0) {
+            this.patternCards = newPatternCards;
+        } else {
+            for (Map.Entry<Integer, PatternCard> entry : this.patternCards.entrySet()) {
+                var currentCard = this.patternCards.get(entry.getKey());
+
+                // Match the entry from our new cards to our existing one and set the squares when they are different.
+                if (entry.getValue() != currentCard) {
+                    // This also sets the die.
+                    currentCard.setSquares(entry.getValue().getSquares());
+                }
+            }
+        }
+    }
+
+    /**
+     * Load the pattern cards for each player.
+     */
+    private void showPatternCards() {
+
+    }
+
+    /**
+     * Check for player chosen pattern cards.
+     * When every player has chosen a card, clear the current cards and only show our player card.
+     */
     private void checkForPlayerPatternCards() {
         var playerPatternCardsTimer = new Timer();
 
