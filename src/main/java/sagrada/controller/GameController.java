@@ -112,6 +112,7 @@ public class GameController {
 
         try {
             this.initializeChat();
+            this.setCurrentTokenAmount();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -275,6 +276,10 @@ public class GameController {
         var loader = new FXMLLoader(getClass().getResource("/views/chat/chatBox.fxml"));
         loader.setController(new ChatController(this.connection, this.player, this.game));
         this.chatWrapper.getChildren().add(loader.load());
+    }
+
+    private void setCurrentTokenAmount() {
+        this.currentTokenAmount.setText(String.format("You have %s tokens.", String.valueOf(this.player.getFavorTokens().size())));
     }
 
     public Game getGame() {
