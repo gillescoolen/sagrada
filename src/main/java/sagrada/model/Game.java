@@ -17,6 +17,10 @@ public class Game {
 
     private final List<FavorToken> favorTokens = new ArrayList<>(24);
 
+    public Game() {
+        this.draftPool = new DraftPool();
+    }
+
     public int getId() {
         return this.id;
     }

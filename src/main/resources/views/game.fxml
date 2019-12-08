@@ -23,17 +23,7 @@
             <fx:include source="game/roundTrack.fxml"/>
             <fx:include source="game/roundTrack.fxml"/>
         </HBox>
-        <HBox alignment="CENTER" VBox.vgrow="ALWAYS" styleClass="dice-hbox">
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-        </HBox>
+        <HBox fx:id="diceBox" alignment="CENTER" VBox.vgrow="ALWAYS" styleClass="dice-hbox"/>
         <HBox styleClass="wpc-hbox" alignment="BOTTOM_RIGHT">
             <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
 

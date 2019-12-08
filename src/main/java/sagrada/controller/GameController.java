@@ -26,6 +26,8 @@ public class GameController {
     @FXML
     private VBox rowTwo;
     @FXML
+    private HBox diceBox;
+    @FXML
     private HBox toolCardBox;
     @FXML
     private HBox publicObjectiveCardBox;
@@ -101,6 +103,7 @@ public class GameController {
                     this.initializePrivateObjectiveCard(this.game.getPlayerByName(player.getAccount().getUsername()));
                     this.initializePublicObjectiveCards();
                     this.initializeToolCards();
+                    this.initializeDice();
 
                     this.checkForPlayerPatternCards();
                     this.startMainGameTimer();
@@ -246,6 +249,20 @@ public class GameController {
             var loader = new FXMLLoader(getClass().getResource("/views/game/toolCard.fxml"));
             loader.setController(new ToolCardController(toolCard));
             this.toolCardBox.getChildren().add(loader.load());
+        }
+    }
+
+    private void initializeDice() throws IOException {
+        var diceCount = this.game.getPlayers().size() * 2 + 1;
+        var draftedDice = this.game.getDraftPool().getDice();
+
+        for (int i = 0; i < diceCount; ++i) {
+            var loader = new FXMLLoader(getClass().getResource("/views/game/die.fxml"));
+            if (i < draftedDice.size()) {
+                var die = draftedDice.get(i);
+                loader.setController(new DieController(die));
+            }
+            this.diceBox.getChildren().add(loader.load());
         }
     }
 
