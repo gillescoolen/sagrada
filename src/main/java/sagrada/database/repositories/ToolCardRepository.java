@@ -53,7 +53,24 @@ public final class ToolCardRepository extends Repository<ToolCard> {
 
     @Override
     public ToolCard findById(int id) throws SQLException {
-        return null;
+        PreparedStatement preparedStatement = this.connection.getConnection()
+                .prepareStatement("SELECT * FROM toolcard WHERE idtoolcard = ?");
+        preparedStatement.setInt(1, id);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (!resultSet.next()) {
+            return null;
+        }
+
+        final int idtoolcard = resultSet.getInt("idtoolcard");
+        final String name = resultSet.getString("name");
+        final String description = resultSet.getString("description");
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return CardFactory.getToolCard(idtoolcard, name, description);
     }
 
     @Override
@@ -136,5 +153,45 @@ public final class ToolCardRepository extends Repository<ToolCard> {
         }
 
         preparedStatement.close();
+    }
+
+    public int getGameToolCardID(int gameId, int toolCardId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection()
+                .prepareStatement("SELECT * FROM gametoolcard WHERE idtoolcard = ? AND idgame = ?;");
+        preparedStatement.setInt(1, toolCardId);
+        preparedStatement.setInt(2, gameId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (!resultSet.next()) {
+            return 0;
+        }
+
+        final int id = resultSet.getInt("gametoolcard");
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return id;
+    }
+
+    public ToolCard getToolCardByGameToolCardId(int gameId, int gameToolCardId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection()
+                .prepareStatement("SELECT * FROM gametoolcard WHERE gametoolcard = ? AND idgame = ?;");
+        preparedStatement.setInt(1, gameToolCardId);
+        preparedStatement.setInt(2, gameId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (!resultSet.next()) {
+            return null;
+        }
+
+        final int id = resultSet.getInt("idtoolcard");
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return this.findById(id);
     }
 }
