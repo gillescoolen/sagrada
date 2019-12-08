@@ -152,6 +152,7 @@ public class GameController {
     private void syncPatternCards() {
         var players = this.game.getPlayers();
         var newPatternCards = new TreeMap<Integer, PatternCard>();
+        var changed = false;
 
         // Fetch the pattern cards for every player and check for differences in each one.
         for (Player player : players) {
@@ -172,16 +173,47 @@ public class GameController {
                 if (entry.getValue() != currentCard) {
                     // This also sets the die.
                     currentCard.setSquares(entry.getValue().getSquares());
+                    changed = true;
                 }
+            }
+        }
+
+        // Update the existing cards whenever there was a difference.
+        if (changed) {
+            try {
+                this.showPatternCards();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
 
     /**
      * Load the pattern cards for each player.
+     * Optimization: Load only the card that changed instead of all cards.
      */
-    private void showPatternCards() {
+    private void showPatternCards() throws IOException {
+        var row = 0;
+        var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
 
+        // Clear the existing pattern cards.
+        rowOne.getChildren().clear();
+        rowTwo.getChildren().clear();
+
+        // TODO: Render our card first or with another style.
+        // Loop through patterns cards and render our clients player card first.
+        for (Map.Entry<Integer, PatternCard> entry : this.patternCards.entrySet()) {
+            var controller = new WindowPatternCardController(this.connection, entry.getValue(), this.player);
+            loader.setController(controller);
+
+            if (row <= 2) {
+                this.rowOne.getChildren().add(loader.load());
+            } else {
+                this.rowTwo.getChildren().add(loader.load());
+            }
+
+            ++row;
+        }
     }
 
     /**
