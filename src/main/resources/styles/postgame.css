@@ -12,23 +12,6 @@
     -fx-padding: 15px;
 }
 
-.player-name {
-    -fx-fill: black;
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-}
-
-.player-hbox {
-    -fx-background-color: rgb(255,255,205);
-    -fx-padding: 15px;
-    -fx-background-radius: 10px;
-    -fx-border-width: 1;
-    -fx-border-style: solid;
-    -fx-border-color: black;
-    -fx-border-radius: 10px;
-    -fx-spacing: 10px;
-}
-
 .favor-token {
     -fx-fill: white;
     -fx-stroke-width: 1;

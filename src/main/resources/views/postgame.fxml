@@ -15,30 +15,7 @@
     <!-- LEADERBOARD -->
     <VBox styleClass="leader-vbox" prefWidth="250" maxWidth="400">
         <Text styleClass="title" text="Game summary"/>
-        <HBox styleClass="player-hbox" alignment="CENTER_LEFT">
-            <Rectangle styleClass="private-dice" fill="blue" height="40" width="40"/>
-            <StackPane>
-                <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>
-                <Text styleClass="favor-token-text" text="15"/>
-            </StackPane>
-            <Text styleClass="player-name" text="Gilles"/>
-        </HBox>
-        <HBox styleClass="player-hbox" alignment="CENTER_LEFT">
-            <Rectangle styleClass="private-dice" fill="red" height="40" width="40"/>
-            <StackPane>
-                <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>
-                <Text styleClass="favor-token-text" text="15"/>
-            </StackPane>
-            <Text styleClass="player-name" text="Gilles"/>
-        </HBox>
-        <HBox styleClass="player-hbox" alignment="CENTER_LEFT">
-            <Rectangle styleClass="private-dice" fill="green" height="40" width="40"/>
-            <StackPane>
-                <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>
-                <Text styleClass="favor-token-text" text="15"/>
-            </StackPane>
-            <Text styleClass="player-name" text="Gilles"/>
-        </HBox>
+        <fx:include source="game/post-player.fxml"/>
     </VBox>
 
     <!-- CARDS -->

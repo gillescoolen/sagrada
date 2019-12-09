@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Ellipse?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox styleClass="player-hbox" alignment="CENTER_LEFT" stylesheets="/styles/game/post-player.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <Rectangle styleClass="private-dice" fill="blue" height="40" width="40"/>
+    <StackPane>
+        <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>
+        <Text styleClass="favor-token-text" text="15"/>
+    </StackPane>
+    <Text styleClass="player-name" text="Gilles"/>
+</HBox>
