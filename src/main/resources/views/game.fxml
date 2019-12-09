@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.scene.text.Text?>
 <HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
@@ -40,9 +39,10 @@
                 <VBox fx:id="chatWrapper"/>
 
                 <HBox styleClass="control-buttons" spacing="15">
-                    <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150">SKIP TURN
+                    <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150"
+                            text="SKIP TURN">
                     </Button>
-                    <Button styleClass="btn-controls" prefWidth="150" disable="true">ROLL DICE</Button>
+                    <Button styleClass="btn-controls" prefWidth="150" disable="true" text="ROLL DICE"/>
                 </HBox>
             </VBox>
             <VBox fx:id="rowOne" styleClass="wpc-vbox">
