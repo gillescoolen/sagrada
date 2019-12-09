@@ -194,7 +194,6 @@ public class GameController {
      */
     private void showPatternCards() throws IOException {
         var row = 0;
-        var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
 
         // Clear the existing pattern cards.
         rowOne.getChildren().clear();
@@ -204,6 +203,7 @@ public class GameController {
         // Loop through patterns cards and render our clients player card first.
         for (Map.Entry<Integer, PatternCard> entry : this.patternCards.entrySet()) {
             var controller = new WindowPatternCardController(this.connection, entry.getValue(), this.player);
+            var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
             loader.setController(controller);
 
             if (row <= 2) {
