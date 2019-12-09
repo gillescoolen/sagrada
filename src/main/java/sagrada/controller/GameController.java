@@ -205,10 +205,10 @@ public class GameController implements Consumer<Game> {
                         initializeDieStuffAndFavorTokens(game.getPlayers());
 
                         // Filter our player from the participating players.
-                         player = players.stream()
-                                .filter(p -> p.getAccount().getUsername().equals(player.getAccount().getUsername()))
-                                .findFirst()
-                                .orElse(null);
+                        player = players.stream()
+                            .filter(p -> p.getAccount().getUsername().equals(player.getAccount().getUsername()))
+                            .findFirst()
+                            .orElse(null);
 
                         if (player == null) {
                             return;
