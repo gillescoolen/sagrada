@@ -4,12 +4,37 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Text?>
-<HBox xmlns="http://javafx.com/javafx"
+<?import javafx.scene.shape.Ellipse?>
+<VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       stylesheets="/styles/postgame.css"
       styleClass="post-game-wrapper"
       prefWidth="1400" prefHeight="720">
 
     <Text styleClass="title" text="Game summary"/>
-    
-</HBox>
+    <VBox styleClass="leader-vbox" prefWidth="250" maxWidth="400">
+        <HBox styleClass="player-hbox" alignment="CENTER_LEFT">
+            <Text styleClass="player-name" text="Raul"/>
+            <StackPane>
+                <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>
+                <Text styleClass="favor-token-text" text="15"/>
+            </StackPane>
+        </HBox>
+        <HBox styleClass="player-hbox" alignment="CENTER_LEFT">
+            <Text styleClass="player-name" text="Brian"/>
+            <StackPane>
+                <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>
+                <Text styleClass="favor-token-text" text="15"/>
+            </StackPane>
+        </HBox>
+        <HBox styleClass="player-hbox" alignment="CENTER_LEFT">
+            <Text styleClass="player-name" text="Gilles"/>
+            <StackPane>
+                <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>
+                <Text styleClass="favor-token-text" text="15"/>
+            </StackPane>
+        </HBox>
+    </VBox>
+
+    <!-- Cards -->
+</VBox>
