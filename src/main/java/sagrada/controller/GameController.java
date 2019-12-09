@@ -191,9 +191,9 @@ public class GameController {
 
                             loader.setController(controller);
 
-                            if (rowOne.getChildren().size() <= 2) {
+                            if (rowOne.getChildren().size() < 2) {
                                 rowOne.getChildren().add(loader.load());
-                            } else if (rowTwo.getChildren().size() <= 2) {
+                            } else if (rowTwo.getChildren().size() < 2) {
                                 rowTwo.getChildren().add(loader.load());
                             }
                         }
