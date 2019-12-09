@@ -1,11 +1,15 @@
 package sagrada.controller;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import sagrada.component.LobbyScreen;
 import sagrada.database.DatabaseConnection;
@@ -16,6 +20,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class LoginController {
+    @FXML
+    private VBox vbLogin;
     @FXML
     private TextField tfUsername;
     @FXML
@@ -38,6 +44,14 @@ public class LoginController {
     @FXML
     protected void initialize() {
         this.loginButton.setOnAction((actionEvent) -> this.handleLogin());
+        this.vbLogin.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().equals(KeyCode.ENTER)) {
+                    handleLogin();
+                }
+            }
+        });
         this.registerButton.setOnAction((actionEvent) -> this.handleRegister());
 
         try {
