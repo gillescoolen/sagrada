@@ -31,7 +31,7 @@ public class DraftPool {
         this.dice.set(dice.indexOf(oldDieIndex), newDie);
     }
 
-    public void reRollDraft() {
+    public void throwDice() {
         Random random = new Random();
         this.dice.forEach(die -> die.setValue(random.nextInt(6) + 1));
     }

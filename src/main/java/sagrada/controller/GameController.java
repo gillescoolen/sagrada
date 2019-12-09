@@ -110,7 +110,7 @@ public class GameController implements Consumer<Game> {
             var dice = this.player.grabFromDiceBag(this.game.getDiceCount());
 
             draftPool.addAllDice(dice);
-            draftPool.reRollDraft();
+            draftPool.throwDice();
 
             try {
                 var round = this.gameRepository.getCurrentRound(this.game.getId());
