@@ -2,7 +2,7 @@ package sagrada.model;
 
 import sagrada.util.Observable;
 
-public abstract class ObservableCard extends Observable<PatternCard> {
+public abstract class ObservableCard<T> extends Observable<T> {
     private final String name;
 
     public String getName() {

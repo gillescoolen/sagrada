@@ -8,17 +8,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.*;
-import sagrada.model.Account;
-import sagrada.model.DiceBag;
-import sagrada.model.Game;
-import sagrada.model.Player;
+import sagrada.model.*;
+import sagrada.model.card.activators.ToolCardActivatorFactory;
 import sagrada.util.StartGame;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class GameController {
     @FXML
@@ -47,6 +43,7 @@ public class GameController {
     private final DieRepository dieRepository;
 
     private boolean gameReady = false;
+    private TreeMap<Integer, PatternCard> patternCards = new TreeMap<>();
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
         this.connection = connection;
@@ -131,6 +128,9 @@ public class GameController {
         }
     }
 
+    /**
+     * This is the main event loop for a game.
+     */
     private void startMainGameTimer() {
         Timer mainGameTimer = new Timer();
 
@@ -142,10 +142,16 @@ public class GameController {
                         return;
                     }
 
-                    try {
-                        var player1 = playerRepository.findById(player.getId());
+                    var playerFrameRepository = new PlayerFrameRepository(connection);
 
-                        if (player1.isCurrentPlayer()) {
+                    try {
+                        for (var player : game.getPlayers()) {
+                            playerFrameRepository.getPlayerFrame(player);
+                        }
+
+                        var playerOne = game.getPlayers().stream().filter(filteredPlayer -> filteredPlayer.getId() == player.getId()).findFirst().orElse(null);
+
+                        if (playerOne != null && playerOne.isCurrentPlayer()) {
                             btnSkipTurn.setDisable(false);
                         } else {
                             btnSkipTurn.setDisable(true);
@@ -156,13 +162,15 @@ public class GameController {
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-
-
                 });
             }
         }, 0, 1000);
     }
 
+    /**
+     * Check for player chosen pattern cards.
+     * When every player has chosen a card, clear the current cards and only show our player card.
+     */
     private void checkForPlayerPatternCards() {
         var playerPatternCardsTimer = new Timer();
 
@@ -171,14 +179,17 @@ public class GameController {
             public void run() {
                 Platform.runLater(() -> {
                     try {
-                        List<Player> players = playerRepository.getAllGamePlayers(game);
-
-                        boolean everyoneHasChosen = players.stream().allMatch(p -> p.getPatternCard() != null);
+                        // Check if every player has chosen a pattern card.
+                        var everyoneHasChosen = playerRepository.isPatternCardChosen(game);
 
                         if (!everyoneHasChosen) {
                             return;
                         }
 
+                        var players = playerRepository.getAllGamePlayers(game);
+                        game.addPlayers(players);
+
+                        // Filter our player from the participating players.
                         Player currentPlayer = players.stream()
                                 .filter(p -> p.getAccount().getUsername().equals(player.getAccount().getUsername()))
                                 .findFirst()
@@ -188,15 +199,22 @@ public class GameController {
                             return;
                         }
 
+                        // If the currentPlayer is our actual player, clear the cards.
                         rowOne.getChildren().clear();
                         rowTwo.getChildren().clear();
 
-                        var controller = new WindowPatternCardController(connection, player.getPatternCard(), player);
-                        var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
+                        for (var player : players) {
+                            var controller = new WindowPatternCardController(connection, player);
+                            var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
 
-                        loader.setController(controller);
+                            loader.setController(controller);
 
-                        rowOne.getChildren().add(loader.load());
+                            if (rowOne.getChildren().size() < 2) {
+                                rowOne.getChildren().add(loader.load());
+                            } else if (rowTwo.getChildren().size() < 2) {
+                                rowTwo.getChildren().add(loader.load());
+                            }
+                        }
 
                         gameReady = true;
                         playerPatternCardsTimer.cancel();
@@ -220,6 +238,7 @@ public class GameController {
             e.printStackTrace();
         }
 
+        // Show available options when our player hasn't chosen a card yet.
         if (player.getCardOptions().size() > 0) {
             for (var patternCard : player.getCardOptions()) {
                 var controller = new WindowPatternCardController(this.connection, patternCard, this.player);
@@ -236,9 +255,9 @@ public class GameController {
                 ++i;
             }
         } else {
+            // Load our clients player pattern card when rejoining a game.
             var controller = new WindowPatternCardController(this.connection, player.getPatternCard(), this.player);
             var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
-
             loader.setController(controller);
             this.rowOne.getChildren().add(loader.load());
         }
@@ -261,7 +280,7 @@ public class GameController {
     private void initializeToolCards() throws IOException {
         for (var toolCard : this.game.getToolCards()) {
             var loader = new FXMLLoader(getClass().getResource("/views/game/toolCard.fxml"));
-            loader.setController(new ToolCardController(toolCard));
+            loader.setController(new ToolCardController(toolCard, ToolCardActivatorFactory.getToolCardActivator(this, toolCard)));
             this.toolCardBox.getChildren().add(loader.load());
         }
     }

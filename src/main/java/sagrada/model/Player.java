@@ -98,6 +98,10 @@ public class Player {
         this.cardOptions.add(patternCard);
     }
 
+    public void addCardOption(List<PatternCard> patternCards) {
+        this.cardOptions.addAll(patternCards);
+    }
+
     public void addFavorToken(FavorToken favorToken) {
         this.favorTokens.add(favorToken);
     }
