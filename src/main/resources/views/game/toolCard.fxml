@@ -5,7 +5,7 @@
 <?import javafx.scene.text.Text?>
 
 <AnchorPane styleClass="tool-card-wrapper" stylesheets="/styles/game/tool-card.css" prefHeight="375.0" prefWidth="200.0" maxWidth="200" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
-    <VBox styleClass="tool-card-vbox">
+    <VBox fx:id="wrapper"  styleClass="tool-card-vbox">
         <Text fx:id="name" styleClass="tool-card-title" wrappingWidth="200.0"/>
         <Text fx:id="description" wrappingWidth="200.0"/>
     </VBox>
