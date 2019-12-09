@@ -192,9 +192,7 @@ public class GameController {
                             return;
                         }
 
-                        var gameRepository = new GameRepository(connection);
-
-                        if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername()) && !gameRepository.checkIfGameHasStarted(game)) {
+                        if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername())) {
                             startGameUtil.shareFavorTokens();
                             game = startGameUtil.getCreatedGame();
                         }
