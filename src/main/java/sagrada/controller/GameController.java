@@ -192,7 +192,7 @@ public class GameController {
                             return;
                         }
 
-                        if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername())) {
+                        if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername()) && startGameUtil != null) {
                             startGameUtil.shareFavorTokens();
                             game = startGameUtil.getCreatedGame();
                         }
