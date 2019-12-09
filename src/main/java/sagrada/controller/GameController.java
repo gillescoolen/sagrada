@@ -166,7 +166,7 @@ public class GameController {
         if (this.patternCards.size() == 0) {
             this.patternCards = newPatternCards;
         } else {
-            for (Map.Entry<Integer, PatternCard> entry : this.patternCards.entrySet()) {
+            for (Map.Entry<Integer, PatternCard> entry : newPatternCards.entrySet()) {
                 var currentCard = this.patternCards.get(entry.getKey());
 
                 // Match the entry from our new cards to our existing one and set the squares when they are different.
