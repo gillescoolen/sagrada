@@ -12,6 +12,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import sagrada.component.BackButton;
+import sagrada.component.GameScreen;
+import sagrada.component.LobbyScreen;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.AccountRepository;
 import sagrada.database.repositories.GameRepository;
@@ -81,10 +83,8 @@ public class GameLobbyCreatorController {
 
     private void backToLobbyScreen() {
         try {
-            var loader = new FXMLLoader(getClass().getResource("/views/lobby/lobby.fxml"));
             var stage = ((Stage) this.apPanel.getScene().getWindow());
-            loader.setController(new LobbyController(this.databaseConnection, this.account));
-            var scene = new Scene(loader.load());
+            var scene = new Scene(new LobbyScreen(this.databaseConnection, this.account).load());
             stage.setScene(scene);
         } catch (IOException e) {
             e.printStackTrace();
@@ -184,10 +184,8 @@ public class GameLobbyCreatorController {
     private void startGame() {
         if (this.game.getPlayers().size() >= 2) {
             try {
-                var loader = new FXMLLoader(getClass().getResource("/views/game.fxml"));
                 var stage = ((Stage) this.btnInvite.getScene().getWindow());
-                loader.setController(new GameController(this.databaseConnection, this.game, this.account));
-                var scene = new Scene(loader.load());
+                var scene = new Scene(new GameScreen(this.databaseConnection, this.game, this.account).load());
 
                 var gameRepository = new GameRepository(this.databaseConnection);
 

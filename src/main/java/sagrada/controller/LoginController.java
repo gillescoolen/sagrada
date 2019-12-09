@@ -1,13 +1,13 @@
 package sagrada.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import sagrada.component.LobbyScreen;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.AccountRepository;
 import sagrada.model.Account;
@@ -112,10 +112,8 @@ public class LoginController {
     }
 
     private void switchScene(Account account) throws IOException {
-        var loader = new FXMLLoader(getClass().getResource("/views/lobby/lobby.fxml"));
         var stage = ((Stage) this.tfUsername.getScene().getWindow());
-        loader.setController(new LobbyController(this.databaseConnection, account));
-        var scene = new Scene(loader.load());
+        var scene = new Scene(new LobbyScreen(this.databaseConnection, account).load());
         stage.setScene(scene);
     }
 }
