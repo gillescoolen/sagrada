@@ -162,7 +162,6 @@ public class GameController implements Consumer<Game> {
 
                         var playerOne = game.getPlayers().stream().filter(filteredPlayer -> filteredPlayer.getId() == player.getId()).findFirst().orElse(null);
 
-
                         if (playerOne != null && playerOne.isCurrentPlayer()) {
                             btnSkipTurn.setDisable(false);
 
