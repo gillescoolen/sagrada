@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.*;
 import sagrada.model.*;
+import sagrada.model.card.activators.ToolCardActivatorFactory;
 import sagrada.util.StartGame;
 
 import java.io.IOException;
@@ -262,7 +263,7 @@ public class GameController {
     private void initializeToolCards() throws IOException {
         for (var toolCard : this.game.getToolCards()) {
             var loader = new FXMLLoader(getClass().getResource("/views/game/toolCard.fxml"));
-            loader.setController(new ToolCardController(toolCard));
+            loader.setController(new ToolCardController(toolCard, ToolCardActivatorFactory.getToolCardActivator(this, toolCard)));
             this.toolCardBox.getChildren().add(loader.load());
         }
     }
