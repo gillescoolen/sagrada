@@ -35,6 +35,22 @@ public class StartGame {
         return this.game;
     }
 
+    public void shareFavorTokens() {
+        for (var player : this.game.getPlayers()) {
+            var unUsedTokens = this.game.getFavorTokens().subList(0, player.getPatternCard().getDifficulty());
+
+            try {
+                this.favorTokenRepository.updatePlayerFavorTokens(player, unUsedTokens);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            unUsedTokens.forEach(favorToken -> favorToken.setPlayerId(player.getId()));
+            player.addFavorTokens(unUsedTokens);
+            this.game.removeFavorTokens(unUsedTokens);
+        }
+    }
+
     private void initializePlayers() {
         try {
             this.game.addPlayers(this.playerRepository.prepareAllGamePlayers(this.game));
@@ -66,6 +82,7 @@ public class StartGame {
     private void initializeFavorTokens() {
         try {
             List<FavorToken> tokenList = new ArrayList<>();
+
             for (int i = 0; i < 24; i++) {
                 tokenList.add(new FavorToken(0, 0, null, null));
             }

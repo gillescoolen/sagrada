@@ -37,6 +37,7 @@ public class GameController {
     private Text currentTokenAmount;
 
     private Game game;
+    private StartGame startGameUtil;
     private Player player;
     private final DatabaseConnection connection;
     private final PlayerRepository playerRepository;
@@ -58,8 +59,8 @@ public class GameController {
 
         try {
             if (game.getOwner().getAccount().getUsername().equals(account.getUsername()) && !gameRepository.checkIfGameHasStarted(game)) {
-                var startGame = new StartGame(game, connection);
-                this.game = startGame.getCreatedGame();
+                this.startGameUtil = new StartGame(game, connection);
+                this.game = this.startGameUtil.getCreatedGame();
             } else {
                 this.game = game;
 
@@ -191,6 +192,12 @@ public class GameController {
                             return;
                         }
 
+                        var gameRepository = new GameRepository(connection);
+
+                        if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername()) && !gameRepository.checkIfGameHasStarted(game)) {
+                            startGameUtil.shareFavorTokens();
+                        }
+
                         // If the currentPlayer is our actual player, clear the cards.
                         rowOne.getChildren().clear();
                         rowTwo.getChildren().clear();
@@ -281,20 +288,6 @@ public class GameController {
         var loader = new FXMLLoader(getClass().getResource("/views/chat/chatBox.fxml"));
         loader.setController(new ChatController(this.connection, this.player, this.game));
         this.chatWrapper.getChildren().add(loader.load());
-    }
-
-    private void initializeFavorTokens(List<Player> players) throws SQLException {
-        for (Player player : players) {
-            var unUsedTokens = game.getFavorTokens().subList(0, player.getPatternCard().getDifficulty());
-
-            favorTokenRepository.updatePlayerFavorTokens(player, unUsedTokens);
-
-            unUsedTokens.forEach(favorToken -> favorToken.setPlayerId(player.getId()));
-
-            player.addFavorTokens(unUsedTokens);
-
-            game.removeFavorTokens(unUsedTokens);
-        }
     }
 
     private void setCurrentTokenAmount() {
