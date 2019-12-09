@@ -29,6 +29,12 @@ public class ToolCardActivatorFactory {
             case "Rondsnijder":
                 toolCardActivator = new LensCutterActivator(gameController, toolCard);
                 break;
+            case "Folie-aandrukker":
+                toolCardActivator = new CopperFoilBurnisherActivator(gameController, toolCard);
+                break;
+            case "Snijliniaal":
+                toolCardActivator = new CorkBackedStraightedgeActivator(gameController, toolCard);
+                break;
         }
 
         return toolCardActivator;
