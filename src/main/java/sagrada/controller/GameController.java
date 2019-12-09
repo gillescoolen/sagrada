@@ -70,7 +70,7 @@ public class GameController implements Consumer<Game> {
                 this.game.addObjectiveCard(publicObjectiveCardRepository.getAllByGameId(this.game.getId()));
                 this.game.addToolCard(toolCardRepository.getAllByGameId(this.game.getId()));
 
-                this.initializeDieBagAndFavorTokens(this.game.getPlayers());
+                this.initializeDieStuffAndFavorTokens(this.game.getPlayers());
 
                 this.game.addFavorTokens(this.favorTokenRepository.getFavorTokens(this.game.getId()));
             }
@@ -164,7 +164,7 @@ public class GameController implements Consumer<Game> {
                             btnSkipTurn.setDisable(true);
                         }
 
-                        // TODO: disable button if it is not the first turn in current round
+                        // TODO: only allow roll dice when it is allowed
                         btnRollDice.setDisable(false);
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -196,7 +196,7 @@ public class GameController implements Consumer<Game> {
                         var players = playerRepository.getAllGamePlayers(game);
                         game.addPlayers(players);
 
-                        initializeDieBagAndFavorTokens(game.getPlayers());
+                        initializeDieStuffAndFavorTokens(game.getPlayers());
 
                         // Filter our player from the participating players.
                          player = players.stream()
@@ -299,7 +299,10 @@ public class GameController implements Consumer<Game> {
         }
     }
 
-    private void initializeDieBagAndFavorTokens(List<Player> players) throws SQLException {
+    private void initializeDieStuffAndFavorTokens(List<Player> players) throws SQLException {
+        var draftedDice = this.dieRepository.getDraftPoolDice(this.game.getId(), this.gameRepository.getCurrentRound(this.game.getId()));
+        this.game.getDraftPool().addAllDice(draftedDice);
+
         var dice = this.dieRepository.getUnusedDice(this.game.getId());
         var diceBag = new DiceBag(dice);
 
