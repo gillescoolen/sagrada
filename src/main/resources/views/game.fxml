@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.scene.text.Text?>
 <HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
@@ -44,7 +43,10 @@
     <!-- Cards -->
     <VBox styleClass="game-vbox" alignment="CENTER_RIGHT">
         <!-- Tool cards -->
-        <Text styleClass="title-tool-cards">Tool Cards</Text>
+        <HBox VBox.vgrow="ALWAYS" spacing="275" alignment="CENTER">
+            <Text fx:id="currentTokenAmount" styleClass="title-player-tokens">You have 0 tokens.</Text>
+            <Text styleClass="title-tool-cards">Tool Cards</Text>
+        </HBox>
         <HBox fx:id="toolCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
 
         <!-- Public Objective card -->

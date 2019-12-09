@@ -66,6 +66,10 @@ public class Game {
         this.favorTokens.add(favorToken);
     }
 
+    public void addFavorTokens(List<FavorToken> favorTokens) {
+        this.favorTokens.addAll(favorTokens);
+    }
+
     public List<Player> getPlayers() {
         return List.copyOf(this.players);
     }
@@ -84,6 +88,10 @@ public class Game {
 
     public void removeFavorToken(FavorToken favorToken) {
         this.favorTokens.remove(favorToken);
+    }
+
+    public void removeFavorTokens(List<FavorToken> favorTokens) {
+        this.favorTokens.removeAll(favorTokens);
     }
 
     public DraftPool getDraftPool() {

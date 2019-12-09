@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.*;
 import sagrada.model.*;
@@ -35,12 +36,16 @@ public class GameController {
     private Button btnSkipTurn;
     @FXML
     private Button btnRollDice;
+    @FXML
+    private Text currentTokenAmount;
 
     private Game game;
+    private StartGame startGameUtil;
     private Player player;
     private final DatabaseConnection connection;
     private final PlayerRepository playerRepository;
     private final DieRepository dieRepository;
+    private final FavorTokenRepository favorTokenRepository;
 
     private boolean gameReady = false;
     private TreeMap<Integer, PatternCard> patternCards = new TreeMap<>();
@@ -53,11 +58,12 @@ public class GameController {
 
         this.playerRepository = new PlayerRepository(connection);
         this.dieRepository = new DieRepository(connection);
+        this.favorTokenRepository = new FavorTokenRepository(connection);
 
         try {
             if (game.getOwner().getAccount().getUsername().equals(account.getUsername()) && !gameRepository.checkIfGameHasStarted(game)) {
-                var startGame = new StartGame(game, connection);
-                this.game = startGame.getCreatedGame();
+                this.startGameUtil = new StartGame(game, connection);
+                this.game = this.startGameUtil.getCreatedGame();
             } else {
                 this.game = game;
 
@@ -76,7 +82,10 @@ public class GameController {
                 var diceBag = new DiceBag(dice);
                 for (var player : this.game.getPlayers()) {
                     player.setDiceBag(diceBag);
+                    player.addFavorTokens(this.favorTokenRepository.getPlayerFavorTokens(this.game.getId(), player.getId()));
                 }
+
+                this.game.addFavorTokens(this.favorTokenRepository.getFavorTokens(this.game.getId()));
             }
 
             this.player = this.playerRepository.getGamePlayer(account.getUsername(), game);
@@ -123,6 +132,7 @@ public class GameController {
 
         try {
             this.initializeChat();
+            this.setCurrentTokenAmount();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -197,6 +207,11 @@ public class GameController {
 
                         if (currentPlayer == null) {
                             return;
+                        }
+
+                        if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername()) && startGameUtil != null) {
+                            startGameUtil.shareFavorTokens();
+                            game = startGameUtil.getCreatedGame();
                         }
 
                         // If the currentPlayer is our actual player, clear the cards.
@@ -303,6 +318,10 @@ public class GameController {
         var loader = new FXMLLoader(getClass().getResource("/views/chat/chatBox.fxml"));
         loader.setController(new ChatController(this.connection, this.player, this.game));
         this.chatWrapper.getChildren().add(loader.load());
+    }
+
+    private void setCurrentTokenAmount() {
+        this.currentTokenAmount.setText(String.format("You have %s tokens.", String.valueOf(this.player.getFavorTokens().size())));
     }
 
     public Game getGame() {

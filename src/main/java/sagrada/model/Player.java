@@ -106,6 +106,10 @@ public class Player {
         this.favorTokens.add(favorToken);
     }
 
+    public void addFavorTokens(List<FavorToken> favorTokens) {
+        this.favorTokens.addAll(favorTokens);
+    }
+
     public void removeFavorToken(FavorToken favorToken) {
         this.favorTokens.remove(favorToken);
     }
