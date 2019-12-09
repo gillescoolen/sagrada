@@ -47,6 +47,7 @@ public class GameController implements Consumer<Game> {
     private final PlayerRepository playerRepository;
     private final GameRepository gameRepository;
     private final DieRepository dieRepository;
+    private final FavorTokenRepository favorTokenRepository;
 
     private boolean gameReady = false;
 
@@ -57,10 +58,10 @@ public class GameController implements Consumer<Game> {
         this.playerRepository = new PlayerRepository(connection);
         this.gameRepository = new GameRepository(connection);
         this.dieRepository = new DieRepository(connection);
+        this.favorTokenRepository = new FavorTokenRepository(connection);
 
         var publicObjectiveCardRepository = new PublicObjectiveCardRepository(connection);
         var toolCardRepository = new ToolCardRepository(connection);
-        var favorTokenRepository = new FavorTokenRepository(connection);
 
         try {
             if (game.getOwner().getAccount().getUsername().equals(account.getUsername()) && !this.gameRepository.checkIfGameHasStarted(game)) {
@@ -69,15 +70,9 @@ public class GameController implements Consumer<Game> {
                 this.game.addObjectiveCard(publicObjectiveCardRepository.getAllByGameId(this.game.getId()));
                 this.game.addToolCard(toolCardRepository.getAllByGameId(this.game.getId()));
 
-                var dice = this.dieRepository.getUnusedDice(this.game.getId());
-                var diceBag = new DiceBag(dice);
+                this.initializeDieBagAndFavorTokens(this.game.getPlayers());
 
-                for (var player : this.game.getPlayers()) {
-                    player.setDiceBag(diceBag);
-                    player.addFavorTokens(favorTokenRepository.getPlayerFavorTokens(this.game.getId(), player.getId()));
-                }
-
-                this.game.addFavorTokens(favorTokenRepository.getFavorTokens(this.game.getId()));
+                this.game.addFavorTokens(this.favorTokenRepository.getFavorTokens(this.game.getId()));
             }
 
             //this.player = this.playerRepository.getGamePlayer(account.getUsername(), game);
@@ -201,13 +196,15 @@ public class GameController implements Consumer<Game> {
                         var players = playerRepository.getAllGamePlayers(game);
                         game.addPlayers(players);
 
+                        initializeDieBagAndFavorTokens(game.getPlayers());
+
                         // Filter our player from the participating players.
-                        Player currentPlayer = players.stream()
+                         player = players.stream()
                                 .filter(p -> p.getAccount().getUsername().equals(player.getAccount().getUsername()))
                                 .findFirst()
                                 .orElse(null);
 
-                        if (currentPlayer == null) {
+                        if (player == null) {
                             return;
                         }
 
@@ -299,6 +296,16 @@ public class GameController implements Consumer<Game> {
             var loader = new FXMLLoader(getClass().getResource("/views/game/toolCard.fxml"));
             loader.setController(new ToolCardController(toolCard, ToolCardActivatorFactory.getToolCardActivator(this, toolCard)));
             this.toolCardBox.getChildren().add(loader.load());
+        }
+    }
+
+    private void initializeDieBagAndFavorTokens(List<Player> players) throws SQLException {
+        var dice = this.dieRepository.getUnusedDice(this.game.getId());
+        var diceBag = new DiceBag(dice);
+
+        for (var player : players) {
+            player.setDiceBag(diceBag);
+            player.addFavorTokens(this.favorTokenRepository.getPlayerFavorTokens(this.game.getId(), player.getId()));
         }
     }
 
