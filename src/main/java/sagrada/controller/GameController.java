@@ -43,6 +43,7 @@ public class GameController {
     private StartGame startGameUtil;
     private Player player;
     private final DatabaseConnection connection;
+    private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
     private final DieRepository dieRepository;
     private final FavorTokenRepository favorTokenRepository;
@@ -52,17 +53,17 @@ public class GameController {
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
         this.connection = connection;
-        var publicObjectiveCardRepository = new PublicObjectiveCardRepository(connection);
-        var toolCardRepository = new ToolCardRepository(connection);
-        var gameRepository = new GameRepository(this.connection);
+        var publicObjectiveCardRepository = new PublicObjectiveCardRepository(this.connection);
+        var toolCardRepository = new ToolCardRepository(this.connection);
 
-        this.playerRepository = new PlayerRepository(connection);
-        this.dieRepository = new DieRepository(connection);
-        this.favorTokenRepository = new FavorTokenRepository(connection);
+        this.gameRepository = new GameRepository(this.connection);
+        this.playerRepository = new PlayerRepository(this.connection);
+        this.dieRepository = new DieRepository(this.connection);
+        this.favorTokenRepository = new FavorTokenRepository(this.connection);
 
         try {
             if (game.getOwner().getAccount().getUsername().equals(account.getUsername()) && !gameRepository.checkIfGameHasStarted(game)) {
-                this.startGameUtil = new StartGame(game, connection);
+                this.startGameUtil = new StartGame(game, this.connection);
                 this.game = this.startGameUtil.getCreatedGame();
             } else {
                 this.game = game;
@@ -105,12 +106,20 @@ public class GameController {
         });
 
         btnRollDice.setOnMouseClicked(e -> {
-            this.game.getDraftPool().removeAllDice();
+            var draftPool = this.game.getDraftPool();
+            draftPool.removeAllDice();
+
             var dice = this.player.grabFromDiceBag(this.game.getDiceCount());
 
-            // TODO: set dice in database
+            draftPool.addAllDice(dice);
+            draftPool.reRollDraft();
 
-            this.game.getDraftPool().addAllDice(dice);
+            try {
+                var round = this.gameRepository.getCurrentRound(this.game.getId());
+                this.dieRepository.addGameDice(this.game.getId(), round, draftPool.getDice());
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         });
 
         for (var player : this.game.getPlayers()) {

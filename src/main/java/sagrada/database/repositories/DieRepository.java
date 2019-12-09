@@ -29,7 +29,7 @@ public final class DieRepository extends Repository<Die> {
             Die die = null;
             for (Color color : Color.values()) {
                 if (color.getDutchColorName().equals(resultSet.getString("color"))) {
-                    die = new Die(color);
+                    die = new Die(resultSet.getInt("number"), color);
                 }
             }
             unusedDice.add(die);
@@ -52,13 +52,37 @@ public final class DieRepository extends Repository<Die> {
             Die die = null;
             for (Color color : Color.values()) {
                 if (color.getDutchColorName().equals(resultSet.getString("color"))) {
-                    die = new Die(color);
+                    die = new Die(resultSet.getInt("number"), color);
                 }
             }
             draftPoolDice.add(die);
         }
 
         return draftPoolDice;
+    }
+
+    public void addGameDice(int gameId, int round, Collection<Die> dice) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("INSERT INTO gamedie (idgame, dienumber, diecolor, round, value) VALUES (?, ?, ?, ?, ?);");
+
+        int count = 0;
+
+        for (Die die : dice) {
+            preparedStatement.setInt(1, gameId);
+            preparedStatement.setInt(2, die.getNumber());
+            preparedStatement.setString(3, die.getColor().getDutchColorName());
+            preparedStatement.setInt(4, round);
+            preparedStatement.setInt(5, die.getValue());
+
+            preparedStatement.addBatch();
+
+            count++;
+
+            if (count % BATCH_SIZE == 0 || count == dice.size()) {
+                preparedStatement.executeBatch();
+            }
+        }
+
+        preparedStatement.close();
     }
 
     @Override

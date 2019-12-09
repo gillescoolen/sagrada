@@ -181,7 +181,6 @@ public final class PatternCardRepository extends Repository<PatternCard> {
             preparedStatement.setString(1, patternCard.getName());
             preparedStatement.setInt(2, patternCard.getDifficulty());
             preparedStatement.setInt(3, patternCard.getStandard());
-
             preparedStatement.setInt(4, patternCard.getId());
 
             preparedStatement.addBatch();
