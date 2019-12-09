@@ -145,7 +145,7 @@ public class Game extends Observable<Game> {
     }
 
     public int getDiceCount() {
-        return this.players.size() * 2 + 1;
+        return (this.players.size() * 2) + 1;
     }
 
     public void createPlayers() {

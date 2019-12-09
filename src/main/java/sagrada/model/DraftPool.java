@@ -8,7 +8,7 @@ public class DraftPool {
     private List<Die> dice = new ArrayList<>();
 
     public List<Die> getDice() {
-        return this.dice;
+        return List.copyOf(this.dice);
     }
 
     public void addDice(Die die) {

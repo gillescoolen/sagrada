@@ -80,7 +80,9 @@ public class GameController implements Consumer<Game> {
                 this.game.addFavorTokens(favorTokenRepository.getFavorTokens(this.game.getId()));
             }
 
-            this.player = this.playerRepository.getGamePlayer(account.getUsername(), game);
+            //this.player = this.playerRepository.getGamePlayer(account.getUsername(), game);
+
+            this.player = this.game.getPlayers().stream().filter(p -> p.getAccount().getUsername().equals(account.getUsername())).findFirst().orElse(null);
         } catch (SQLException e) {
             e.printStackTrace();
         }
