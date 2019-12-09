@@ -15,7 +15,7 @@ public final class PlayerRepository extends Repository<Player> {
     }
 
     public boolean isPatternCardChosen(Game game) throws SQLException {
-        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT COUNT(patterncard_idpatterncard) AS amountOfChosenCards FROM player WHERE spel_idspel = ? AND playstatus_playstatus = ? AND playstatus_playstatus = ?");
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT COUNT(patterncard_idpatterncard) AS amountOfChosenCards FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN (?, ?)");
 
         playerPreparedStatement.setInt(1, game.getId());
         playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());

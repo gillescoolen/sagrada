@@ -77,7 +77,16 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     @Override
     public void accept(PatternCard patternCard) {
         this.playerFrame = patternCard;
-        this.fillWindow();
+
+        if (this.windowSquares.size() > 0) {
+            this.fillWindow();
+        }
+
+        if (this.changeView != null) {
+            this.changeView.setDisable(false);
+            this.name.setText(this.player.getAccount().getUsername());
+            this.reportMisplacement.setText("Change field");
+        }
     }
 
     @FXML
@@ -123,6 +132,8 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
             if (color != null) {
                 button.setStyle("-fx-background-color: " + square.getColor().getColor());
+            } else {
+                button.setStyle("");
             }
 
             ++i;

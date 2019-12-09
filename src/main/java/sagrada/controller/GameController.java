@@ -98,7 +98,6 @@ public class GameController {
                     this.initializePrivateObjectiveCard(this.game.getPlayerByName(player.getAccount().getUsername()));
                     this.initializePublicObjectiveCards();
                     this.initializeToolCards();
-
                     this.checkForPlayerPatternCards();
                     this.startMainGameTimer();
                 } catch (IOException e) {
@@ -128,12 +127,16 @@ public class GameController {
                         return;
                     }
 
-                    syncPatternCards();
+                    var playerFrameRepository = new PlayerFrameRepository(connection);
 
                     try {
-                        var player1 = playerRepository.findById(player.getId());
+                        for (var player : game.getPlayers()) {
+                            playerFrameRepository.getPlayerFrame(player);
+                        }
 
-                        if (player1.isCurrentPlayer()) {
+                        var playerOne = game.getPlayers().stream().filter(filteredPlayer -> filteredPlayer.getId() == player.getId()).findFirst().orElse(null);
+
+                        if (playerOne != null && playerOne.isCurrentPlayer()) {
                             btnSkipTurn.setDisable(false);
                         } else {
                             btnSkipTurn.setDisable(true);
@@ -144,76 +147,6 @@ public class GameController {
                 });
             }
         }, 0, 1000);
-    }
-
-    /**
-     * Sync the pattern cards from our client with the ones inside the database.
-     */
-    private void syncPatternCards() {
-        var players = this.game.getPlayers();
-        var newPatternCards = new TreeMap<Integer, PatternCard>();
-        var changed = false;
-
-        // Fetch the pattern cards for every player and check for differences in each one.
-        for (Player player : players) {
-            // TODO: Check if the result from getPatternCard() is up to date with the entry from the DB.
-            // Fetch the card from a player and add it to the new list.
-            newPatternCards.put(player.getId(), player.getPatternCard());
-        }
-
-        // If Pattern Cards have never been set, set them to our newPatternCards.
-        // Otherwise, check for differences between squares.
-        if (this.patternCards.size() == 0) {
-            this.patternCards = newPatternCards;
-        } else {
-            for (Map.Entry<Integer, PatternCard> entry : newPatternCards.entrySet()) {
-                var currentCard = this.patternCards.get(entry.getKey());
-
-                // Match the entry from our new cards to our existing one and set the squares when they are different.
-                if (entry.getValue() != currentCard) {
-                    // This also sets the die.
-                    currentCard.setSquares(entry.getValue().getSquares());
-                    changed = true;
-                }
-            }
-        }
-
-        // Update the existing cards whenever there was a difference.
-        if (changed) {
-            try {
-                this.showPatternCards();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Load the pattern cards for each player.
-     * Optimization: Load only the card that changed instead of all cards.
-     */
-    private void showPatternCards() throws IOException {
-        var row = 0;
-
-        // Clear the existing pattern cards.
-        this.rowOne.getChildren().clear();
-        this.rowTwo.getChildren().clear();
-
-        // TODO: Render our card first or with another style.
-        // Loop through patterns cards and render our clients player card first.
-        for (Map.Entry<Integer, PatternCard> entry : this.patternCards.entrySet()) {
-            var controller = new WindowPatternCardController(this.connection, entry.getValue(), this.player);
-            var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
-            loader.setController(controller);
-
-            if (row <= 2) {
-                this.rowOne.getChildren().add(loader.load());
-            } else {
-                this.rowTwo.getChildren().add(loader.load());
-            }
-
-            ++row;
-        }
     }
 
     /**
@@ -236,6 +169,7 @@ public class GameController {
                         }
 
                         var players = playerRepository.getAllGamePlayers(game);
+                        game.addPlayers(players);
 
                         // Filter our player from the participating players.
                         Player currentPlayer = players.stream()
@@ -256,7 +190,12 @@ public class GameController {
                             var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
 
                             loader.setController(controller);
-                            rowOne.getChildren().add(loader.load());
+
+                            if (rowOne.getChildren().size() <= 2) {
+                                rowOne.getChildren().add(loader.load());
+                            } else if (rowTwo.getChildren().size() <= 2) {
+                                rowTwo.getChildren().add(loader.load());
+                            }
                         }
 
                         gameReady = true;
@@ -270,12 +209,6 @@ public class GameController {
         }, 0, 1000);
     }
 
-    /**
-     * Loads the available pattern cards for our player to choose from.
-     *
-     * @param player
-     * @throws IOException
-     */
     private void initializeWindowOptions(Player player) throws IOException {
         var i = 1;
 
@@ -307,7 +240,6 @@ public class GameController {
             // Load our clients player pattern card when rejoining a game.
             var controller = new WindowPatternCardController(this.connection, player.getPatternCard(), this.player);
             var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
-
             loader.setController(controller);
             this.rowOne.getChildren().add(loader.load());
         }
