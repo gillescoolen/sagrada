@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -93,13 +92,13 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     protected void initialize() {
         if (this.playerFrame == null) {
             this.changeView.setDisable(true);
-            this.name.setText(this.windowField.getName());
+            this.name.setText(this.windowField.getName() + String.format(" (%s tokens)", this.windowField.getDifficulty()));
             this.reportMisplacement.setText("Choose");
 
             this.reportMisplacement.setOnMouseClicked(e -> this.choosePatternCard());
         } else {
             this.changeView.setDisable(false);
-            this.name.setText(this.player.getAccount().getUsername());
+            this.name.setText(this.player.getAccount().getUsername() + String.format(" (%s tokens)", this.playerFrame.getDifficulty()));
             this.reportMisplacement.setText("Change field");
         }
 
