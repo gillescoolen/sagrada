@@ -99,6 +99,8 @@ public class GameController implements Consumer<Game> {
         });
 
         btnRollDice.setOnMouseClicked(e -> {
+            btnRollDice.setDisable(true);
+
             try {
                 var draftPool = this.game.getDraftPool();
                 draftPool.removeAllDice();
@@ -160,14 +162,17 @@ public class GameController implements Consumer<Game> {
 
                         var playerOne = game.getPlayers().stream().filter(filteredPlayer -> filteredPlayer.getId() == player.getId()).findFirst().orElse(null);
 
+
                         if (playerOne != null && playerOne.isCurrentPlayer()) {
                             btnSkipTurn.setDisable(false);
+
+                            if (game.getDraftPool().getDice().isEmpty()) {
+                                btnRollDice.setDisable(false);
+                            }
                         } else {
                             btnSkipTurn.setDisable(true);
+                            btnRollDice.setDisable(true);
                         }
-
-                        // TODO: only allow roll dice when it is allowed
-                        btnRollDice.setDisable(false);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
