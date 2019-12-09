@@ -196,6 +196,7 @@ public class GameController {
 
                         if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername()) && !gameRepository.checkIfGameHasStarted(game)) {
                             startGameUtil.shareFavorTokens();
+                            game = startGameUtil.getCreatedGame();
                         }
 
                         // If the currentPlayer is our actual player, clear the cards.
