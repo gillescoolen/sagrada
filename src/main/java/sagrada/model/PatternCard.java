@@ -2,7 +2,7 @@ package sagrada.model;
 
 import java.util.List;
 
-public class PatternCard extends ObservableCard {
+public class PatternCard extends ObservableCard<PatternCard> {
     private int id;
     private int difficulty;
     private int standard;
