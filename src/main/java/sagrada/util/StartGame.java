@@ -19,6 +19,8 @@ public class StartGame {
     private final ToolCardRepository toolCardRepository;
     private final FavorTokenRepository favorTokenRepository;
 
+    private static final int FAVORTOKENAMOUNT = 24;
+
     public StartGame(Game game, DatabaseConnection databaseConnection) {
         this.game = game;
         this.playerRepository = new PlayerRepository(databaseConnection);
@@ -83,7 +85,7 @@ public class StartGame {
         try {
             List<FavorToken> tokenList = new ArrayList<>();
 
-            for (int i = 0; i < 24; i++) {
+            for (int i = 0; i < FAVORTOKENAMOUNT; i++) {
                 tokenList.add(new FavorToken(0, 0, null, null));
             }
 
