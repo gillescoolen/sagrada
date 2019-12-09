@@ -16,9 +16,9 @@ import sagrada.util.StartGame;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.regex.Pattern;
+import java.util.function.Consumer;
 
-public class GameController {
+public class GameController implements Consumer<Game> {
     @FXML
     private VBox rowOne;
     @FXML
@@ -45,38 +45,28 @@ public class GameController {
     private final FavorTokenRepository favorTokenRepository;
 
     private boolean gameReady = false;
-    private TreeMap<Integer, PatternCard> patternCards = new TreeMap<>();
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
+        game.observe(this);
+
         this.connection = connection;
         var publicObjectiveCardRepository = new PublicObjectiveCardRepository(connection);
         var toolCardRepository = new ToolCardRepository(connection);
         var gameRepository = new GameRepository(this.connection);
-
         this.playerRepository = new PlayerRepository(connection);
         this.dieRepository = new DieRepository(connection);
         this.favorTokenRepository = new FavorTokenRepository(connection);
 
         try {
             if (game.getOwner().getAccount().getUsername().equals(account.getUsername()) && !gameRepository.checkIfGameHasStarted(game)) {
-                this.startGameUtil = new StartGame(game, connection);
-                this.game = this.startGameUtil.getCreatedGame();
+                new StartGame(game, connection);
             } else {
-                this.game = game;
+                this.game.addObjectiveCard(publicObjectiveCardRepository.getAllByGameId(this.game.getId()));
+                this.game.addToolCard(toolCardRepository.getAllByGameId(this.game.getId()));
 
-                var publicObjectiveCards = publicObjectiveCardRepository.getAllByGameId(this.game.getId());
-                var toolCards = toolCardRepository.getAllByGameId(this.game.getId());
-
-                for (var publicObjectiveCard : publicObjectiveCards) {
-                    this.game.addObjectiveCard(publicObjectiveCard);
-                }
-
-                for (var toolCard : toolCards) {
-                    this.game.addToolCard(toolCard);
-                }
-
-                var dice = this.dieRepository.getUnusedDice(this.game.getId());
+                var dice = dieRepository.getUnusedDice(this.game.getId());
                 var diceBag = new DiceBag(dice);
+
                 for (var player : this.game.getPlayers()) {
                     player.setDiceBag(diceBag);
                     player.addFavorTokens(this.favorTokenRepository.getPlayerFavorTokens(this.game.getId(), player.getId()));
@@ -91,9 +81,14 @@ public class GameController {
         }
     }
 
+    @Override
+    public void accept(Game game) {
+        this.game = game;
+    }
+
     @FXML
     protected void initialize() {
-        btnSkipTurn.setOnMouseClicked(e -> {
+        this.btnSkipTurn.setOnMouseClicked(e -> {
             try {
                 this.player.skipTurn(this.playerRepository, this.game);
             } catch (SQLException ex) {
@@ -110,18 +105,13 @@ public class GameController {
                     this.initializeToolCards();
                     this.checkForPlayerPatternCards();
                     this.startMainGameTimer();
+                    this.initializeChat();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-
-        try {
-            this.initializeChat();
             this.setCurrentTokenAmount();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
