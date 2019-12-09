@@ -39,7 +39,7 @@ public class GameController {
     private final DieRepository dieRepository;
 
     private boolean gameReady = false;
-    private TreeMap<Integer, PatternCard> patternCards = new TreeMap<Integer, PatternCard>();
+    private TreeMap<Integer, PatternCard> patternCards = new TreeMap<>();
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
         this.connection = connection;
@@ -196,8 +196,8 @@ public class GameController {
         var row = 0;
 
         // Clear the existing pattern cards.
-        rowOne.getChildren().clear();
-        rowTwo.getChildren().clear();
+        this.rowOne.getChildren().clear();
+        this.rowTwo.getChildren().clear();
 
         // TODO: Render our card first or with another style.
         // Loop through patterns cards and render our clients player card first.
