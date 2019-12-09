@@ -6,13 +6,17 @@ import javafx.scene.text.Text;
 import sagrada.model.ToolCard;
 import sagrada.model.card.activators.ToolCardActivator;
 
-public class ToolCardController {
+import java.util.function.Consumer;
+
+public class ToolCardController implements Consumer<ToolCard> {
     @FXML
     private Text name;
     @FXML
     private Text description;
     @FXML
     private Text points;
+    @FXML
+    private VBox wrapper;
 
     private final ToolCard toolCard;
     private final ToolCardActivator toolCardActivator;
@@ -29,5 +33,12 @@ public class ToolCardController {
         this.description.setText(this.toolCard.getDescription());
         this.points.setText(Integer.toString(this.toolCard.getCost()));
         this.wrapper.setOnMouseClicked(event -> this.toolCardActivator.activate());
+    }
+
+    @Override
+    public void accept(ToolCard card) {
+        if (card != null) {
+            this.points.setText(Integer.toString(toolCard.getCost()));
+        }
     }
 }

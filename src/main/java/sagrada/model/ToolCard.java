@@ -1,6 +1,6 @@
 package sagrada.model;
 
-public abstract class ToolCard extends Card {
+public abstract class ToolCard extends ObservableCard<ToolCard>  {
     private final int id;
     private final String description;
     private int cost = 1;
@@ -29,5 +29,7 @@ public abstract class ToolCard extends Card {
         if (this.cost < 2) {
             this.cost = 2;
         }
+
+        this.update(this);
     }
 }
