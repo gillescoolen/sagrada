@@ -14,19 +14,15 @@ public final class PlayerFrameRepository extends Repository<PatternCard> {
         super(connection);
     }
 
-    public void getPlayerFrame(Game game, Player player, PatternCard patternCard) throws SQLException {
-        patternCard.setSquares(this.getSquares(game, player));
+    public void getPlayerFrame(Player player) throws SQLException {
+        var playerFrame = player.getPlayerFrame();
+        playerFrame.setSquares(this.getSquares(player));
     }
 
-    public PatternCard getPlayerFrame(Game game, Player player) throws SQLException {
-        return new PatternCard(this.getSquares(game, player));
-    }
+    public List<Square> getSquares(Player player) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM playerframefield WHERE player_idplayer = ? ORDER BY position_y, position_x;");
 
-    private List<Square> getSquares(Game game, Player player) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM playerframefield WHERE idgame = ? AND player_idplayer = ? ORDER BY position_y, position_x;");
-
-        preparedStatement.setInt(1, game.getId());
-        preparedStatement.setInt(2, player.getId());
+        preparedStatement.setInt(1, player.getId());
 
         var resultSet = preparedStatement.executeQuery();
         var squares = new ArrayList<Square>();

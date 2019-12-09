@@ -228,15 +228,14 @@ public class GameController {
             public void run() {
                 Platform.runLater(() -> {
                     try {
-                        // Create a list of all players participating in the current game.
-                        List<Player> players = playerRepository.getAllGamePlayers(game);
-
                         // Check if every player has chosen a pattern card.
-                        boolean everyoneHasChosen = players.stream().allMatch(p -> p.getPatternCard() != null);
+                        var everyoneHasChosen = playerRepository.isPatternCardChosen(game);
 
                         if (!everyoneHasChosen) {
                             return;
                         }
+
+                        var players = playerRepository.getAllGamePlayers(game);
 
                         // Filter our player from the participating players.
                         Player currentPlayer = players.stream()
@@ -252,13 +251,13 @@ public class GameController {
                         rowOne.getChildren().clear();
                         rowTwo.getChildren().clear();
 
-                        var controller = new WindowPatternCardController(connection, player.getPatternCard(), player);
-                        var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
+                        for (var player : players) {
+                            var controller = new WindowPatternCardController(connection, player);
+                            var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
 
-                        loader.setController(controller);
-
-                        // Show our players card.
-                        rowOne.getChildren().add(loader.load());
+                            loader.setController(controller);
+                            rowOne.getChildren().add(loader.load());
+                        }
 
                         gameReady = true;
                         playerPatternCardsTimer.cancel();

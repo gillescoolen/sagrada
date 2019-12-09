@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class ChatRepository extends Repository<ChatLine> {
+public final class ChatRepository extends Repository<ChatLine> {
     public ChatRepository(DatabaseConnection connection) {
         super(connection);
     }
