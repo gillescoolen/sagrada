@@ -47,39 +47,46 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         this.player = player;
     }
 
-    public WindowPatternCardController(DatabaseConnection connection, Player player, Game game) {
+    public WindowPatternCardController(DatabaseConnection connection, Player player) {
         var timer = new Timer();
         this.connection = connection;
 
         PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(connection);
 
-        try {
-            this.patternCard = player.getPatternCard();
-            this.playerFrame = playerFrameRepository.getPlayerFrame(game, player);
-            this.windowField = this.playerFrame;
-            this.player = player;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        this.patternCard = player.getPatternCard();
+        this.playerFrame = player.getPlayerFrame();
+        this.windowField = this.playerFrame;
+        this.player = player;
 
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
                     try {
-                        playerFrameRepository.getPlayerFrame(game, player, windowField);
+                        playerFrameRepository.getPlayerFrame(player);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
                 });
             }
-        }, 0, 2000);
+        }, 0, 1500);
+
+        this.playerFrame.observe(this);
     }
 
     @Override
     public void accept(PatternCard patternCard) {
         this.playerFrame = patternCard;
-        this.fillWindow();
+
+        if (this.windowSquares.size() > 0) {
+            this.fillWindow();
+        }
+
+        if (this.changeView != null) {
+            this.changeView.setDisable(false);
+            this.name.setText(this.player.getAccount().getUsername());
+            this.reportMisplacement.setText("Change field");
+        }
     }
 
     @FXML
@@ -125,6 +132,8 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
             if (color != null) {
                 button.setStyle("-fx-background-color: " + square.getColor().getColor());
+            } else {
+                button.setStyle("");
             }
 
             ++i;
@@ -151,5 +160,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     private void changeView() {
         this.showPatternCard = !this.showPatternCard;
         this.windowField = this.showPatternCard ? this.patternCard : this.playerFrame;
+        this.fillWindow();
     }
 }

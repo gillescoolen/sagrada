@@ -15,13 +15,17 @@ public final class PlayerRepository extends Repository<Player> {
     }
 
     public boolean isPatternCardChosen(Game game) throws SQLException {
-        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT COUNT(patterncard_idpatterncard) AS amountOfChosenCards FROM player WHERE spel_idspel = ? AND playstatus_playstatus = ? AND playstatus_playstatus = ?");
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT COUNT(patterncard_idpatterncard) AS amountOfChosenCards FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN (?, ?)");
 
         playerPreparedStatement.setInt(1, game.getId());
         playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
         playerPreparedStatement.setString(3, PlayStatus.CHALLENGER.getPlayState());
 
         ResultSet resultSet = playerPreparedStatement.executeQuery();
+
+        if (!resultSet.next()) {
+            return false;
+        }
 
         return resultSet.getInt("amountOfChosenCards") == game.getPlayers().size();
     }
@@ -42,7 +46,6 @@ public final class PlayerRepository extends Repository<Player> {
         var patternCards = patternCardRepository.getAllPatternCards();
 
         while (playerResultSet.next()) {
-            var player = game.getPlayerByName(playerResultSet.getString("username"));
             var playerId = playerResultSet.getInt("idplayer");
             var randomColor = privateObjectiveColors.get(random.nextInt(privateObjectiveColors.size()));
             privateObjectiveColors.remove(randomColor);
@@ -58,23 +61,31 @@ public final class PlayerRepository extends Repository<Player> {
 
             playerUpdatePreparedStatement.executeUpdate();
 
-            player.setPrivateObjectiveCard(new PrivateObjectiveCard(randomColor));
-            player.setCurrentPlayer(sequenceNumber == 1);
-            player.setId(playerId);
-            player.setInvalidFrameField(false);
-            player.setScore(0);
-            player.setSequenceNumber(sequenceNumber);
-            player.setAccount(new Account(playerResultSet.getString("username")));
+            PreparedStatement playerFrameRepository = this.connection.getConnection().prepareStatement(
+                    "INSERT INTO playerframefield (player_idplayer, position_x, position_y, idgame) VALUES(?, ?, ?, ?);"
+            );
+
+            for (int xSquares = 1; xSquares <= 5; ++xSquares) {
+                for (int ySquares = 1; ySquares <= 4; ++ySquares) {
+                    playerFrameRepository.setInt(1, playerId);
+                    playerFrameRepository.setInt(2, xSquares);
+                    playerFrameRepository.setInt(3, ySquares);
+                    playerFrameRepository.setInt(4, game.getId());
+
+                    playerFrameRepository.addBatch();
+                }
+            }
+
+            playerFrameRepository.executeBatch();
 
             for (int insertAmount = 0; insertAmount < 4; ++insertAmount) {
                 var randomPatternCard = patternCards.get(random.nextInt(patternCards.size()));
                 patternCardRepository.setOption(playerId, randomPatternCard.getId());
-                player.addCardOption(randomPatternCard);
                 patternCards.remove(randomPatternCard);
             }
 
             playerUpdatePreparedStatement.close();
-            players.add(player);
+            players.add(this.createPlayer(playerResultSet));
             ++sequenceNumber;
         }
 
@@ -93,47 +104,8 @@ public final class PlayerRepository extends Repository<Player> {
         playerPreparedStatement.setString(3, PlayStatus.CHALLENGER.getPlayState());
         ResultSet playerResultSet = playerPreparedStatement.executeQuery();
 
-        var patternCardRepository = new PatternCardRepository(this.connection);
-
         while (playerResultSet.next()) {
-            var newPlayer = new Player();
-            var playerId = playerResultSet.getInt("idplayer");
-            var sequenceNumber = playerResultSet.getInt("seqnr");
-            var privateObjectiveCardColor = playerResultSet.getString("private_objectivecard_color");
-            var currentPlayer = playerResultSet.getInt("isCurrentPlayer");
-            var cardColor = Color.BLUE;
-            var patternCardId = playerResultSet.getInt("patterncard_idpatterncard");
-            var playStatus = PlayStatus.ACCEPTED;
-
-            for (var color : Color.values()) {
-                if (color.getDutchColorName().equals(privateObjectiveCardColor)) {
-                    cardColor = color;
-                }
-            }
-
-            for (var playState : PlayStatus.values()) {
-                if (playState.getPlayState().equals(playerResultSet.getString("playstatus_playstatus"))) {
-                    playStatus = playState;
-                }
-            }
-
-            newPlayer.setPrivateObjectiveCard(new PrivateObjectiveCard(cardColor));
-            newPlayer.setCurrentPlayer(currentPlayer == 1);
-            newPlayer.setId(playerId);
-            newPlayer.setInvalidFrameField(false);
-            newPlayer.setScore(0);
-            newPlayer.setSequenceNumber(sequenceNumber);
-            newPlayer.setAccount(new Account(playerResultSet.getString("username")));
-            newPlayer.setPlayStatus(playStatus);
-
-            if (patternCardId == 0) {
-                List<PatternCard> cardOptions = patternCardRepository.getCardOptionsByPlayerId(playerId);
-                cardOptions.forEach(newPlayer::addCardOption);
-            } else {
-                newPlayer.setPatternCard(patternCardRepository.findById(patternCardId));
-            }
-
-            players.add(newPlayer);
+            players.add(this.createPlayer(playerResultSet));
         }
 
         playerPreparedStatement.close();
@@ -315,6 +287,7 @@ public final class PlayerRepository extends Repository<Player> {
 
         AccountRepository accountRepository = new AccountRepository(this.connection);
         PatternCardRepository patternCardRepository = new PatternCardRepository(this.connection);
+        PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(this.connection);
 
         player.setId(resultSet.getInt("idplayer"));
         player.setAccount(accountRepository.findByUsername(resultSet.getString("username")));
@@ -335,12 +308,15 @@ public final class PlayerRepository extends Repository<Player> {
             player.setPatternCard(patternCardRepository.findById(patternCardId));
         }
 
+        player.setPlayerFrame(new PatternCard(playerFrameRepository.getSquares(player)));
+
         for (PlayStatus playStatus : PlayStatus.values()) {
             if (playStatus.getPlayState().equals(resultSet.getString("playstatus_playstatus"))) {
                 player.setPlayStatus(playStatus);
             }
         }
 
+        player.addCardOption(patternCardRepository.getCardOptionsByPlayerId(player.getId()));
         player.setScore(resultSet.getInt("score"));
         player.setInvalidFrameField(resultSet.getBoolean("invalidframefield"));
 
