@@ -41,8 +41,6 @@ public class GameController implements Consumer<Game> {
     private Player player;
     private final DatabaseConnection connection;
     private final PlayerRepository playerRepository;
-    private final DieRepository dieRepository;
-    private final FavorTokenRepository favorTokenRepository;
 
     private boolean gameReady = false;
 
@@ -50,12 +48,13 @@ public class GameController implements Consumer<Game> {
         game.observe(this);
 
         this.connection = connection;
+        this.playerRepository = new PlayerRepository(connection);
+
         var publicObjectiveCardRepository = new PublicObjectiveCardRepository(connection);
         var toolCardRepository = new ToolCardRepository(connection);
-        var gameRepository = new GameRepository(this.connection);
-        this.playerRepository = new PlayerRepository(connection);
-        this.dieRepository = new DieRepository(connection);
-        this.favorTokenRepository = new FavorTokenRepository(connection);
+        var gameRepository = new GameRepository(connection);
+        var dieRepository = new DieRepository(connection);
+        var favorTokenRepository = new FavorTokenRepository(connection);
 
         try {
             if (game.getOwner().getAccount().getUsername().equals(account.getUsername()) && !gameRepository.checkIfGameHasStarted(game)) {
@@ -69,10 +68,10 @@ public class GameController implements Consumer<Game> {
 
                 for (var player : this.game.getPlayers()) {
                     player.setDiceBag(diceBag);
-                    player.addFavorTokens(this.favorTokenRepository.getPlayerFavorTokens(this.game.getId(), player.getId()));
+                    player.addFavorTokens(favorTokenRepository.getPlayerFavorTokens(this.game.getId(), player.getId()));
                 }
 
-                this.game.addFavorTokens(this.favorTokenRepository.getFavorTokens(this.game.getId()));
+                this.game.addFavorTokens(favorTokenRepository.getFavorTokens(this.game.getId()));
             }
 
             this.player = this.playerRepository.getGamePlayer(account.getUsername(), game);
@@ -105,13 +104,13 @@ public class GameController implements Consumer<Game> {
                     this.initializeToolCards();
                     this.checkForPlayerPatternCards();
                     this.startMainGameTimer();
+                    this.setCurrentTokenAmount();
                     this.initializeChat();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-            this.setCurrentTokenAmount();
     }
 
     /**
