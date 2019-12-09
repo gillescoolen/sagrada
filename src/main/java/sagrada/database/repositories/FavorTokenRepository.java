@@ -74,7 +74,7 @@ public class FavorTokenRepository extends Repository<FavorToken> {
 
     public void updateFavorToken(FavorToken favorToken, int gameToolCardId, int round, boolean inFirstTurn) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection()
-                .prepareStatement("UPDATE Customers SET gametoolcard = ?, round = ?, inFirstTurn = ? WHERE idfavortoken = ?;");
+                .prepareStatement("UPDATE gamefavortoken SET gametoolcard = ?, round = ?, inFirstTurn = ? WHERE idfavortoken = ?;");
 
         preparedStatement.setInt(1, gameToolCardId);
         preparedStatement.setInt(2, round);
