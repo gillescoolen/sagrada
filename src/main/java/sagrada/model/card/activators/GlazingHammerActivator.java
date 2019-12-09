@@ -5,7 +5,7 @@ import sagrada.model.Game;
 import sagrada.model.Player;
 import sagrada.model.ToolCard;
 
-public class GlazingHammerActivator extends ToolCardActivator {
+public final class GlazingHammerActivator extends ToolCardActivator {
     GlazingHammerActivator(GameController gameController, ToolCard toolCard) {
         super(gameController, toolCard);
     }

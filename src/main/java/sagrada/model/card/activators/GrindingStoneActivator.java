@@ -10,7 +10,7 @@ import sagrada.model.ToolCard;
 import java.util.List;
 import java.util.Optional;
 
-public class GrindingStoneActivator extends ToolCardActivator {
+public final class GrindingStoneActivator extends ToolCardActivator {
     GrindingStoneActivator(GameController gameController, ToolCard toolCard) {
         super(gameController, toolCard);
     }

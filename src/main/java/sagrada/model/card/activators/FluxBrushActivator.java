@@ -10,7 +10,7 @@ import sagrada.model.ToolCard;
 import java.util.List;
 import java.util.Optional;
 
-public class FluxBrushActivator extends ToolCardActivator {
+public final class FluxBrushActivator extends ToolCardActivator {
     FluxBrushActivator(GameController gameController, ToolCard toolCard) {
         super(gameController, toolCard);
     }

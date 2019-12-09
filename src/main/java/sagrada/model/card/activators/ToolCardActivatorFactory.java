@@ -5,7 +5,7 @@ import sagrada.model.ToolCard;
 
 import java.text.Normalizer;
 
-public class ToolCardActivatorFactory {
+public final class ToolCardActivatorFactory {
     public static ToolCardActivator getToolCardActivator(GameController gameController, ToolCard toolCard) {
 
         ToolCardActivator toolCardActivator = null;
@@ -28,6 +28,9 @@ public class ToolCardActivatorFactory {
                 break;
             case "Rondsnijder":
                 toolCardActivator = new LensCutterActivator(gameController, toolCard);
+                break;
+            case "Loodopenhaler":
+                toolCardActivator = new LathekinActivator(gameController, toolCard);
                 break;
             case "Folie-aandrukker":
                 toolCardActivator = new CopperFoilBurnisherActivator(gameController, toolCard);

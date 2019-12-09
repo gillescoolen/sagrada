@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class CopperFoilBurnisherActivator extends ToolCardActivator {
+public final class CopperFoilBurnisherActivator extends ToolCardActivator {
     private Player player;
 
     public CopperFoilBurnisherActivator(GameController gameController, ToolCard toolCard) {
