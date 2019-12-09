@@ -1,5 +1,5 @@
 .title {
-    -fx-font-size: 36px;
+    -fx-font-size: 28px;
     -fx-font-weight: bold;
 }
 
@@ -38,4 +38,9 @@
 .favor-token-text {
     -fx-font-weight: bold;
     -fx-font-size: 18px;
+}
+
+.tool-card-hbox {
+    -fx-spacing: 10px;
+    -fx-background-color: red;
 }

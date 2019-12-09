@@ -5,36 +5,56 @@
 
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.shape.Ellipse?>
-<VBox xmlns="http://javafx.com/javafx"
+<?import javafx.scene.shape.Rectangle?>
+<HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       stylesheets="/styles/postgame.css"
       styleClass="post-game-wrapper"
       prefWidth="1400" prefHeight="720">
 
-    <Text styleClass="title" text="Game summary"/>
+    <!-- LEADERBOARD -->
     <VBox styleClass="leader-vbox" prefWidth="250" maxWidth="400">
+        <Text styleClass="title" text="Game summary"/>
         <HBox styleClass="player-hbox" alignment="CENTER_LEFT">
-            <Text styleClass="player-name" text="Raul"/>
+            <Rectangle styleClass="private-dice" fill="blue" height="40" width="40"/>
             <StackPane>
                 <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>
                 <Text styleClass="favor-token-text" text="15"/>
             </StackPane>
-        </HBox>
-        <HBox styleClass="player-hbox" alignment="CENTER_LEFT">
-            <Text styleClass="player-name" text="Brian"/>
-            <StackPane>
-                <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>
-                <Text styleClass="favor-token-text" text="15"/>
-            </StackPane>
-        </HBox>
-        <HBox styleClass="player-hbox" alignment="CENTER_LEFT">
             <Text styleClass="player-name" text="Gilles"/>
+        </HBox>
+        <HBox styleClass="player-hbox" alignment="CENTER_LEFT">
+            <Rectangle styleClass="private-dice" fill="red" height="40" width="40"/>
             <StackPane>
                 <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>
                 <Text styleClass="favor-token-text" text="15"/>
             </StackPane>
+            <Text styleClass="player-name" text="Gilles"/>
+        </HBox>
+        <HBox styleClass="player-hbox" alignment="CENTER_LEFT">
+            <Rectangle styleClass="private-dice" fill="green" height="40" width="40"/>
+            <StackPane>
+                <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>
+                <Text styleClass="favor-token-text" text="15"/>
+            </StackPane>
+            <Text styleClass="player-name" text="Gilles"/>
         </HBox>
     </VBox>
 
-    <!-- Cards -->
-</VBox>
+    <!-- CARDS -->
+    <VBox styleClass="leader-vbox">
+        <Text styleClass="title" text="Used Tool cards"/>
+        <HBox styleClass="tool-card-hbox" prefWidth="200" maxWidth="400" maxHeight="400">
+            <fx:include source="game/toolCard.fxml"/>
+            <fx:include source="game/toolCard.fxml"/>
+            <fx:include source="game/toolCard.fxml"/>
+        </HBox>
+        <Text styleClass="title" text="Used Public objective cards"/>
+        <HBox styleClass="tool-card-hbox" prefWidth="200" maxWidth="400" maxHeight="400">
+            <fx:include source="game/toolCard.fxml"/>
+            <fx:include source="game/toolCard.fxml"/>
+            <fx:include source="game/toolCard.fxml"/>
+        </HBox>
+    </VBox>
+
+</HBox>
