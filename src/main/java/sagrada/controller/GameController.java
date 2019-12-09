@@ -99,18 +99,20 @@ public class GameController implements Consumer<Game> {
         });
 
         btnRollDice.setOnMouseClicked(e -> {
-            var draftPool = this.game.getDraftPool();
-            draftPool.removeAllDice();
-
-            var dice = this.player.grabFromDiceBag(this.game.getDiceCount());
-
-            draftPool.addAllDice(dice);
-            draftPool.throwDice();
-
             try {
+                var draftPool = this.game.getDraftPool();
+                draftPool.removeAllDice();
+
+                var dice = this.player.grabFromDiceBag(this.game.getDiceCount());
+
+                draftPool.addAllDice(dice);
+                draftPool.throwDice();
+
                 var round = this.gameRepository.getCurrentRound(this.game.getId());
                 this.dieRepository.addGameDice(this.game.getId(), round, draftPool.getDice());
-            } catch (SQLException ex) {
+
+                this.initializeDice();
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
@@ -316,6 +318,7 @@ public class GameController implements Consumer<Game> {
         var diceCount = this.game.getDiceCount();
         var draftedDice = this.game.getDraftPool().getDice();
 
+        this.diceBox.getChildren().clear();
         for (int i = 0; i < diceCount; ++i) {
             var loader = new FXMLLoader(getClass().getResource("/views/game/die.fxml"));
             if (i < draftedDice.size()) {
