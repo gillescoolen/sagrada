@@ -67,7 +67,7 @@ public class ChatController {
      */
     private void sendMessage(String message) {
         try {
-            this.chatRepository.add(new ChatLine(this.player, LocalDateTime.now(), message));
+            this.chatRepository.add(new ChatLine(this.player, message));
             this.messageField.clear();
         } catch (SQLException e) {
             e.printStackTrace();
