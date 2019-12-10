@@ -199,6 +199,10 @@ public class GameController implements Consumer<Game> {
                         var players = playerRepository.getAllGamePlayers(game);
                         game.addPlayers(players);
 
+                        if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername()) && startGameUtil != null && !gameReady) {
+                            startGameUtil.shareFavorTokens();
+                        }
+
                         initializeDieStuffAndFavorTokens(game.getPlayers());
 
                         // Filter our player from the participating players.
@@ -209,10 +213,6 @@ public class GameController implements Consumer<Game> {
 
                         if (player == null) {
                             return;
-                        }
-
-                        if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername()) && startGameUtil != null) {
-                            startGameUtil.shareFavorTokens();
                         }
 
                         // If the currentPlayer is our actual player, clear the cards.
