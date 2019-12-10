@@ -98,7 +98,7 @@ public final class TapWheelActivator extends ToolCardActivator {
         grid.add(squareComboBox1, 1, 0);
 
         ComboBox<Square> squareComboBox2 = new ComboBox<>();
-        squareComboBox1.getItems().addAll(availableDice);
+        squareComboBox2.getItems().addAll(availableDice);
 
         grid.add(new Label("Die 2: "), 0, 1);
         grid.add(squareComboBox2, 1, 1);
