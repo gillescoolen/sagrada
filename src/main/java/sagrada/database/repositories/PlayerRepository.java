@@ -369,23 +369,48 @@ public final class PlayerRepository extends Repository<Player> {
     }
 
     public Player getNextGamePlayer(Game game) throws SQLException {
-        PreparedStatement maxStatement = this.connection.getConnection().prepareStatement("SELECT username FROM player WHERE spel_idspel = ? AND seqnr = (SELECT MIN(seqnr) FROM player WHERE spel_idspel = ?);");
-        maxStatement.setInt(1, game.getId());
-        maxStatement.setInt(2, game.getId());
+        PreparedStatement sequenceNumberStatement = this.connection.getConnection().prepareStatement("SELECT COUNT(*) as count FROM game g INNER JOIN player p ON g.turn_idplayer = p.idplayer WHERE g.idgame = ? AND p.seqnr > ?;");
 
-        ResultSet maxResultSet = maxStatement.executeQuery();
-        maxResultSet.next();
+        sequenceNumberStatement.setInt(1, game.getId());
+        sequenceNumberStatement.setInt(2, game.getPlayers().size());
 
-        String username = maxResultSet.getString("username");
+        ResultSet sequenceNumberResultSet = sequenceNumberStatement.executeQuery();
+        sequenceNumberResultSet.next();
 
-        maxResultSet.close();
-        maxStatement.close();
-        
+        ResultSet resultSet;
+        PreparedStatement preparedStatement;
+        int playersFound = sequenceNumberResultSet.getInt("count");
+
+        if (playersFound == 0) {
+            preparedStatement = this.connection.getConnection().prepareStatement("SELECT username FROM player WHERE spel_idspel = ? AND seqnr = (SELECT MIN(seqnr) FROM player WHERE spel_idspel = ?);");
+
+            preparedStatement.setInt(1, game.getId());
+            preparedStatement.setInt(2, game.getId());
+
+            resultSet = preparedStatement.executeQuery();
+        } else {
+            preparedStatement = this.connection.getConnection().prepareStatement("SELECT username FROM player WHERE spel_idspel = ? AND seqnr = (SELECT MIN(seqnr) FROM player WHERE spel_idspel = ? AND seqnr - ? > 0);");
+
+            preparedStatement.setInt(1, game.getId());
+            preparedStatement.setInt(2, game.getId());
+            preparedStatement.setInt(3, game.getPlayers().size());
+
+            resultSet = preparedStatement.executeQuery();
+        }
+
+        resultSet.next();
+        var username = resultSet.getString("username");
+
         Player nextPlayer = this.getPlayerByGameAndUsername(game, username);
 
         GameRepository gameRepository = new GameRepository(this.connection);
 
         gameRepository.updateGamePlayer(nextPlayer, game);
+
+        resultSet.close();
+        preparedStatement.close();
+        sequenceNumberResultSet.close();
+        sequenceNumberStatement.close();
 
         return nextPlayer;
     }
