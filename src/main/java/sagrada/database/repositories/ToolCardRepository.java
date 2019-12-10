@@ -1,6 +1,7 @@
 package sagrada.database.repositories;
 
 import sagrada.database.DatabaseConnection;
+import sagrada.model.Die;
 import sagrada.model.ToolCard;
 import sagrada.model.card.CardFactory;
 
@@ -193,5 +194,30 @@ public final class ToolCardRepository extends Repository<ToolCard> {
         resultSet.close();
 
         return this.findById(id);
+    }
+
+    public void addAffectedToolCard(ToolCard toolCard, List<Die> dice, int gameId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(
+                "INSERT INTO gametoolcard_affected_gamedie VALUES (?,?,?,?)"
+        );
+
+        var count = 0;
+
+        for (var die : dice) {
+            preparedStatement.setInt(1, toolCard.getId());
+            preparedStatement.setInt(2, gameId);
+            preparedStatement.setInt(3, die.getNumber());
+            preparedStatement.setString(4, die.getColor().getDutchColorName());
+
+            preparedStatement.addBatch();
+
+            ++count;
+
+            if (count % BATCH_SIZE == 0 || count == dice.size()) {
+                preparedStatement.executeBatch();
+            }
+        }
+
+        preparedStatement.close();
     }
 }
