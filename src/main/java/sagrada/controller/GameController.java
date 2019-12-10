@@ -50,6 +50,7 @@ public class GameController implements Consumer<Game> {
     private final FavorTokenRepository favorTokenRepository;
 
     private boolean gameReady = false;
+    private Die selectedDie;
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
         game.observe(this);
@@ -327,7 +328,7 @@ public class GameController implements Consumer<Game> {
             var loader = new FXMLLoader(getClass().getResource("/views/game/die.fxml"));
             if (i < draftedDice.size()) {
                 var die = draftedDice.get(i);
-                loader.setController(new DieController(die));
+                loader.setController(new DieController(die, this));
             }
             this.diceBox.getChildren().add(loader.load());
         }
@@ -349,5 +350,9 @@ public class GameController implements Consumer<Game> {
 
     public Player getPlayer() {
         return this.player;
+    }
+
+    public void setSelectedDie(Die selectedDie) {
+        this.selectedDie = selectedDie;
     }
 }
