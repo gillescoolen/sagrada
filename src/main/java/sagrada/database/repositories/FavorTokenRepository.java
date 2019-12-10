@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class FavorTokenRepository extends Repository<FavorToken> {
+public final class FavorTokenRepository extends Repository<FavorToken> {
     public FavorTokenRepository(DatabaseConnection connection) {
         super(connection);
     }

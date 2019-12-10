@@ -11,6 +11,7 @@ import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.*;
 import sagrada.model.*;
 import sagrada.model.card.activators.ToolCardActivatorFactory;
+import sagrada.util.ManageGame;
 import sagrada.util.StartGame;
 
 import java.io.IOException;
@@ -65,7 +66,7 @@ public class GameController implements Consumer<Game> {
 
         try {
             if (game.getOwner().getAccount().getUsername().equals(account.getUsername()) && !this.gameRepository.checkIfGameHasStarted(game)) {
-                new StartGame(game, connection);
+                this.startGameUtil = new StartGame(game, connection);
             } else {
                 this.game.addObjectiveCard(publicObjectiveCardRepository.getAllByGameId(this.game.getId()));
                 this.game.addToolCard(toolCardRepository.getAllByGameId(this.game.getId()));
@@ -75,8 +76,7 @@ public class GameController implements Consumer<Game> {
                 this.game.addFavorTokens(this.favorTokenRepository.getFavorTokens(this.game.getId()));
             }
 
-            //this.player = this.playerRepository.getGamePlayer(account.getUsername(), game);
-
+            this.game.setPlayerTurn(this.playerRepository.getNextGamePlayer(this.game));
             this.player = this.game.getPlayers().stream().filter(p -> p.getAccount().getUsername().equals(account.getUsername())).findFirst().orElse(null);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -91,11 +91,8 @@ public class GameController implements Consumer<Game> {
     @FXML
     protected void initialize() {
         this.btnSkipTurn.setOnMouseClicked(e -> {
-            try {
-                this.player.skipTurn(this.playerRepository, this.game);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            var manageGame = new ManageGame(this.game, this.connection);
+            manageGame.setNextPlayerTurn();
         });
 
         btnRollDice.setOnMouseClicked(e -> {
@@ -206,9 +203,9 @@ public class GameController implements Consumer<Game> {
 
                         // Filter our player from the participating players.
                         player = players.stream()
-                            .filter(p -> p.getAccount().getUsername().equals(player.getAccount().getUsername()))
-                            .findFirst()
-                            .orElse(null);
+                                .filter(p -> p.getAccount().getUsername().equals(player.getAccount().getUsername()))
+                                .findFirst()
+                                .orElse(null);
 
                         if (player == null) {
                             return;
@@ -216,7 +213,6 @@ public class GameController implements Consumer<Game> {
 
                         if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername()) && startGameUtil != null) {
                             startGameUtil.shareFavorTokens();
-                            game = startGameUtil.getCreatedGame();
                         }
 
                         // If the currentPlayer is our actual player, clear the cards.

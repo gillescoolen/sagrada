@@ -16,11 +16,16 @@ public final class GameRepository extends Repository<Game> {
         super(connection);
     }
 
+    public void setCurrentPlayer(int playerId, int gameId) throws SQLException {
+        this.startGame(playerId, gameId);
+    }
+
     public void startGame(int turnPlayerId, int gameId) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE game SET turn_idplayer = ? WHERE idgame = ?");
         preparedStatement.setInt(1, turnPlayerId);
         preparedStatement.setInt(2, gameId);
         preparedStatement.execute();
+        preparedStatement.close();
     }
 
     public List<Game> getAll() throws SQLException {
