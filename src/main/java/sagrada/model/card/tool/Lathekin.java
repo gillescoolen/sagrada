@@ -15,7 +15,7 @@ public final class Lathekin extends ToolCard {
         List<Square[]> messageList = (List<Square[]>) message;
 
         Square[] squares = messageList.get(0);
-        Square[] newSquares = messageList.get(0);
+        Square[] newSquares = messageList.get(1);
 
         for (int i = 0; i < squares.length; i++) {
             newSquares[i].setDie(squares[i].getDie());
