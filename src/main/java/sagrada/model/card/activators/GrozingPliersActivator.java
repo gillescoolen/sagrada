@@ -4,11 +4,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import sagrada.controller.GameController;
-import sagrada.model.Die;
-import sagrada.model.DraftPool;
-import sagrada.model.Game;
-import sagrada.model.ToolCard;
+import sagrada.model.*;
 
+import java.sql.SQLException;
 import java.util.Optional;
 
 public final class GrozingPliersActivator extends ToolCardActivator {
@@ -17,7 +15,8 @@ public final class GrozingPliersActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() {
+    public void activate() throws SQLException {
+        Player player = this.controller.getPlayer();
         Game game = this.controller.getGame();
         Die oldDie = this.askWhichDieToBeChanged();
 
@@ -27,7 +26,7 @@ public final class GrozingPliersActivator extends ToolCardActivator {
         message[0] = oldDie;
         message[1] = newDieValue;
 
-        this.toolCard.use(game.getDraftPool(), this.controller.getPlayer().getDiceBag(), this.controller.getPlayer().getPatternCard(), game.getRoundTrack(), message);
+        this.toolCard.use(game.getDraftPool(), this.controller.getPlayer().getDiceBag(), this.controller.getPlayer().getPatternCard(), game.getRoundTrack(), player, game, message);
     }
 
     private Die askWhichDieToBeChanged() {
