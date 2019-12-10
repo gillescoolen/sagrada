@@ -22,27 +22,15 @@
             <fx:include source="game/roundTrack.fxml"/>
             <fx:include source="game/roundTrack.fxml"/>
         </HBox>
-        <HBox alignment="CENTER" VBox.vgrow="ALWAYS" styleClass="dice-hbox">
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-            <fx:include source="game/die.fxml"/>
-        </HBox>
+        <HBox fx:id="diceBox" alignment="CENTER" VBox.vgrow="ALWAYS" styleClass="dice-hbox"/>
         <HBox styleClass="wpc-hbox" alignment="BOTTOM_RIGHT">
             <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
 
                 <VBox fx:id="chatWrapper"/>
 
                 <HBox styleClass="control-buttons" spacing="15">
-                    <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150"
-                            text="SKIP TURN">
-                    </Button>
-                    <Button styleClass="btn-controls" prefWidth="150" disable="true" text="ROLL DICE"/>
+                    <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
+                    <Button fx:id="btnRollDice" disable="true" styleClass="btn-controls" prefWidth="150">ROLL DICE</Button>
                 </HBox>
             </VBox>
             <VBox fx:id="rowOne" styleClass="wpc-vbox">

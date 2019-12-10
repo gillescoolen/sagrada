@@ -8,7 +8,7 @@ public class DraftPool {
     private List<Die> dice = new ArrayList<>();
 
     public List<Die> getDice() {
-        return this.dice;
+        return List.copyOf(this.dice);
     }
 
     public void addDice(Die die) {
@@ -31,7 +31,7 @@ public class DraftPool {
         this.dice.set(dice.indexOf(oldDieIndex), newDie);
     }
 
-    public void reRollDraft() {
+    public void throwDice() {
         Random random = new Random();
         this.dice.forEach(die -> die.setValue(random.nextInt(6) + 1));
     }

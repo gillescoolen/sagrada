@@ -19,6 +19,10 @@ public class Game extends Observable<Game> {
 
     private final List<FavorToken> favorTokens = new ArrayList<>(24);
 
+    public Game() {
+        this.draftPool = new DraftPool();
+    }
+
     public int getId() {
         return this.id;
     }
@@ -138,6 +142,10 @@ public class Game extends Observable<Game> {
     public void setRoundTrack(RoundTrack roundTrack) {
         this.roundTrack = roundTrack;
         this.update(this);
+    }
+
+    public int getDiceCount() {
+        return (this.players.size() * 2) + 1;
     }
 
     public void createPlayers() {

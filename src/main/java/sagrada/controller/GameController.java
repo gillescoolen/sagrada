@@ -24,6 +24,8 @@ public class GameController implements Consumer<Game> {
     @FXML
     private VBox rowTwo;
     @FXML
+    private HBox diceBox;
+    @FXML
     private HBox toolCardBox;
     @FXML
     private HBox publicObjectiveCardBox;
@@ -34,6 +36,8 @@ public class GameController implements Consumer<Game> {
     @FXML
     private Button btnSkipTurn;
     @FXML
+    private Button btnRollDice;
+    @FXML
     private Text currentTokenAmount;
 
     private Game game;
@@ -41,6 +45,9 @@ public class GameController implements Consumer<Game> {
     private Player player;
     private final DatabaseConnection connection;
     private final PlayerRepository playerRepository;
+    private final GameRepository gameRepository;
+    private final DieRepository dieRepository;
+    private final FavorTokenRepository favorTokenRepository;
 
     private boolean gameReady = false;
 
@@ -49,32 +56,28 @@ public class GameController implements Consumer<Game> {
 
         this.connection = connection;
         this.playerRepository = new PlayerRepository(connection);
+        this.gameRepository = new GameRepository(connection);
+        this.dieRepository = new DieRepository(connection);
+        this.favorTokenRepository = new FavorTokenRepository(connection);
 
         var publicObjectiveCardRepository = new PublicObjectiveCardRepository(connection);
         var toolCardRepository = new ToolCardRepository(connection);
-        var gameRepository = new GameRepository(connection);
-        var dieRepository = new DieRepository(connection);
-        var favorTokenRepository = new FavorTokenRepository(connection);
 
         try {
-            if (game.getOwner().getAccount().getUsername().equals(account.getUsername()) && !gameRepository.checkIfGameHasStarted(game)) {
+            if (game.getOwner().getAccount().getUsername().equals(account.getUsername()) && !this.gameRepository.checkIfGameHasStarted(game)) {
                 new StartGame(game, connection);
             } else {
                 this.game.addObjectiveCard(publicObjectiveCardRepository.getAllByGameId(this.game.getId()));
                 this.game.addToolCard(toolCardRepository.getAllByGameId(this.game.getId()));
 
-                var dice = dieRepository.getUnusedDice(this.game.getId());
-                var diceBag = new DiceBag(dice);
+                this.initializeDieStuffAndFavorTokens(this.game.getPlayers());
 
-                for (var player : this.game.getPlayers()) {
-                    player.setDiceBag(diceBag);
-                    player.addFavorTokens(favorTokenRepository.getPlayerFavorTokens(this.game.getId(), player.getId()));
-                }
-
-                this.game.addFavorTokens(favorTokenRepository.getFavorTokens(this.game.getId()));
+                this.game.addFavorTokens(this.favorTokenRepository.getFavorTokens(this.game.getId()));
             }
 
-            this.player = this.playerRepository.getGamePlayer(account.getUsername(), game);
+            //this.player = this.playerRepository.getGamePlayer(account.getUsername(), game);
+
+            this.player = this.game.getPlayers().stream().filter(p -> p.getAccount().getUsername().equals(account.getUsername())).findFirst().orElse(null);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -95,6 +98,27 @@ public class GameController implements Consumer<Game> {
             }
         });
 
+        btnRollDice.setOnMouseClicked(e -> {
+            btnRollDice.setDisable(true);
+
+            try {
+                var draftPool = this.game.getDraftPool();
+                draftPool.removeAllDice();
+
+                var dice = this.player.grabFromDiceBag(this.game.getDiceCount());
+
+                draftPool.addAllDice(dice);
+                draftPool.throwDice();
+
+                var round = this.gameRepository.getCurrentRound(this.game.getId());
+                this.dieRepository.addGameDice(this.game.getId(), round, draftPool.getDice());
+
+                this.initializeDice();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
         for (var player : this.game.getPlayers()) {
             if (player.getAccount().getUsername().equals(this.player.getAccount().getUsername())) {
                 try {
@@ -102,6 +126,8 @@ public class GameController implements Consumer<Game> {
                     this.initializePrivateObjectiveCard(this.game.getPlayerByName(player.getAccount().getUsername()));
                     this.initializePublicObjectiveCards();
                     this.initializeToolCards();
+                    this.initializeDice();
+
                     this.checkForPlayerPatternCards();
                     this.startMainGameTimer();
                     this.setCurrentTokenAmount();
@@ -138,8 +164,13 @@ public class GameController implements Consumer<Game> {
 
                         if (playerOne != null && playerOne.isCurrentPlayer()) {
                             btnSkipTurn.setDisable(false);
+
+                            if (game.getDraftPool().getDice().isEmpty()) {
+                                btnRollDice.setDisable(false);
+                            }
                         } else {
                             btnSkipTurn.setDisable(true);
+                            btnRollDice.setDisable(true);
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -171,13 +202,15 @@ public class GameController implements Consumer<Game> {
                         var players = playerRepository.getAllGamePlayers(game);
                         game.addPlayers(players);
 
-                        // Filter our player from the participating players.
-                        Player currentPlayer = players.stream()
-                                .filter(p -> p.getAccount().getUsername().equals(player.getAccount().getUsername()))
-                                .findFirst()
-                                .orElse(null);
+                        initializeDieStuffAndFavorTokens(game.getPlayers());
 
-                        if (currentPlayer == null) {
+                        // Filter our player from the participating players.
+                        player = players.stream()
+                            .filter(p -> p.getAccount().getUsername().equals(player.getAccount().getUsername()))
+                            .findFirst()
+                            .orElse(null);
+
+                        if (player == null) {
                             return;
                         }
 
@@ -269,6 +302,34 @@ public class GameController implements Consumer<Game> {
             var loader = new FXMLLoader(getClass().getResource("/views/game/toolCard.fxml"));
             loader.setController(new ToolCardController(toolCard, ToolCardActivatorFactory.getToolCardActivator(this, toolCard)));
             this.toolCardBox.getChildren().add(loader.load());
+        }
+    }
+
+    private void initializeDieStuffAndFavorTokens(List<Player> players) throws SQLException {
+        var draftedDice = this.dieRepository.getDraftPoolDice(this.game.getId(), this.gameRepository.getCurrentRound(this.game.getId()));
+        this.game.getDraftPool().addAllDice(draftedDice);
+
+        var dice = this.dieRepository.getUnusedDice(this.game.getId());
+        var diceBag = new DiceBag(dice);
+
+        for (var player : players) {
+            player.setDiceBag(diceBag);
+            player.addFavorTokens(this.favorTokenRepository.getPlayerFavorTokens(this.game.getId(), player.getId()));
+        }
+    }
+
+    private void initializeDice() throws IOException {
+        var diceCount = this.game.getDiceCount();
+        var draftedDice = this.game.getDraftPool().getDice();
+
+        this.diceBox.getChildren().clear();
+        for (int i = 0; i < diceCount; ++i) {
+            var loader = new FXMLLoader(getClass().getResource("/views/game/die.fxml"));
+            if (i < draftedDice.size()) {
+                var die = draftedDice.get(i);
+                loader.setController(new DieController(die));
+            }
+            this.diceBox.getChildren().add(loader.load());
         }
     }
 

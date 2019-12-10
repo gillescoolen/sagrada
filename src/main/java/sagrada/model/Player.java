@@ -122,7 +122,7 @@ public class Player {
         this.patternCard = patternCard;
     }
 
-    public List<Die> grabRandomDice(int amount) {
+    public List<Die> grabFromDiceBag(int amount) {
         return this.diceBag.getRandomDice(amount);
     }
 
