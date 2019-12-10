@@ -2,6 +2,8 @@ package sagrada.model;
 
 import sagrada.database.DatabaseConnection;
 
+import java.sql.SQLException;
+
 public abstract class ToolCard extends ObservableCard<ToolCard>  {
     private final int id;
     private final String description;
@@ -27,7 +29,7 @@ public abstract class ToolCard extends ObservableCard<ToolCard>  {
         return this.description;
     }
 
-    public abstract void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Object message);
+    public abstract void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException;
 
     protected void incrementCost() {
         if (this.cost < 2) {

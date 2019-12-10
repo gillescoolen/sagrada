@@ -154,4 +154,8 @@ public class Player {
         this.isCurrentPlayer = false;
         playerRepository.nextPlayerTurn(this, game);
     }
+
+    public FavorToken getNonAffectedFavorToken() {
+        return this.getFavorTokens().stream().filter(favorToken -> favorToken.getToolCard() == null).findFirst().orElse(null);
+    }
 }
