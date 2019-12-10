@@ -44,6 +44,15 @@ public final class ToolCardActivatorFactory {
             case "Glasbreektang":
                 toolCardActivator = new RunningPliersActivator(gameController, toolCard);
                 break;
+            case "Eglomise Borstel":
+                toolCardActivator = new EglomiseBurshActivator(gameController, toolCard);
+                break;
+            case "Fluxverwijderaar":
+                toolCardActivator = new FluxRemoverActivator(gameController, toolCard);
+                break;
+            case "Olieglassnijder":
+                toolCardActivator = new TapWheelActivator(gameController, toolCard);
+                break;
         }
 
         return toolCardActivator;
