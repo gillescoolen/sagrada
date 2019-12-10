@@ -13,25 +13,33 @@
       prefWidth="1400" prefHeight="720">
 
     <!-- LEADERBOARD -->
-    <VBox styleClass="leader-vbox" prefWidth="250" maxWidth="400">
-        <Text styleClass="title" text="Game summary"/>
+    <VBox alignment="TOP_CENTER" styleClass="leader-vbox" maxHeight="100">
+        <Text styleClass="title" text="Leaderboard"/>
+        <fx:include source="game/post-player.fxml"/>
+        <fx:include source="game/post-player.fxml"/>
         <fx:include source="game/post-player.fxml"/>
     </VBox>
 
-    <!-- CARDS -->
+    <!-- VICTORY POINTS -->
     <VBox styleClass="leader-vbox">
+        <Text styleClass="title" text="Victory Points"/>
+    </VBox>
+
+
+
+    <!-- CARDS -->
+    <VBox styleClass="cards-vbox">
         <Text styleClass="title" text="Used Tool cards"/>
-        <HBox styleClass="tool-card-hbox" prefWidth="200" maxWidth="400" maxHeight="400">
+        <HBox styleClass="tool-card-hbox">
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>
         </HBox>
         <Text styleClass="title" text="Used Public objective cards"/>
-        <HBox styleClass="tool-card-hbox" prefWidth="200" maxWidth="400" maxHeight="400">
+        <HBox styleClass="tool-card-hbox">
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>
         </HBox>
     </VBox>
-
 </HBox>

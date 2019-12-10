@@ -10,6 +10,13 @@
 .leader-vbox {
     -fx-spacing: 15px;
     -fx-padding: 15px;
+    -fx-background-color: purple;
+}
+
+.cards-vbox {
+    -fx-spacing: 15px;
+    -fx-padding: 15px;
+    -fx-background-color: green;
 }
 
 .favor-token {
