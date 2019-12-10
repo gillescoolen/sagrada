@@ -2,8 +2,12 @@ package sagrada.model.card.activators;
 
 import javafx.scene.control.ChoiceDialog;
 import sagrada.controller.GameController;
-import sagrada.model.*;
+import sagrada.model.Game;
+import sagrada.model.Player;
+import sagrada.model.Square;
+import sagrada.model.ToolCard;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,7 +20,7 @@ public final class CopperFoilBurnisherActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() {
+    public void activate() throws SQLException {
         this.player = this.controller.getPlayer();
         Game game = this.controller.getGame();
 
@@ -28,7 +32,7 @@ public final class CopperFoilBurnisherActivator extends ToolCardActivator {
         message[0] = square;
         message[1] = newSquare;
 
-        this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), message);
+        this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, message);
     }
 
     private Square askWhichDiceShouldBeMoved() {
