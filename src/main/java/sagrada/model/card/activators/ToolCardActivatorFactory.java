@@ -41,6 +41,9 @@ public final class ToolCardActivatorFactory {
             case "Driepuntstang":
                 toolCardActivator = new GrozingPliersActivator(gameController, toolCard);
                 break;
+            case "Glasbreektang":
+                toolCardActivator = new RunningPliersActivator(gameController, toolCard);
+                break;
         }
 
         return toolCardActivator;
