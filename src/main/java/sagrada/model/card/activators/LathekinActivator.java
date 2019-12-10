@@ -7,6 +7,7 @@ import sagrada.model.Player;
 import sagrada.model.Square;
 import sagrada.model.ToolCard;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ public final class LathekinActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() {
+    public void activate() throws SQLException {
         this.player = this.controller.getPlayer();
         Game game = this.controller.getGame();
 
@@ -30,7 +31,7 @@ public final class LathekinActivator extends ToolCardActivator {
         message.add(squares);
         message.add(newSquares);
 
-        this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPatternCard(), game.getRoundTrack(), message);
+        this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPatternCard(), game.getRoundTrack(), player, game, message);
     }
 
     private Square[] askNewSquares(Square[] squares) {
