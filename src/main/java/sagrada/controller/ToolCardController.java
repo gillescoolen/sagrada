@@ -6,6 +6,7 @@ import javafx.scene.text.Text;
 import sagrada.model.ToolCard;
 import sagrada.model.card.activators.ToolCardActivator;
 
+import java.sql.SQLException;
 import java.util.function.Consumer;
 
 public class ToolCardController implements Consumer<ToolCard> {
@@ -32,7 +33,13 @@ public class ToolCardController implements Consumer<ToolCard> {
         this.name.setText(this.toolCard.getName());
         this.description.setText(this.toolCard.getDescription());
         this.points.setText(Integer.toString(this.toolCard.getCost()));
-        this.wrapper.setOnMouseClicked(event -> this.toolCardActivator.activate());
+        this.wrapper.setOnMouseClicked(event -> {
+            try {
+                this.toolCardActivator.activate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override
