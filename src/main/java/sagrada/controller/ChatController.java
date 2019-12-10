@@ -68,12 +68,8 @@ public class ChatController {
      */
     private void sendMessage(String message) {
         try {
-            if (message.length() == 0 || message.isBlank()) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning dialog");
-                alert.setContentText("Please type a message!");
-                alert.showAndWait();
-            } else {
+            message = message.trim();
+            if (message.length() > 0 && !message.isBlank()) {
                 this.chatRepository.add(new ChatLine(this.player, message));
                 this.messageField.clear();
             }
