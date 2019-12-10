@@ -7,6 +7,7 @@ import sagrada.model.Game;
 import sagrada.model.Player;
 import sagrada.model.ToolCard;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,12 +19,12 @@ public final class LensCutterActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() {
+    public void activate() throws SQLException {
         Object[] message = this.question();
 
         Player player = this.controller.getPlayer();
         Game game = this.controller.getGame();
-        this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), message);
+        this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, message);
     }
 
     private Object[] question() {
