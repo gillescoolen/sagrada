@@ -7,8 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox styleClass="chat" fx:id="chatBox" prefHeight="500.0" prefWidth="300.0" stylesheets="/styles/chat.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
-    <ListView minHeight="460.0" maxWidth="300.0" fx:id="lvMessageBox">
-    </ListView>
+    <ListView minHeight="460.0" maxWidth="300.0" fx:id="lvMessageBox" />
     <HBox>
         <TextField fx:id="messageField" prefHeight="20.0" prefWidth="200.0" styleClass="input"/>
         <Button fx:id="sendButton" prefHeight="20.0" prefWidth="100.0" styleClass="send-button" text="Send"/>

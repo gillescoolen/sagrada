@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -47,52 +46,59 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         this.player = player;
     }
 
-    public WindowPatternCardController(DatabaseConnection connection, Player player, Game game) {
+    public WindowPatternCardController(DatabaseConnection connection, Player player) {
         var timer = new Timer();
         this.connection = connection;
 
         PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(connection);
 
-        try {
-            this.patternCard = player.getPatternCard();
-            this.playerFrame = playerFrameRepository.getPlayerFrame(game, player);
-            this.windowField = this.playerFrame;
-            this.player = player;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        this.patternCard = player.getPatternCard();
+        this.playerFrame = player.getPlayerFrame();
+        this.windowField = this.playerFrame;
+        this.player = player;
 
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
                     try {
-                        playerFrameRepository.getPlayerFrame(game, player, windowField);
+                        playerFrameRepository.getPlayerFrame(player);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
                 });
             }
-        }, 0, 2000);
+        }, 0, 1500);
+
+        this.playerFrame.observe(this);
     }
 
     @Override
     public void accept(PatternCard patternCard) {
         this.playerFrame = patternCard;
-        this.fillWindow();
+
+        if (this.windowSquares.size() > 0) {
+            this.fillWindow();
+        }
+
+        if (this.changeView != null) {
+            this.changeView.setDisable(false);
+            this.name.setText(this.player.getAccount().getUsername());
+            this.reportMisplacement.setText("Change field");
+        }
     }
 
     @FXML
     protected void initialize() {
         if (this.playerFrame == null) {
             this.changeView.setDisable(true);
-            this.name.setText(this.windowField.getName());
+            this.name.setText(this.windowField.getName() + String.format(" (%s tokens)", this.windowField.getDifficulty()));
             this.reportMisplacement.setText("Choose");
 
             this.reportMisplacement.setOnMouseClicked(e -> this.choosePatternCard());
         } else {
             this.changeView.setDisable(false);
-            this.name.setText(this.player.getAccount().getUsername());
+            this.name.setText(this.player.getAccount().getUsername() + String.format(" (%s tokens)", this.playerFrame.getDifficulty()));
             this.reportMisplacement.setText("Change field");
         }
 
@@ -125,6 +131,8 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
             if (color != null) {
                 button.setStyle("-fx-background-color: " + square.getColor().getColor());
+            } else {
+                button.setStyle("");
             }
 
             ++i;
@@ -151,5 +159,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     private void changeView() {
         this.showPatternCard = !this.showPatternCard;
         this.windowField = this.showPatternCard ? this.patternCard : this.playerFrame;
+        this.fillWindow();
     }
 }

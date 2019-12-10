@@ -98,8 +98,16 @@ public class Player {
         this.cardOptions.add(patternCard);
     }
 
+    public void addCardOption(List<PatternCard> patternCards) {
+        this.cardOptions.addAll(patternCards);
+    }
+
     public void addFavorToken(FavorToken favorToken) {
         this.favorTokens.add(favorToken);
+    }
+
+    public void addFavorTokens(List<FavorToken> favorTokens) {
+        this.favorTokens.addAll(favorTokens);
     }
 
     public void removeFavorToken(FavorToken favorToken) {
@@ -114,7 +122,7 @@ public class Player {
         this.patternCard = patternCard;
     }
 
-    public List<Die> grabRandomDice(int amount) {
+    public List<Die> grabFromDiceBag(int amount) {
         return this.diceBag.getRandomDice(amount);
     }
 
