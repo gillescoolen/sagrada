@@ -3,6 +3,7 @@ package sagrada.controller;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -67,8 +68,15 @@ public class ChatController {
      */
     private void sendMessage(String message) {
         try {
-            this.chatRepository.add(new ChatLine(this.player, message));
-            this.messageField.clear();
+            if (message.length() == 0 || message.isBlank()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning dialog");
+                alert.setContentText("Please type a message!");
+                alert.showAndWait();
+            } else {
+                this.chatRepository.add(new ChatLine(this.player, message));
+                this.messageField.clear();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
