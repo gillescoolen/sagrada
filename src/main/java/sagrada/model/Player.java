@@ -156,6 +156,6 @@ public class Player {
     }
 
     public FavorToken getNonAffectedFavorToken() {
-        return this.getFavorTokens().stream().filter(favorToken -> favorToken.getToolCard() == null).findFirst().orElse(null);
+        return this.favorTokens.stream().filter(favorToken -> favorToken.getToolCard() == null).findFirst().orElse(null);
     }
 }
