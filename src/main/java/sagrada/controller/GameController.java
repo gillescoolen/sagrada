@@ -187,7 +187,7 @@ public class GameController implements Consumer<Game> {
      */
     private void checkForPlayerPatternCards() {
         var playerPatternCardsTimer = new Timer();
-
+        GameController gameController = this;
         playerPatternCardsTimer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -225,7 +225,7 @@ public class GameController implements Consumer<Game> {
                         rowTwo.getChildren().clear();
 
                         for (var player : players) {
-                            var controller = new WindowPatternCardController(connection, player);
+                            var controller = new WindowPatternCardController(connection, player, gameController);
                             var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
 
                             loader.setController(controller);
@@ -262,7 +262,7 @@ public class GameController implements Consumer<Game> {
         // Show available options when our player hasn't chosen a card yet.
         if (player.getCardOptions().size() > 0) {
             for (var patternCard : player.getCardOptions()) {
-                var controller = new WindowPatternCardController(this.connection, patternCard, this.player);
+                var controller = new WindowPatternCardController(this.connection, patternCard, this.player, this);
                 var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
 
                 loader.setController(controller);
@@ -277,7 +277,7 @@ public class GameController implements Consumer<Game> {
             }
         } else {
             // Load our clients player pattern card when rejoining a game.
-            var controller = new WindowPatternCardController(this.connection, player.getPatternCard(), this.player);
+            var controller = new WindowPatternCardController(this.connection, player.getPatternCard(), this.player, this);
             var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
             loader.setController(controller);
             this.rowOne.getChildren().add(loader.load());
@@ -354,5 +354,9 @@ public class GameController implements Consumer<Game> {
 
     public void setSelectedDie(Die selectedDie) {
         this.selectedDie = selectedDie;
+    }
+
+    public Die getSelectedDie() {
+        return this.selectedDie;
     }
 }
