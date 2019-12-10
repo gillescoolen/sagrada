@@ -22,6 +22,7 @@ public class CorkBackedStraightedgeActivator extends ToolCardActivator {
 
         Player player = this.controller.getPlayer();
         Game game = this.controller.getGame();
+
         this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, die);
     }
 
