@@ -9,6 +9,12 @@ public final class GrozingPliers extends ToolCard {
 
     @Override
     public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Object message) {
+        Object[] messages = (Object[]) message;
+        Die die = (Die) messages[0];
+        Integer newDieValue = (Integer) messages[1];
+
+        die.setValue(newDieValue);
+
         this.incrementCost();
     }
 }

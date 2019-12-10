@@ -2,6 +2,7 @@ package sagrada.model.card.activators;
 
 import sagrada.controller.GameController;
 import sagrada.model.ToolCard;
+import sagrada.model.card.tool.GrozingPliers;
 
 import java.text.Normalizer;
 
@@ -37,6 +38,9 @@ public final class ToolCardActivatorFactory {
                 break;
             case "Snijliniaal":
                 toolCardActivator = new CorkBackedStraightedgeActivator(gameController, toolCard);
+                break;
+            case "Driepuntstang":
+                toolCardActivator = new GrozingPliersActivator(gameController, toolCard);
                 break;
         }
 
