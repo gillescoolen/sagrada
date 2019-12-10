@@ -1,5 +1,6 @@
 package sagrada.model.card;
 
+import sagrada.database.DatabaseConnection;
 import sagrada.model.*;
 import sagrada.model.card.objective.*;
 import sagrada.model.card.tool.*;
@@ -58,7 +59,7 @@ public final class CardFactory {
         return new PrivateObjectiveCard(color);
     }
 
-    public static ToolCard getToolCard(int id, String name, String description) {
+    public static ToolCard getToolCard(int id, String name, String description, DatabaseConnection connection) {
         ToolCard toolCard = null;
 
         name = Normalizer
@@ -67,40 +68,40 @@ public final class CardFactory {
 
         switch (name) {
             case "Folie-aandrukker":
-                toolCard = new CopperFoilBurnisher(id, name, description);
+                toolCard = new CopperFoilBurnisher(id, name, description, connection);
                 break;
             case "Snijliniaal":
-                toolCard = new CorkBackedStraightedge(id, name, description);
+                toolCard = new CorkBackedStraightedge(id, name, description, connection);
                 break;
             case "Eglomise Borstel":
-                toolCard = new EglomiseBrush(id, name, description);
+                toolCard = new EglomiseBrush(id, name, description, connection);
                 break;
             case "Fluxborstel":
-                toolCard = new FluxBrush(id, name, description);
+                toolCard = new FluxBrush(id, name, description, connection);
                 break;
             case "Fluxverwijderaar":
-                toolCard = new FluxRemover(id, name, description);
+                toolCard = new FluxRemover(id, name, description, connection);
                 break;
             case "Loodhamer":
-                toolCard = new GlazingHammer(id, name, description);
+                toolCard = new GlazingHammer(id, name, description, connection);
                 break;
             case "Schuurblok":
-                toolCard = new GrindingStone(id, name, description);
+                toolCard = new GrindingStone(id, name, description, connection);
                 break;
             case "Driepuntstang":
-                toolCard = new GrozingPliers(id, name, description);
+                toolCard = new GrozingPliers(id, name, description, connection);
                 break;
             case "Loodopenhaler":
-                toolCard = new Lathekin(id, name, description);
+                toolCard = new Lathekin(id, name, description, connection);
                 break;
             case "Rondsnijder":
-                toolCard = new LensCutter(id, name, description);
+                toolCard = new LensCutter(id, name, description, connection);
                 break;
             case "Glasbreektang":
-                toolCard = new RunningPliers(id, name, description);
+                toolCard = new RunningPliers(id, name, description, connection);
                 break;
             case "Olieglassnijder":
-                toolCard = new TapWheel(id, name, description);
+                toolCard = new TapWheel(id, name, description, connection);
                 break;
             default:
                 System.out.print("Unsupported tool card: " + name);

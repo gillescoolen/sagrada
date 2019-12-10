@@ -1,12 +1,13 @@
 package sagrada.model.card.tool;
 
+import sagrada.database.DatabaseConnection;
 import sagrada.model.*;
 
 import java.util.List;
 
 public final class Lathekin extends ToolCard {
-    public Lathekin(int id, String name, String description) {
-        super(id, name, description);
+    public Lathekin(int id, String name, String description, DatabaseConnection connection) {
+        super(id, name, description, connection);
     }
 
     @Override

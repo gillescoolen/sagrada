@@ -1,10 +1,11 @@
 package sagrada.model.card.tool;
 
+import sagrada.database.DatabaseConnection;
 import sagrada.model.*;
 
 public final class GlazingHammer extends ToolCard {
-    public GlazingHammer(int id, String name, String description) {
-        super(id, name, description);
+    public GlazingHammer(int id, String name, String description, DatabaseConnection connection) {
+        super(id, name, description, connection);
     }
 
     @Override

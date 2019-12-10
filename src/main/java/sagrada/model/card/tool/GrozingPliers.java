@@ -1,10 +1,11 @@
 package sagrada.model.card.tool;
 
+import sagrada.database.DatabaseConnection;
 import sagrada.model.*;
 
 public final class GrozingPliers extends ToolCard {
-    public GrozingPliers(int id, String name, String description) {
-        super(id, name, description);
+    public GrozingPliers(int id, String name, String description, DatabaseConnection connection) {
+        super(id, name, description, connection);
     }
 
     @Override

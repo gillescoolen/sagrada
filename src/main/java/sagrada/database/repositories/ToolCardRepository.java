@@ -27,7 +27,8 @@ public final class ToolCardRepository extends Repository<ToolCard> {
             toolCards.add(CardFactory.getToolCard(
                     resultSet.getInt("idtoolcard"),
                     resultSet.getString("name"),
-                    resultSet.getString("description")
+                    resultSet.getString("description"),
+                    this.connection
             ));
         }
 
@@ -49,7 +50,7 @@ public final class ToolCardRepository extends Repository<ToolCard> {
         preparedStatement.close();
         resultSet.close();
 
-        return CardFactory.getToolCard(id, name, description);
+        return CardFactory.getToolCard(id, name, description, this.connection);
     }
 
     @Override
@@ -71,7 +72,7 @@ public final class ToolCardRepository extends Repository<ToolCard> {
         preparedStatement.close();
         resultSet.close();
 
-        return CardFactory.getToolCard(idtoolcard, name, description);
+        return CardFactory.getToolCard(idtoolcard, name, description, this.connection);
     }
 
     @Override
@@ -126,7 +127,8 @@ public final class ToolCardRepository extends Repository<ToolCard> {
             toolCards.add(CardFactory.getToolCard(
                     cardResultSet.getInt("idtoolcard"),
                     cardResultSet.getString("name"),
-                    cardResultSet.getString("description")
+                    cardResultSet.getString("description"),
+                    this.connection
             ));
         }
 

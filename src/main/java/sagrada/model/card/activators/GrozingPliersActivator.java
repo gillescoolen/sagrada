@@ -11,7 +11,7 @@ import sagrada.model.ToolCard;
 
 import java.util.Optional;
 
-public class GrozingPliersActivator extends ToolCardActivator {
+public final class GrozingPliersActivator extends ToolCardActivator {
     public GrozingPliersActivator(GameController gameController, ToolCard toolCard) {
         super(gameController, toolCard);
     }
