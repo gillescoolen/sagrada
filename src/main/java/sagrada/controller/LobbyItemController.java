@@ -34,10 +34,13 @@ public class LobbyItemController {
     private final DatabaseConnection databaseConnection;
     private final static int MAX_PLAYERS = 4;
 
-    public LobbyItemController(Game game, Account account, DatabaseConnection connection) {
+    private final LobbyController lobbyController;
+
+    public LobbyItemController(Game game, Account account, DatabaseConnection connection, LobbyController lobbyController) {
         this.game = game;
         this.account = account;
         this.databaseConnection = connection;
+        this.lobbyController = lobbyController;
     }
 
     @FXML
@@ -107,6 +110,8 @@ public class LobbyItemController {
     }
 
     private void goToNextScreen() {
+        this.lobbyController.stopTimers();
+
         try {
             FXMLLoader loader;
 

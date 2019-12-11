@@ -13,6 +13,7 @@ import sagrada.model.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Timer;
@@ -80,7 +81,7 @@ public class LobbyController {
             for (var game : games) {
                 if (game.getOwner() != null) {
                     var loader = new FXMLLoader(view);
-                    loader.setController(new LobbyItemController(game, this.user, this.databaseConnection));
+                    loader.setController(new LobbyItemController(game, this.user, this.databaseConnection, this));
                     items.getChildren().add(loader.load());
                 }
             }
@@ -111,4 +112,11 @@ public class LobbyController {
             e.printStackTrace();
         }
     }
+
+   public void stopTimers() {
+        this.getGamesTimer.cancel();
+        this.getGamesTimer.purge();
+        this.getInvitesTimer.cancel();
+        this.getInvitesTimer.purge();
+   }
 }
