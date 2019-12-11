@@ -18,7 +18,7 @@ public class Square {
     }
 
     public Color getColor() {
-        return this.color;
+        return this.die == null ? this.color : this.die.getColor();
     }
 
     public void setColor(Color color) {
@@ -26,7 +26,7 @@ public class Square {
     }
 
     public Integer getValue() {
-        return this.value;
+        return this.die == null ? this.value : this.die.getValue();
     }
 
     public void setValue(Integer value) {

@@ -3,6 +3,7 @@ package sagrada.database.repositories;
 import sagrada.database.DatabaseConnection;
 import sagrada.model.Color;
 import sagrada.model.Die;
+import sagrada.model.PatternCard;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -90,6 +91,36 @@ public final class DieRepository extends Repository<Die> {
     @Override
     public Die findById(int id) throws SQLException {
         throw new SQLException("Die has no id");
+    }
+
+    public Die findById(int idGame, int dieNumber, String dieColor) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM gamedie WHERE idgame = ? AND dienumber = ? AND diecolor = ?");
+
+        preparedStatement.setInt(1, idGame);
+        preparedStatement.setInt(2, dieNumber);
+        preparedStatement.setString(3, dieColor);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (!resultSet.next()) {
+            return null;
+        }
+
+        int foundDieNumber = resultSet.getInt("dienumber");
+        Color foundDieColor = null;
+
+        for (Color color : Color.values()) {
+            if (color.getDutchColorName().equals(resultSet.getString("diecolor"))) {
+                foundDieColor = color;
+            }
+        }
+
+        int value = resultSet.getInt("value");
+
+        Die die = new Die(foundDieNumber, foundDieColor);
+        die.setValue(value);
+
+        return die;
     }
 
     @Override

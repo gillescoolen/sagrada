@@ -4,6 +4,7 @@ import sagrada.database.DatabaseConnection;
 import sagrada.model.*;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,6 +21,8 @@ public final class PlayerFrameRepository extends Repository<PatternCard> {
     }
 
     public List<Square> getSquares(Player player) throws SQLException {
+        var dieRepository = new DieRepository(this.connection);
+
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM playerframefield WHERE player_idplayer = ? ORDER BY position_y, position_x;");
 
         preparedStatement.setInt(1, player.getId());
@@ -35,6 +38,9 @@ public final class PlayerFrameRepository extends Repository<PatternCard> {
             final int yPosition = resultSet.getInt("position_y");
             final String color = resultSet.getString("diecolor");
             final int value = resultSet.getInt("dienumber");
+            final int gameId = resultSet.getInt("idgame");
+
+            var die = dieRepository.findById(gameId, value, color);
 
             var position = new Position(xPosition, yPosition);
 
@@ -48,6 +54,8 @@ public final class PlayerFrameRepository extends Repository<PatternCard> {
             square.setColor(actualColor);
             square.setValue(value);
 
+            square.setDie(die);
+
             squares.add(square);
         }
 
@@ -55,6 +63,20 @@ public final class PlayerFrameRepository extends Repository<PatternCard> {
         resultSet.close();
 
         return squares;
+    }
+
+    public void updateSquare(Player player, Square square, Die die) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE playerframefield SET dienumber = ?, diecolor = ? WHERE player_idplayer = ? AND position_x = ? AND position_y = ?");
+
+        preparedStatement.setInt(1, die.getNumber());
+        preparedStatement.setString(2, die.getColor().getDutchColorName());
+        preparedStatement.setInt(3, player.getId());
+        preparedStatement.setInt(4, square.getPosition().getX());
+        preparedStatement.setInt(5, square.getPosition().getY());
+
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
     }
 
     @Override
