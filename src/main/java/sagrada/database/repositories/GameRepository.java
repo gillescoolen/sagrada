@@ -216,21 +216,21 @@ public final class GameRepository extends Repository<Game> {
 
     public void updateGamePlayer(Player nextPlayer, Game game) throws SQLException {
         PreparedStatement nextPlayerGameStatement = this.connection.getConnection().prepareStatement("UPDATE game SET turn_idplayer = ? WHERE idgame = ?");
-        PreparedStatement playersTurnPreparedStatement = this.connection.getConnection().prepareStatement("UPDATE player SET isCurrentPlayer = 0 WHERE spel_idspel = ?");
-        PreparedStatement playerTurnPreparedStatement = this.connection.getConnection().prepareStatement("UPDATE player SET isCurrentPlayer = ? WHERE idplayer = ?");
+//        PreparedStatement playersTurnPreparedStatement = this.connection.getConnection().prepareStatement("UPDATE player SET isCurrentPlayer = 0 WHERE spel_idspel = ?");
+//        PreparedStatement playerTurnPreparedStatement = this.connection.getConnection().prepareStatement("UPDATE player SET isCurrentPlayer = ? WHERE idplayer = ?");
 
         nextPlayerGameStatement.setInt(1, nextPlayer.getId());
         nextPlayerGameStatement.setInt(2, game.getId());
-        playerTurnPreparedStatement.setInt(1, 1);
-        playerTurnPreparedStatement.setInt(2, nextPlayer.getId());
-        playersTurnPreparedStatement.setInt(1, game.getId());
+//        playerTurnPreparedStatement.setInt(1, 1);
+//        playerTurnPreparedStatement.setInt(2, nextPlayer.getId());
+//        playersTurnPreparedStatement.setInt(1, game.getId());
 
         nextPlayerGameStatement.executeUpdate();
-        playersTurnPreparedStatement.executeUpdate();
-        playerTurnPreparedStatement.executeUpdate();
+//        playersTurnPreparedStatement.executeUpdate();
+//        playerTurnPreparedStatement.executeUpdate();
 
         nextPlayerGameStatement.close();
-        playerTurnPreparedStatement.close();
-        playersTurnPreparedStatement.close();
+//        playerTurnPreparedStatement.close();
+//        playersTurnPreparedStatement.close();
     }
 }

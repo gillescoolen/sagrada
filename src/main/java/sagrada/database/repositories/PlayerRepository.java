@@ -385,10 +385,9 @@ public final class PlayerRepository extends Repository<Player> {
         statement.close();
 
         // Set our local next player.
-        Player nextPlayer = this.getNextGamePlayer(game);
-        nextPlayer.setCurrentPlayer(true);
+        expectedNextPlayer.setCurrentPlayer(true);
 
-        this.update(nextPlayer);
+        this.update(expectedNextPlayer);
     }
 
     // FIXME: refactor this garbage
