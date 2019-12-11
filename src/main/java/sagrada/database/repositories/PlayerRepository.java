@@ -337,57 +337,56 @@ public final class PlayerRepository extends Repository<Player> {
 
     public void nextPlayerTurn(Player player, Game game) throws SQLException {
 
-//        var players  = game.getPlayers();
-//
-//        players.forEach(p -> {
-//            if (p.isCurrentPlayer()) {
-//                if (p.getSequenceNumber() < 4) {
-//                    // Helft 2
-//                    System.out.println(p);
-//                } else {
-//                    // Helft 1
-//                    System.out.println(p);
-//                }
-//            }
-//        });
-//
-        var MIN = 1;
-        var MAX = 8;
+        // Get new player data from db
+        List<Player> newPlayers = new ArrayList<>();
+        PreparedStatement playerStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player where spel_idspel = ?");
+        playerStatement.setInt(1, game.getId());
 
-        var nextSequence = 1;
+        ResultSet resultSet = playerStatement.executeQuery();
 
-        var players = game.getPlayers();
+        // Add player data to list
+        while (resultSet.next()) {
+            Player p = createPlayer(resultSet);
+            newPlayers.add(p);
+        }
 
+        playerStatement.close();
+        resultSet.close();
+
+        // Get the expected next sequence number.
+        var nextSequence = this.getSequenceNumber(newPlayers.size(), player);
+
+        // Set current player to false on our player.
         player.setCurrentPlayer(false);
 
-
+        // Get the next expected player based on calculated sequence number.
         int finalNextSequence = nextSequence;
-        var testNextPlayer = players.stream().filter(p -> p.getSequenceNumber() == finalNextSequence).findFirst().orElse(null);
+        var expectedNextPlayer = newPlayers.stream().filter(p -> p.getSequenceNumber() == finalNextSequence).findFirst().orElse(null);
 
+        // Update current player sequence number and set them to non current player.
         PreparedStatement preparedStatement = this.connection.getConnection()
                 .prepareStatement("UPDATE player SET isCurrentPlayer = ?, seqNr = ? WHERE idplayer = ?;");
-
 
         preparedStatement.setBoolean(1, false);
         preparedStatement.setInt(2, player.getSequenceNumber());
         preparedStatement.setInt(3, player.getId());
 
         preparedStatement.executeUpdate();
-
-        // Set new current Player
-        preparedStatement.setBoolean(1, true);
-        preparedStatement.setInt(2, nextSequence);
-        preparedStatement.setInt(3, testNextPlayer.getId());
-
-        preparedStatement.executeUpdate();
-
         preparedStatement.close();
 
+        // Set the expected player to current player.
+        PreparedStatement statement = this.connection.getConnection()
+                .prepareStatement("UPDATE player SET isCurrentPlayer = ?, seqNr = ? WHERE idplayer = ?;");
 
-        System.out.println(player);
+        statement.setBoolean(1, true);
+        statement.setInt(2, nextSequence);
+        statement.setInt(3, expectedNextPlayer.getId());
 
+        statement.executeUpdate();
+        statement.close();
+
+        // Set our local next player.
         Player nextPlayer = this.getNextGamePlayer(game);
-
         nextPlayer.setCurrentPlayer(true);
 
         this.update(nextPlayer);
