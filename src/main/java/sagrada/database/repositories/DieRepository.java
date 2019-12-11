@@ -41,11 +41,10 @@ public final class DieRepository extends Repository<Die> {
     }
 
     public List<Die> getDraftPoolDice(int gameId, int round) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT d.number, d.color, g.value FROM die d LEFT OUTER JOIN gamedie g ON g.dienumber = d.number AND g.diecolor = d.color AND g.idgame = ? LEFT JOIN playerframefield p ON p.dienumber = d.number AND p.diecolor = d.color AND g.idgame = ? WHERE g.idgame IS NOT NULL AND p.idgame IS NULL AND g.roundtrack IS NULL AND g.round = ?;");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT g.diecolor, g.dienumber, g.value FROM playerframefield p RIGHT OUTER JOIN gamedie g ON g.idgame = p.idgame AND g.dienumber = p.dienumber AND g.diecolor = p.diecolor WHERE g.idgame = ? AND g.round = ? AND p.dienumber IS NULL AND p.diecolor IS NUll;");
 
         preparedStatement.setInt(1, gameId);
-        preparedStatement.setInt(2, gameId);
-        preparedStatement.setInt(3, round);
+        preparedStatement.setInt(2, round);
 
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Die> draftPoolDice = new ArrayList<>();
@@ -53,8 +52,8 @@ public final class DieRepository extends Repository<Die> {
         while (resultSet.next()) {
             Die die = null;
             for (Color color : Color.values()) {
-                if (color.getDutchColorName().equals(resultSet.getString("color"))) {
-                    die = new Die(resultSet.getInt("number"), color);
+                if (color.getDutchColorName().equals(resultSet.getString("diecolor"))) {
+                    die = new Die(resultSet.getInt("dienumber"), color);
                     die.setValue(resultSet.getInt("value"));
                 }
             }
