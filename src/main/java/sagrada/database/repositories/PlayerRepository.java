@@ -337,6 +337,20 @@ public final class PlayerRepository extends Repository<Player> {
 
     public void nextPlayerTurn(Player player, Game game) throws SQLException {
 
+        var players  = game.getPlayers();
+
+        players.forEach(p -> {
+            if (p.isCurrentPlayer()) {
+                if (p.getSequenceNumber() < 4) {
+                    System.out.println(p);
+                } else {
+                    System.out.println(p);
+                }
+            }
+        });
+
+        player.setCurrentPlayer(false);
+
         // https://cutt.ly/Ne5cVrH TODO refactor
         switch (player.getSequenceNumber()) {
             case 1:
@@ -367,6 +381,7 @@ public final class PlayerRepository extends Repository<Player> {
 
         PreparedStatement preparedStatement = this.connection.getConnection()
                 .prepareStatement("UPDATE player SET isCurrentPlayer = ?, seqNr = ? WHERE idplayer = ?;");
+
 
         preparedStatement.setBoolean(1, false);
         preparedStatement.setInt(2, player.getSequenceNumber());
