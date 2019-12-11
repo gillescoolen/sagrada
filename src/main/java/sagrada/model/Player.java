@@ -155,6 +155,21 @@ public class Player {
         playerRepository.nextPlayerTurn(this, game);
     }
 
+    public void validateFrameField() {
+        var patternCardSquares = this.patternCard.getSquares();
+        var frameFieldSquares = this.playerFrame.getSquares();
+        var correctedFieldSquares = new ArrayList<Square>();
+
+        for (var i = 0; i < 20; ++i) {
+            var patternCardSquare = patternCardSquares.get(i);
+            var frameFieldSquare = frameFieldSquares.get(i);
+
+            var left =
+            var bottomLeft = this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX() - 1, frameFieldSquare.getPosition().getY() + 1);
+            var bottomRight = this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX() + 1, frameFieldSquare.getPosition().getY() + 1);
+        }
+    }
+
     public FavorToken getNonAffectedFavorToken() {
         return this.favorTokens.stream().filter(favorToken -> favorToken.getToolCard() == null).findFirst().orElse(null);
     }
