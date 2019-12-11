@@ -55,6 +55,11 @@ public class PatternCard extends ObservableCard<PatternCard> {
         this.update(this);
     }
 
+    public void replaceSquare(Square oldSquare, Square newSquare) {
+        this.squares.set(this.squares.indexOf(oldSquare), newSquare);
+        this.update(this);
+    }
+
     public void placeDie() {
         // TODO: implement this function
         this.update(this);

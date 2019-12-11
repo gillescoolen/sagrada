@@ -20,4 +20,8 @@ public class DiceBag {
 
         return randomDice;
     }
+
+    public void put(Die die) {
+        this.dice.add(die);
+    }
 }

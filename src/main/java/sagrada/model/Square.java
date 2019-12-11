@@ -40,4 +40,10 @@ public class Square {
     public void setDie(Die die) {
         this.die = die;
     }
+
+    @Override
+    public String toString() {
+        // TODO: find out what happens when die is null.
+        return "[ " + this.position.toString() + " ]: " + this.die.toString();
+    }
 }

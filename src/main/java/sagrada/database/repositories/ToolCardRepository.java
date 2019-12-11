@@ -1,6 +1,7 @@
 package sagrada.database.repositories;
 
 import sagrada.database.DatabaseConnection;
+import sagrada.model.Die;
 import sagrada.model.ToolCard;
 import sagrada.model.card.CardFactory;
 
@@ -26,7 +27,8 @@ public final class ToolCardRepository extends Repository<ToolCard> {
             toolCards.add(CardFactory.getToolCard(
                     resultSet.getInt("idtoolcard"),
                     resultSet.getString("name"),
-                    resultSet.getString("description")
+                    resultSet.getString("description"),
+                    this.connection
             ));
         }
 
@@ -48,7 +50,7 @@ public final class ToolCardRepository extends Repository<ToolCard> {
         preparedStatement.close();
         resultSet.close();
 
-        return CardFactory.getToolCard(id, name, description);
+        return CardFactory.getToolCard(id, name, description, this.connection);
     }
 
     @Override
@@ -70,7 +72,7 @@ public final class ToolCardRepository extends Repository<ToolCard> {
         preparedStatement.close();
         resultSet.close();
 
-        return CardFactory.getToolCard(idtoolcard, name, description);
+        return CardFactory.getToolCard(idtoolcard, name, description, this.connection);
     }
 
     @Override
@@ -125,7 +127,8 @@ public final class ToolCardRepository extends Repository<ToolCard> {
             toolCards.add(CardFactory.getToolCard(
                     cardResultSet.getInt("idtoolcard"),
                     cardResultSet.getString("name"),
-                    cardResultSet.getString("description")
+                    cardResultSet.getString("description"),
+                    this.connection
             ));
         }
 
@@ -193,5 +196,30 @@ public final class ToolCardRepository extends Repository<ToolCard> {
         resultSet.close();
 
         return this.findById(id);
+    }
+
+    public void addAffectedToolCard(ToolCard toolCard, List<Die> dice, int gameId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(
+                "INSERT INTO gametoolcard_affected_gamedie VALUES (?,?,?,?)"
+        );
+
+        var count = 0;
+
+        for (var die : dice) {
+            preparedStatement.setInt(1, toolCard.getId());
+            preparedStatement.setInt(2, gameId);
+            preparedStatement.setInt(3, die.getNumber());
+            preparedStatement.setString(4, die.getColor().getDutchColorName());
+
+            preparedStatement.addBatch();
+
+            ++count;
+
+            if (count % BATCH_SIZE == 0 || count == dice.size()) {
+                preparedStatement.executeBatch();
+            }
+        }
+
+        preparedStatement.close();
     }
 }

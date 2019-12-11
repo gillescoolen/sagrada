@@ -28,4 +28,9 @@ public class Position {
     public int getY() {
         return this.y;
     }
+
+    @Override
+    public String toString() {
+        return "X: " + this.x + " Y: " + this.y;
+    }
 }
