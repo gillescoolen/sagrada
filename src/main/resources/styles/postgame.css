@@ -37,4 +37,5 @@
 
 .cards-hbox-holder {
     -fx-background-color: blue;
+    -fx-spacing: -90px;
 }
