@@ -4,7 +4,6 @@ import sagrada.database.DatabaseConnection;
 import sagrada.model.*;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -79,12 +78,13 @@ public final class PlayerFrameRepository extends Repository<PatternCard> {
         preparedStatement.close();
     }
 
-    public void resetSquare(Player player, Square square) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE playerframefield SET dienumber = NULL, diecolor = NULL WHERE player_idplayer = ? AND position_x = ? AND position_y = ?");
+    public void resetSquare(Player player, Square square, Game game) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE playerframefield SET dienumber = NULL, diecolor = NULL WHERE player_idplayer = ? AND position_x = ? AND position_y = ? AND idgame = ?");
 
         preparedStatement.setInt(1, player.getId());
         preparedStatement.setInt(2, square.getPosition().getX());
         preparedStatement.setInt(3, square.getPosition().getY());
+        preparedStatement.setInt(4, game.getId());
 
         preparedStatement.executeUpdate();
 
