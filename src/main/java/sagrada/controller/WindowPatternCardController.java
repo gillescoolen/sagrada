@@ -131,7 +131,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             button.setText(square.getValue().toString());
             button.setDisable(this.playerFrame == null);
 
-            if (selectedDie != null) button.setOnMouseClicked(c -> System.out.println(":D"));
+            if (selectedDie != null) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
 
             if (color != null) {
                 button.setStyle("-fx-background-color: " + square.getColor().getColor());
@@ -167,7 +167,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     }
 
     private void placeDie(Square square, Die die) {
-        square.setDie(die);
-        System.out.println(square);
+        this.playerFrame.placeDie(this.player, square, die, this.connection);
     }
 }
