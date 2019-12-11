@@ -31,6 +31,10 @@
 }
 
 .tool-card-hbox {
-    -fx-spacing: 10px;
+    -fx-spacing: -90px;
     -fx-background-color: red;
+}
+
+.cards-hbox-holder {
+    -fx-background-color: blue;
 }

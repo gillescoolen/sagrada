@@ -24,15 +24,25 @@
 
     <!-- CARDS -->
     <HBox styleClass="cards-vbox">
-        <HBox styleClass="tool-card-hbox">
+        <HBox HBox.hgrow="ALWAYS" alignment="CENTER" styleClass="cards-hbox-holder">
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>
         </HBox>
-        <HBox styleClass="tool-card-hbox">
+        <HBox HBox.hgrow="ALWAYS" alignment="CENTER" styleClass="cards-hbox-holder">
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>
         </HBox>
+<!--        <HBox styleClass="tool-card-hbox">-->
+<!--            <fx:include source="game/toolCard.fxml"/>-->
+<!--            <fx:include source="game/toolCard.fxml"/>-->
+<!--            <fx:include source="game/toolCard.fxml"/>-->
+<!--        </HBox>-->
+<!--        <HBox styleClass="tool-card-hbox">-->
+<!--            <fx:include source="game/toolCard.fxml"/>-->
+<!--            <fx:include source="game/toolCard.fxml"/>-->
+<!--            <fx:include source="game/toolCard.fxml"/>-->
+<!--        </HBox>-->
     </HBox>
 </VBox>
