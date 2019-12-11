@@ -24,11 +24,13 @@
 
     <!-- CARDS -->
     <HBox styleClass="cards-vbox">
+        <Text styleClass="small-title" text="Tool cards"/>
         <HBox HBox.hgrow="ALWAYS" alignment="CENTER" styleClass="cards-hbox-holder">
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>
         </HBox>
+        <Text styleClass="small-title" text="Public objective cards"/>
         <HBox HBox.hgrow="ALWAYS" alignment="CENTER" styleClass="cards-hbox-holder">
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>

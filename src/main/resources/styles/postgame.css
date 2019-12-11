@@ -39,3 +39,8 @@
     -fx-background-color: blue;
     -fx-spacing: -90px;
 }
+
+.small-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+}
