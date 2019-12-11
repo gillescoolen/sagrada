@@ -61,13 +61,11 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> {
-                    try {
-                        playerFrameRepository.getPlayerFrame(player);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                });
+                try {
+                    playerFrameRepository.getPlayerFrame(player);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }, 0, 1500);
 
@@ -78,15 +76,17 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     public void accept(PatternCard patternCard) {
         this.playerFrame = patternCard;
 
-        if (this.windowSquares.size() > 0) {
-            this.fillWindow();
-        }
+        Platform.runLater(() -> {
+            if (this.windowSquares.size() > 0) {
+                this.fillWindow();
+            }
 
-        if (this.changeView != null) {
-            this.changeView.setDisable(false);
-            this.name.setText(this.player.getAccount().getUsername());
-            this.reportMisplacement.setText("Change field");
-        }
+            if (this.changeView != null) {
+                this.changeView.setDisable(false);
+                this.name.setText(this.player.getAccount().getUsername());
+                this.reportMisplacement.setText("Change field");
+            }
+        });
     }
 
     @FXML

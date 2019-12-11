@@ -45,8 +45,9 @@ public class GameLobbyPlayerController {
         this.checkGameStartedTimer.schedule(new TimerTask() {
             @Override
             public void run() {
+                boolean started = checkForGameStarted();
                 Platform.runLater(() -> {
-                    if (checkForGameStarted()) {
+                    if (started) {
                         checkGameStartedTimer.cancel();
                         checkGameStartedTimer.purge();
                         goToGame();

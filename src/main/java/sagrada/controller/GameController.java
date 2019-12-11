@@ -149,20 +149,20 @@ public class GameController implements Consumer<Game> {
         mainGameTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> {
+                try {
                     if (!gameReady) {
                         return;
                     }
 
                     var playerFrameRepository = new PlayerFrameRepository(connection);
 
-                    try {
-                        for (var player : game.getPlayers()) {
-                            playerFrameRepository.getPlayerFrame(player);
-                        }
+                    for (var player : game.getPlayers()) {
+                        playerFrameRepository.getPlayerFrame(player);
+                    }
 
-                        var playerOne = game.getPlayers().stream().filter(filteredPlayer -> filteredPlayer.getId() == player.getId()).findFirst().orElse(null);
+                    var playerOne = game.getPlayers().stream().filter(filteredPlayer -> filteredPlayer.getId() == player.getId()).findFirst().orElse(null);
 
+                    Platform.runLater(() -> {
                         if (playerOne != null && playerOne.isCurrentPlayer()) {
                             btnSkipTurn.setDisable(false);
 
@@ -173,11 +173,10 @@ public class GameController implements Consumer<Game> {
                             btnSkipTurn.setDisable(true);
                             btnRollDice.setDisable(true);
                         }
-
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                });
+                    });
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }, 0, 1000);
     }
@@ -192,59 +191,63 @@ public class GameController implements Consumer<Game> {
         playerPatternCardsTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> {
-                    try {
-                        // Check if every player has chosen a pattern card.
-                        var everyoneHasChosen = playerRepository.isPatternCardChosen(game);
+                try {
+                    // Check if every player has chosen a pattern card.
+                    var everyoneHasChosen = playerRepository.isPatternCardChosen(game);
 
-                        if (!everyoneHasChosen) {
-                            return;
-                        }
+                    if (!everyoneHasChosen) {
+                        return;
+                    }
 
-                        var players = playerRepository.getAllGamePlayers(game);
-                        game.addPlayers(players);
+                    var players = playerRepository.getAllGamePlayers(game);
+                    game.addPlayers(players);
 
-                        initializeDieStuffAndFavorTokens(game.getPlayers());
+                    initializeDieStuffAndFavorTokens(game.getPlayers());
 
-                        // Filter our player from the participating players.
-                        player = players.stream()
+                    // Filter our player from the participating players.
+                    player = players.stream()
                             .filter(p -> p.getAccount().getUsername().equals(player.getAccount().getUsername()))
                             .findFirst()
                             .orElse(null);
 
-                        if (player == null) {
-                            return;
-                        }
-
-                        if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername()) && startGameUtil != null) {
-                            startGameUtil.shareFavorTokens();
-                            game = startGameUtil.getCreatedGame();
-                        }
-
-                        // If the currentPlayer is our actual player, clear the cards.
-                        rowOne.getChildren().clear();
-                        rowTwo.getChildren().clear();
-
-                        for (var player : players) {
-                            var controller = new WindowPatternCardController(connection, player, gameController);
-                            var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
-
-                            loader.setController(controller);
-
-                            if (rowOne.getChildren().size() < 2) {
-                                rowOne.getChildren().add(loader.load());
-                            } else if (rowTwo.getChildren().size() < 2) {
-                                rowTwo.getChildren().add(loader.load());
-                            }
-                        }
-
-                        gameReady = true;
-                        playerPatternCardsTimer.cancel();
-                        playerPatternCardsTimer.purge();
-                    } catch (SQLException | IOException e) {
-                        e.printStackTrace();
+                    if (player == null) {
+                        return;
                     }
-                });
+
+                    if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername()) && startGameUtil != null) {
+                        startGameUtil.shareFavorTokens();
+                        game = startGameUtil.getCreatedGame();
+                    }
+
+                    Platform.runLater(() -> {
+                        try {
+                            // If the currentPlayer is our actual player, clear the cards.
+                            rowOne.getChildren().clear();
+                            rowTwo.getChildren().clear();
+
+                            for (var player : players) {
+                                var controller = new WindowPatternCardController(connection, player, gameController);
+                                var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
+
+                                loader.setController(controller);
+
+                                if (rowOne.getChildren().size() < 2) {
+                                    rowOne.getChildren().add(loader.load());
+                                } else if (rowTwo.getChildren().size() < 2) {
+                                    rowTwo.getChildren().add(loader.load());
+                                }
+                            }
+
+                            gameReady = true;
+                            playerPatternCardsTimer.cancel();
+                            playerPatternCardsTimer.purge();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }, 0, 1000);
     }
@@ -309,9 +312,11 @@ public class GameController implements Consumer<Game> {
 
     private void initializeDieStuffAndFavorTokens(List<Player> players) throws SQLException {
         var draftedDice = this.dieRepository.getDraftPoolDice(this.game.getId(), this.gameRepository.getCurrentRound(this.game.getId()));
+
         this.game.getDraftPool().addAllDice(draftedDice);
 
         var dice = this.dieRepository.getUnusedDice(this.game.getId());
+
         var diceBag = new DiceBag(dice);
 
         for (var player : players) {
