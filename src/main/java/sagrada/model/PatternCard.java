@@ -59,6 +59,11 @@ public class PatternCard extends ObservableCard<PatternCard> {
         this.update(this);
     }
 
+    public void replaceSquare(Square oldSquare, Square newSquare) {
+        this.squares.set(this.squares.indexOf(oldSquare), newSquare);
+        this.update(this);
+    }
+
     public void placeDie(Player player, Square square, Die die, DatabaseConnection connection) {
         var foundSquare = this.getSquareByXAndY(square.getPosition().getX(), square.getPosition().getY());
         if (foundSquare == null) return;

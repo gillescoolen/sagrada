@@ -360,7 +360,7 @@ public class GameController implements Consumer<Game> {
     }
 
     public Player getPlayer() {
-        return this.player;
+        return this.game.getPlayerByName(this.player.getAccount().getUsername());
     }
 
     public void setSelectedDie(Die selectedDie) {
