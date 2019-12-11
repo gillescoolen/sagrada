@@ -159,17 +159,17 @@ public class GameController implements Consumer<Game> {
                             playerFrameRepository.getPlayerFrame(player);
                         }
 
-                        var playerOne = game.getPlayers().stream().filter(filteredPlayer -> filteredPlayer.getId() == player.getId()).findFirst().orElse(null);
-
-                        if (playerOne != null && playerOne.isCurrentPlayer()) {
+                        if (player != null && player.isCurrentPlayer()) {
                             btnSkipTurn.setDisable(false);
+                            btnSkipTurn.setStyle("-fx-background-color: green");
 
                             if (game.getDraftPool().getDice().isEmpty()) {
                                 btnRollDice.setDisable(false);
                             }
                         } else {
-                            btnSkipTurn.setDisable(false);
-                            btnRollDice.setDisable(false);
+                            btnSkipTurn.setDisable(true);
+                            btnSkipTurn.setStyle("-fx-background-color: red");
+                            btnRollDice.setDisable(true);
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
