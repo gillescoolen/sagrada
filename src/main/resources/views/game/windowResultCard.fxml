@@ -11,31 +11,31 @@
       maxWidth="255"
       fx:id="resultWindow">
     <HBox>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
     </HBox>
     <HBox>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
     </HBox>
     <HBox>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
     </HBox>
     <HBox>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
-        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
     </HBox>
 </VBox>
