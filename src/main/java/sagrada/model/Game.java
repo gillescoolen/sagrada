@@ -5,8 +5,9 @@ import sagrada.util.Observable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
-public class Game extends Observable<Game> {
+public class Game extends Observable<Game> implements Consumer<DraftPool> {
     private int id;
     private Player playerTurn;
     private LocalDateTime createdOn;
@@ -21,6 +22,7 @@ public class Game extends Observable<Game> {
 
     public Game() {
         this.draftPool = new DraftPool();
+        this.draftPool.observe(this);
     }
 
     public int getId() {
@@ -159,5 +161,11 @@ public class Game extends Observable<Game> {
     // FIXME: rename function, init functions are bad practice
     public void init() {
         // TODO: implement
+    }
+
+    @Override
+    public void accept(DraftPool draftPool) {
+        //this.draftPool = draftPool;
+        //this.update(this);
     }
 }

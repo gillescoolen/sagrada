@@ -173,6 +173,7 @@ public class GameController implements Consumer<Game> {
                             btnSkipTurn.setDisable(true);
                             btnRollDice.setDisable(true);
                         }
+
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
