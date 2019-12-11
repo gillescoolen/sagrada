@@ -11,7 +11,6 @@ import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.*;
 import sagrada.model.*;
 import sagrada.model.card.activators.ToolCardActivatorFactory;
-import sagrada.util.ManageGame;
 import sagrada.util.StartGame;
 
 import java.io.IOException;
@@ -91,8 +90,11 @@ public class GameController implements Consumer<Game> {
     @FXML
     protected void initialize() {
         this.btnSkipTurn.setOnMouseClicked(e -> {
-            var manageGame = new ManageGame(this.game, this.connection);
-            manageGame.setNextPlayerTurn();
+            try {
+                this.player.skipTurn(this.playerRepository, this.game);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         });
 
         btnRollDice.setOnMouseClicked(e -> {

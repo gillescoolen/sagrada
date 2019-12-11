@@ -336,14 +336,46 @@ public final class PlayerRepository extends Repository<Player> {
     }
 
     public void nextPlayerTurn(Player player, Game game) throws SQLException {
+
+        // https://cutt.ly/Ne5cVrH TODO refactor
+        switch (player.getSequenceNumber()) {
+            case 1:
+                player.setSequenceNumber(8);
+                break;
+            case 2:
+                player.setSequenceNumber(7);
+                break;
+            case 3:
+                player.setSequenceNumber(6);
+                break;
+            case 4:
+                player.setSequenceNumber(5);
+                break;
+            case 5:
+                player.setSequenceNumber(4);
+                break;
+            case 6:
+                player.setSequenceNumber(3);
+                break;
+            case 7:
+                player.setSequenceNumber(2);
+                break;
+            case 8:
+                player.setSequenceNumber(1);
+                break;
+        }
+
         PreparedStatement preparedStatement = this.connection.getConnection()
-                .prepareStatement("UPDATE player SET isCurrentPlayer = ? WHERE idplayer = ?;");
+                .prepareStatement("UPDATE player SET isCurrentPlayer = ?, seqNr = ? WHERE idplayer = ?;");
 
         preparedStatement.setBoolean(1, false);
-        preparedStatement.setInt(2, player.getId());
+        preparedStatement.setInt(2, player.getSequenceNumber());
+        preparedStatement.setInt(3, player.getId());
 
         preparedStatement.executeUpdate();
         preparedStatement.close();
+
+        System.out.println(player);
 
         Player nextPlayer = this.getNextGamePlayer(game);
 
@@ -369,34 +401,12 @@ public final class PlayerRepository extends Repository<Player> {
     }
 
     public Player getNextGamePlayer(Game game) throws SQLException {
-        PreparedStatement sequenceNumberStatement = this.connection.getConnection().prepareStatement("SELECT COUNT(*) as count FROM game g INNER JOIN player p ON g.turn_idplayer = p.idplayer WHERE g.idgame = ? AND p.seqnr > ?;");
+        var preparedStatement = this.connection.getConnection().prepareStatement("SELECT username FROM player WHERE spel_idspel = ? AND seqnr = (SELECT MIN(seqnr) FROM player WHERE spel_idspel = ?);");
 
-        sequenceNumberStatement.setInt(1, game.getId());
-        sequenceNumberStatement.setInt(2, game.getPlayers().size());
+        preparedStatement.setInt(1, game.getId());
+        preparedStatement.setInt(2, game.getId());
 
-        ResultSet sequenceNumberResultSet = sequenceNumberStatement.executeQuery();
-        sequenceNumberResultSet.next();
-
-        ResultSet resultSet;
-        PreparedStatement preparedStatement;
-        int playersFound = sequenceNumberResultSet.getInt("count");
-
-        if (playersFound == 0) {
-            preparedStatement = this.connection.getConnection().prepareStatement("SELECT username FROM player WHERE spel_idspel = ? AND seqnr = (SELECT MIN(seqnr) FROM player WHERE spel_idspel = ?);");
-
-            preparedStatement.setInt(1, game.getId());
-            preparedStatement.setInt(2, game.getId());
-
-            resultSet = preparedStatement.executeQuery();
-        } else {
-            preparedStatement = this.connection.getConnection().prepareStatement("SELECT username FROM player WHERE spel_idspel = ? AND seqnr = (SELECT MIN(seqnr) FROM player WHERE spel_idspel = ? AND seqnr - ? > 0);");
-
-            preparedStatement.setInt(1, game.getId());
-            preparedStatement.setInt(2, game.getId());
-            preparedStatement.setInt(3, game.getPlayers().size());
-
-            resultSet = preparedStatement.executeQuery();
-        }
+        var resultSet = preparedStatement.executeQuery();
 
         resultSet.next();
         var username = resultSet.getString("username");
@@ -409,8 +419,6 @@ public final class PlayerRepository extends Repository<Player> {
 
         resultSet.close();
         preparedStatement.close();
-        sequenceNumberResultSet.close();
-        sequenceNumberStatement.close();
 
         return nextPlayer;
     }
