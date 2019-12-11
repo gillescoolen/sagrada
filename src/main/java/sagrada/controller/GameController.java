@@ -92,13 +92,11 @@ public class GameController implements Consumer<Game> {
     @FXML
     protected void initialize() {
         this.btnSkipTurn.setOnMouseClicked(e -> {
-//            try {
-//                this.player.skipTurn(this.playerRepository, this.game);
-//            } catch (SQLException ex) {
-//                ex.printStackTrace();
-//            }
-
-            this.game.getPlayers().get(0).validateFrameField(this.connection, this.game);
+            try {
+                this.player.skipTurn(this.playerRepository, this.game);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         });
 
         btnRollDice.setOnMouseClicked(e -> {
