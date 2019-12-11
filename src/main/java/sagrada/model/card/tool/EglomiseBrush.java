@@ -25,6 +25,8 @@ public final class EglomiseBrush extends ToolCard {
         newSquare.setDie(oldSquare.getDie());
         oldSquare.setDie(null);
 
+        patternCard.replaceSquare(oldSquare, newSquare);
+
         this.incrementCost();
 
         ArrayList<Die> dice = new ArrayList<>();

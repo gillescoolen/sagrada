@@ -23,6 +23,8 @@ public final class FluxBrush extends ToolCard {
         die.roll();
         this.incrementCost();
 
+        game.updateDraftPool(die, die);
+
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(die);
 

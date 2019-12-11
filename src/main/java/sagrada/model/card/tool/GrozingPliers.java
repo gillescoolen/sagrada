@@ -24,6 +24,8 @@ public final class GrozingPliers extends ToolCard {
 
         die.setValue(newDieValue);
 
+        game.updateDraftPool(die, die);
+
         this.incrementCost();
 
         ArrayList<Die> dice = new ArrayList<>();

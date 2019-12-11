@@ -31,6 +31,9 @@ public final class TapWheel extends ToolCard {
 
             squareOld.setDie(squareNew.getDie());
             squareNew.setDie(null);
+
+            patternCard.replaceSquare(squareOld, squareOld);
+
             dice.add(squareNew.getDie());
         }
 

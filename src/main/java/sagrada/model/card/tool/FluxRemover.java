@@ -26,7 +26,7 @@ public final class FluxRemover extends ToolCard {
         Die newDie = diceBag.getRandomDice(1).get(0);
         newDie.setValue(newValue);
 
-        draftPool.updateDraft(die, newDie);
+        game.updateDraftPool(die, newDie);
 
         this.incrementCost();
 

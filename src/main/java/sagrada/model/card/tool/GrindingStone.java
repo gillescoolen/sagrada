@@ -23,6 +23,8 @@ public final class GrindingStone extends ToolCard {
         die.flip();
         this.incrementCost();
 
+        game.updateDraftPool(die, die);
+
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(die);
 

@@ -5,6 +5,7 @@ import sagrada.database.repositories.FavorTokenRepository;
 import sagrada.model.*;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public final class GlazingHammer extends ToolCard {
     private FavorTokenRepository favorTokenRepository = new FavorTokenRepository(this.connection);
@@ -16,10 +17,15 @@ public final class GlazingHammer extends ToolCard {
     @Override
     public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
         draftPool.throwDice();
+
         this.incrementCost();
 
         FavorToken favorToken = player.getNonAffectedFavorToken();
         favorToken.setToolCard(this);
+
+        // Dirty hack to update the draft pool
+        List<Die> dice = draftPool.getDice();
+        game.updateDraftPool(dice.get(0), dice.get(0));
 
         favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false);
     }

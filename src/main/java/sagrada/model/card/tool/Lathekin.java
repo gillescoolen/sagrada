@@ -30,6 +30,9 @@ public final class Lathekin extends ToolCard {
         for (int i = 0; i < squares.length; i++) {
             newSquares[i].setDie(squares[i].getDie());
             squares[i].setDie(null);
+
+            patternCard.replaceSquare(squares[i], newSquares[i]);
+
             dice.add(squares[i].getDie());
         }
 

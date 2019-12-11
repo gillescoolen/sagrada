@@ -25,6 +25,8 @@ public final class CorkBackedStraightedge extends ToolCard {
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(die);
 
+        // TODO: update UI
+
         FavorToken favorToken = player.getNonAffectedFavorToken();
         favorToken.setToolCard(this);
 

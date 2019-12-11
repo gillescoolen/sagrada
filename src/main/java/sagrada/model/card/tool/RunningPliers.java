@@ -28,6 +28,8 @@ public final class RunningPliers extends ToolCard {
         FavorToken favorToken = player.getNonAffectedFavorToken();
         favorToken.setToolCard(this);
 
+        // TODO: UI??
+
         favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), true);
     }
 }
