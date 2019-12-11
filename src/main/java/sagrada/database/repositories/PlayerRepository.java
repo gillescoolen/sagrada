@@ -335,26 +335,8 @@ public final class PlayerRepository extends Repository<Player> {
         preparedStatement.close();
     }
 
-    public void nextPlayerTurn(Player player, Game game) throws SQLException {
-        // Get the expected next sequence number.
-        var nextSequence = this.getSequenceNumber(game.getPlayers().size(), player);
-
-        // Set current player to false on our player.
-        player.setCurrentPlayer(false);
-
-        // Update current player sequence number and set them to non current player.
-        PreparedStatement preparedStatement = this.connection.getConnection()
-                .prepareStatement("UPDATE player SET isCurrentPlayer = ?, seqNr = ? WHERE idplayer = ?;");
-
-        preparedStatement.setBoolean(1, false);
-        preparedStatement.setInt(2, player.getSequenceNumber());
-        preparedStatement.setInt(3, player.getId());
-
-        preparedStatement.executeUpdate();
-        preparedStatement.close();
-
-        // Get new player data from db
-        List<Player> newPlayers = new ArrayList<>();
+    public List<Player> getPlayersByGame(Game game) throws SQLException {
+        var newPlayers = new ArrayList<Player>();
         PreparedStatement playerStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player where spel_idspel = ?");
         playerStatement.setInt(1, game.getId());
 
@@ -369,9 +351,39 @@ public final class PlayerRepository extends Repository<Player> {
         playerStatement.close();
         resultSet.close();
 
+        return newPlayers;
+    }
+
+    public void nextPlayerTurn(Player player, Game game) throws SQLException {
+        // Get the expected next sequence number.
+        var nextSequence = this.getSequenceNumber(game.getPlayers().size(), player);
+
+        // Set current player to false on our player.
+        player.setCurrentPlayer(false);
+
+        // Update current player sequence number and set them to non current player.
+        PreparedStatement statement = this.connection.getConnection()
+                .prepareStatement("UPDATE player SET isCurrentPlayer = ?, seqNr = ? WHERE idplayer = ?;");
+
+        statement.setBoolean(1, false);
+        statement.setInt(2, player.getSequenceNumber());
+        statement.setInt(3, player.getId());
+
+        statement.executeUpdate();
+        statement.close();
+
+        // Get new player data from db
+        var players = this.getPlayersByGame(game);
+
         // Get the next expected player based on calculated sequence number.
+        var expectedNextPlayer = setTurn(nextSequence, players);
+
+        this.update(expectedNextPlayer);
+    }
+
+    private Player setTurn(int nextSequence, List<Player> players) throws SQLException {
         int finalNextSequence = nextSequence;
-        var expectedNextPlayer = newPlayers.stream().filter(p -> p.getSequenceNumber() == finalNextSequence).findFirst().orElse(null);
+        var expectedNextPlayer = players.stream().filter(p -> p.getSequenceNumber() == finalNextSequence).findFirst().orElse(null);
 
         // Set the expected player to current player.
         PreparedStatement statement = this.connection.getConnection()
@@ -387,7 +399,7 @@ public final class PlayerRepository extends Repository<Player> {
         // Set our local next player.
         expectedNextPlayer.setCurrentPlayer(true);
 
-        this.update(expectedNextPlayer);
+        return expectedNextPlayer;
     }
 
     // FIXME: refactor this garbage
@@ -413,7 +425,9 @@ public final class PlayerRepository extends Repository<Player> {
                     nextSequence = 1;
                     break;
             }
-        } else if (playerAmount == 3) {
+        }
+
+        if (playerAmount == 3) {
             switch (player.getSequenceNumber()) {
                 case 1:
                     player.setSequenceNumber(8);
@@ -440,7 +454,9 @@ public final class PlayerRepository extends Repository<Player> {
                     nextSequence = 1;
                     break;
             }
-        } else if (playerAmount == 4) {
+        }
+
+        if (playerAmount == 4) {
             switch (player.getSequenceNumber()) {
                 case 1:
                     player.setSequenceNumber(8);
