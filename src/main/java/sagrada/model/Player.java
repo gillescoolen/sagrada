@@ -1,6 +1,9 @@
 package sagrada.model;
 
+import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.PlayerFrameRepository;
 import sagrada.database.repositories.PlayerRepository;
+import sagrada.database.repositories.ToolCardRepository;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -155,18 +158,108 @@ public class Player {
         playerRepository.nextPlayerTurn(this, game);
     }
 
-    public void validateFrameField() {
-        var patternCardSquares = this.patternCard.getSquares();
-        var frameFieldSquares = this.playerFrame.getSquares();
-        var correctedFieldSquares = new ArrayList<Square>();
+    public void validateFrameField(DatabaseConnection connection, Game game) {
+        var playerFrameRepository = new PlayerFrameRepository(connection);
 
         for (var i = 0; i < 20; ++i) {
+            var patternCardSquares = this.patternCard.getSquares();
+            var frameFieldSquares = this.playerFrame.getSquares();
+            var frameFieldSquare = frameFieldSquares.get(i);
+            var patternCardSquare = patternCardSquares.get(i);
+
+            if (frameFieldSquare.getDie() != null) {
+                if ((patternCardSquare.getColor() != null && !patternCardSquare.getColor().equals(frameFieldSquare.getDie().getColor())) || (patternCardSquare.getValue() != null && !patternCardSquare.getValue().equals(frameFieldSquare.getDie().getValue()))) {
+                    if (this.toolCardNotUsed(connection, game, frameFieldSquare.getDie())) {
+                        var frameSquare = frameFieldSquares.get(i);
+
+                        frameSquare.setDie(null);
+                        frameSquare.setValue(0);
+                        frameSquare.setColor(null);
+
+                        try {
+                            playerFrameRepository.resetSquare(this, frameSquare);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
+                        this.playerFrame.setSquares(frameFieldSquares);
+                    }
+                }
+            }
+        }
+
+        for (var i = 0; i < 20; ++i) {
+            var patternCardSquares = this.patternCard.getSquares();
+            var frameFieldSquares = this.playerFrame.getSquares();
             var patternCardSquare = patternCardSquares.get(i);
             var frameFieldSquare = frameFieldSquares.get(i);
 
-            var left =
-            var bottomLeft = this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX() - 1, frameFieldSquare.getPosition().getY() + 1);
-            var bottomRight = this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX() + 1, frameFieldSquare.getPosition().getY() + 1);
+            var leftSquareFrame = this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX() - 1, frameFieldSquare.getPosition().getY());
+            var rightSquareFrame = this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX() + 1, frameFieldSquare.getPosition().getY());
+            var topSquareFrame = this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX(), frameFieldSquare.getPosition().getY() - 1);
+            var bottomSquareFrame = this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX(), frameFieldSquare.getPosition().getY() + 1);
+            var leftSquarePatternCard = this.patternCard.getSquareByXAndY(patternCardSquare.getPosition().getX() - 1, patternCardSquare.getPosition().getY());
+            var rightSquarePatternCard = this.patternCard.getSquareByXAndY(patternCardSquare.getPosition().getX() + 1, patternCardSquare.getPosition().getY());
+            var topSquarePatternCard = this.patternCard.getSquareByXAndY(patternCardSquare.getPosition().getX(), patternCardSquare.getPosition().getY() - 1);
+            var bottomSquarePatternCard = this.patternCard.getSquareByXAndY(patternCardSquare.getPosition().getX(), patternCardSquare.getPosition().getY() + 1);
+
+            var frameSquares = new ArrayList<Square>();
+
+            frameSquares.add(leftSquareFrame);
+            frameSquares.add(rightSquareFrame);
+            frameSquares.add(topSquareFrame);
+            frameSquares.add(bottomSquareFrame);
+            frameSquares.add(leftSquarePatternCard);
+            frameSquares.add(rightSquarePatternCard);
+            frameSquares.add(topSquarePatternCard);
+            frameSquares.add(bottomSquarePatternCard);
+
+//            for (var square : frameSquares) {
+//                if (square != null && square.getDie() != null && frameFieldSquare.getDie() != null) {
+//                    if (square.getDie().getColor().equals(frameFieldSquare.getDie().getColor()) || square.getDie().getValue().equals(frameFieldSquare.getDie().getValue())) {
+//                        if (this.toolCardNotUsed(connection, game, square.getDie())) {
+//                            var frameSquare = this.playerFrame.getSquares().get(i);
+//
+//                            frameSquare.setDie(null);
+//                            frameSquare.setValue(0);
+//                            frameSquare.setColor(null);
+//
+//                            try {
+//                                playerFrameRepository.resetSquare(this, frameSquare);
+//                            } catch (SQLException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                } else if (square != null && frameFieldSquare.getDie() != null) {
+//                    if ((square.getColor() != null && square.getColor().equals(frameFieldSquare.getDie().getColor())) || (square.getValue() != null && square.getValue().equals(frameFieldSquare.getDie().getValue()))) {
+//                        if (this.toolCardNotUsed(connection, game, frameFieldSquare.getDie())) {
+//                            var frameSquare = this.playerFrame.getSquares().get(i);
+//
+//                            frameSquare.setDie(null);
+//                            frameSquare.setValue(0);
+//                            frameSquare.setColor(null);
+//
+//                            try {
+//                                playerFrameRepository.resetSquare(this, frameSquare);
+//                            } catch (SQLException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+        }
+    }
+
+    private boolean toolCardNotUsed(DatabaseConnection connection, Game game, Die die) {
+        var toolCardRepository = new ToolCardRepository(connection);
+
+        try {
+            return !toolCardRepository.isGameDieAffected(game.getId(), die);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return true;
         }
     }
 
