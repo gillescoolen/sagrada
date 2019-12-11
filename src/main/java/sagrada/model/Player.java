@@ -206,68 +206,39 @@ public class Player {
             }
         }
 
-        /*for (var i = 0; i < 20; ++i) {
+        for (var i = 0; i < 20; ++i) {
             var patternCardSquares = this.patternCard.getSquares();
             var frameFieldSquares = this.playerFrame.getSquares();
             var patternCardSquare = patternCardSquares.get(i);
             var frameFieldSquare = frameFieldSquares.get(i);
 
-            var leftSquareFrame = this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX() - 1, frameFieldSquare.getPosition().getY());
-            var rightSquareFrame = this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX() + 1, frameFieldSquare.getPosition().getY());
-            var topSquareFrame = this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX(), frameFieldSquare.getPosition().getY() - 1);
-            var bottomSquareFrame = this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX(), frameFieldSquare.getPosition().getY() + 1);
-            var leftSquarePatternCard = this.patternCard.getSquareByXAndY(patternCardSquare.getPosition().getX() - 1, patternCardSquare.getPosition().getY());
-            var rightSquarePatternCard = this.patternCard.getSquareByXAndY(patternCardSquare.getPosition().getX() + 1, patternCardSquare.getPosition().getY());
-            var topSquarePatternCard = this.patternCard.getSquareByXAndY(patternCardSquare.getPosition().getX(), patternCardSquare.getPosition().getY() - 1);
-            var bottomSquarePatternCard = this.patternCard.getSquareByXAndY(patternCardSquare.getPosition().getX(), patternCardSquare.getPosition().getY() + 1);
-
             var frameSquares = new ArrayList<Square>();
 
-            frameSquares.add(leftSquareFrame);
-            frameSquares.add(rightSquareFrame);
-            frameSquares.add(topSquareFrame);
-            frameSquares.add(bottomSquareFrame);
-            frameSquares.add(leftSquarePatternCard);
-            frameSquares.add(rightSquarePatternCard);
-            frameSquares.add(topSquarePatternCard);
-            frameSquares.add(bottomSquarePatternCard);
+            frameSquares.add(this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX() - 1, frameFieldSquare.getPosition().getY()));
+            frameSquares.add(this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX(), frameFieldSquare.getPosition().getY() - 1));
+            frameSquares.add(this.patternCard.getSquareByXAndY(patternCardSquare.getPosition().getX() - 1, patternCardSquare.getPosition().getY()));
+            frameSquares.add(this.patternCard.getSquareByXAndY(patternCardSquare.getPosition().getX(), patternCardSquare.getPosition().getY() - 1));
 
             for (var square : frameSquares) {
                 if (square != null && square.getDie() != null && frameFieldSquare.getDie() != null) {
                     if (square.getDie().getColor().equals(frameFieldSquare.getDie().getColor()) || square.getDie().getValue().equals(frameFieldSquare.getDie().getValue())) {
                         if (this.toolCardNotUsed(connection, game, square.getDie())) {
-                            var frameSquare = this.playerFrame.getSquares().get(i);
-
-                            frameSquare.setDie(null);
-                            frameSquare.setValue(0);
-                            frameSquare.setColor(null);
+                            frameFieldSquare.setDie(null);
+                            frameFieldSquare.setValue(0);
+                            frameFieldSquare.setColor(null);
 
                             try {
-                                playerFrameRepository.resetSquare(this, frameSquare);
+                                playerFrameRepository.resetSquare(this, frameFieldSquare, game);
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
-                        }
-                    }
-                } else if (square != null && frameFieldSquare.getDie() != null) {
-                    if ((square.getColor() != null && square.getColor().equals(frameFieldSquare.getDie().getColor())) || (square.getValue() != null && square.getValue().equals(frameFieldSquare.getDie().getValue()))) {
-                        if (this.toolCardNotUsed(connection, game, frameFieldSquare.getDie())) {
-                            var frameSquare = this.playerFrame.getSquares().get(i);
 
-                            frameSquare.setDie(null);
-                            frameSquare.setValue(0);
-                            frameSquare.setColor(null);
-
-                            try {
-                                playerFrameRepository.resetSquare(this, frameSquare);
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
+                            this.playerFrame.setSquares(frameFieldSquares);
                         }
                     }
                 }
             }
-        }*/
+        }
     }
 
     private boolean toolCardNotUsed(DatabaseConnection connection, Game game, Die die) {
