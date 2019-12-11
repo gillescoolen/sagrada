@@ -56,7 +56,7 @@ public class ChatController {
         this.getMessagesTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> getMessages());
+                getMessages();
             }
         }, 0, 2000);
     }
@@ -79,25 +79,21 @@ public class ChatController {
     }
 
     /**
-     * @param message Has username and message of the user
-     */
-    private void addMessage(String message) throws IOException {
-        this.lvMessageBox.getItems().add(message);
-    }
-
-    /**
      * Get all unfetched messages from the database.
      */
     private void getMessages() {
         try {
             List<String> lines = this.chatRepository.getMultiple(this.game.getId());
 
-            this.lvMessageBox.getItems().clear();
+            Platform.runLater(() -> {
+                this.lvMessageBox.getItems().clear();
 
-            for (String line : lines) {
-                this.addMessage(line);
-            }
-        } catch (SQLException | IOException e) {
+                for (String line : lines) {
+                    this.lvMessageBox.getItems().add(line);
+                }
+            });
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

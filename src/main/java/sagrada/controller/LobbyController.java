@@ -13,6 +13,7 @@ import sagrada.model.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Timer;
@@ -42,13 +43,13 @@ public class LobbyController {
         this.getGamesTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> getGames());
+                 getGames();
             }
         }, 0, 5000);
         this.getInvitesTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> getInvites());
+                 getInvites();
             }
         }, 0, 3000);
     }
@@ -56,8 +57,11 @@ public class LobbyController {
     private void getGames() {
         try {
             var gameRepository = new GameRepository(this.databaseConnection);
-            var loader = this.getClass().getResource("/views/lobby/lobbyGame.fxml");
-            this.fillLobbyList(gameRepository.getAll(), this.vbLobbyGames, loader);
+            var games = gameRepository.getAll();
+            Platform.runLater(() -> {
+                var loader = this.getClass().getResource("/views/lobby/lobbyGame.fxml");
+                this.fillLobbyList(games, this.vbLobbyGames, loader);
+            });
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -66,8 +70,11 @@ public class LobbyController {
     private void getInvites() {
         try {
             var gameRepository = new GameRepository(this.databaseConnection);
-            var loader = this.getClass().getResource("/views/lobby/lobbyInvite.fxml");
-            this.fillLobbyList(gameRepository.getInvitedGames(this.user), this.vbLobbyInvites, loader);
+            var games = gameRepository.getInvitedGames(this.user);
+            Platform.runLater(() -> {
+                var loader = this.getClass().getResource("/views/lobby/lobbyInvite.fxml");
+                this.fillLobbyList(games, this.vbLobbyInvites, loader);
+            });
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -80,7 +87,7 @@ public class LobbyController {
             for (var game : games) {
                 if (game.getOwner() != null) {
                     var loader = new FXMLLoader(view);
-                    loader.setController(new LobbyItemController(game, this.user, this.databaseConnection));
+                    loader.setController(new LobbyItemController(game, this.user, this.databaseConnection, this));
                     items.getChildren().add(loader.load());
                 }
             }
@@ -111,4 +118,11 @@ public class LobbyController {
             e.printStackTrace();
         }
     }
+
+   public void stopTimers() {
+        this.getGamesTimer.cancel();
+        this.getGamesTimer.purge();
+        this.getInvitesTimer.cancel();
+        this.getInvitesTimer.purge();
+   }
 }

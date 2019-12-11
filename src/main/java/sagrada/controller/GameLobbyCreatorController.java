@@ -67,8 +67,8 @@ public class GameLobbyCreatorController {
         this.getInvitedAndAcceptedPlayersTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> fillList(lvInvitedPlayers, true));
-                Platform.runLater(() -> fillList(lvAcceptedPlayers, false));
+                fillList(lvInvitedPlayers, true);
+                fillList(lvAcceptedPlayers, false);
             }
         }, 0, POLL_TIME);
     }
@@ -93,7 +93,7 @@ public class GameLobbyCreatorController {
 
     private void fillList(ListView<String> listView, boolean invited) {
         try {
-            listView.getItems().clear();
+
             List<Player> players;
 
             if (invited) {
@@ -102,16 +102,21 @@ public class GameLobbyCreatorController {
                 players = this.playerRepository.getAcceptedPlayers(this.game);
                 this.game.addPlayers(this.playerRepository.getAllGamePlayers(this.game));
 
-                if (players.size() != 0) {
-                    this.btnStartGame.setDisable(false);
-                } else {
-                    this.btnStartGame.setDisable(true);
-                }
+                Platform.runLater(() -> {
+                    if (players.size() != 0) {
+                        this.btnStartGame.setDisable(false);
+                    } else {
+                        this.btnStartGame.setDisable(true);
+                    }
+                });
             }
 
-            for (Player player : players) {
-                listView.getItems().add(player.getAccount().getUsername());
-            }
+            Platform.runLater(() -> {
+                listView.getItems().clear();
+                for (Player player : players) {
+                    listView.getItems().add(player.getAccount().getUsername());
+                }
+            });
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -10,9 +10,7 @@ import javafx.scene.text.Text;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.PlayerFrameRepository;
 import sagrada.database.repositories.PlayerRepository;
-import sagrada.model.Game;
-import sagrada.model.PatternCard;
-import sagrada.model.Player;
+import sagrada.model.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -37,16 +35,18 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     private PatternCard playerFrame;
     private boolean showPatternCard = false;
     private DatabaseConnection connection;
+    private final GameController gameController;
 
     private final List<Button> windowSquares = new ArrayList<>();
 
-    public WindowPatternCardController(DatabaseConnection connection, PatternCard patternCard, Player player) {
+    public WindowPatternCardController(DatabaseConnection connection, PatternCard patternCard, Player player, GameController gameController) {
         this.windowField = patternCard;
         this.connection = connection;
         this.player = player;
+        this.gameController = gameController;
     }
 
-    public WindowPatternCardController(DatabaseConnection connection, Player player) {
+    public WindowPatternCardController(DatabaseConnection connection, Player player, GameController gameController) {
         var timer = new Timer();
         this.connection = connection;
 
@@ -56,17 +56,16 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         this.playerFrame = player.getPlayerFrame();
         this.windowField = this.playerFrame;
         this.player = player;
+        this.gameController = gameController;
 
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> {
-                    try {
-                        playerFrameRepository.getPlayerFrame(player);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                });
+                try {
+                    playerFrameRepository.getPlayerFrame(player);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }, 0, 1500);
 
@@ -77,15 +76,17 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     public void accept(PatternCard patternCard) {
         this.playerFrame = patternCard;
 
-        if (this.windowSquares.size() > 0) {
-            this.fillWindow();
-        }
+        Platform.runLater(() -> {
+            if (this.windowSquares.size() > 0) {
+                this.fillWindow();
+            }
 
-        if (this.changeView != null) {
-            this.changeView.setDisable(false);
-            this.name.setText(this.player.getAccount().getUsername());
-            this.reportMisplacement.setText("Change field");
-        }
+            if (this.changeView != null) {
+                this.changeView.setDisable(false);
+                this.name.setText(this.player.getAccount().getUsername());
+                this.reportMisplacement.setText("Change field");
+            }
+        });
     }
 
     @FXML
@@ -121,6 +122,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
     private void fillWindow() {
         var i = 0;
+        var selectedDie = this.gameController.getSelectedDie();
 
         for (var square : this.windowField.getSquares()) {
             var button = this.windowSquares.get(i);
@@ -128,6 +130,8 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
             button.setText(square.getValue().toString());
             button.setDisable(this.playerFrame == null);
+
+            if (selectedDie != null) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
 
             if (color != null) {
                 button.setStyle("-fx-background-color: " + square.getColor().getColor());
@@ -160,5 +164,11 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         this.showPatternCard = !this.showPatternCard;
         this.windowField = this.showPatternCard ? this.patternCard : this.playerFrame;
         this.fillWindow();
+    }
+
+    private void placeDie(Square square, Die die) {
+        this.playerFrame.placeDie(this.player, square, die, this.connection);
+        this.gameController.setSelectedDie(null);
+        this.gameController.getGame().removeDieFromDraftpool(die);
     }
 }

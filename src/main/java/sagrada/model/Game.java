@@ -5,6 +5,7 @@ import sagrada.util.Observable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Game extends Observable<Game> {
     private int id;
@@ -122,6 +123,11 @@ public class Game extends Observable<Game> {
 
     public DraftPool getDraftPool() {
         return this.draftPool;
+    }
+
+    public void removeDieFromDraftpool(Die die) {
+        this.draftPool.removeDice(die);
+        this.update(this);
     }
 
     public Player getOwner() {
