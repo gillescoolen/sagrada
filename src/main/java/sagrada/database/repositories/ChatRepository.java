@@ -61,11 +61,10 @@ public final class ChatRepository extends Repository<ChatLine> {
 
     @Override
     public void add(ChatLine model) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("INSERT INTO chatline (player_idplayer, time, message) VALUES (?, ?, ?)");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("INSERT INTO chatline (player_idplayer, time, message) VALUES (?, NOW(), ?)");
 
         preparedStatement.setInt(1, model.getPlayer().getId());
-        preparedStatement.setTimestamp(2, Timestamp.valueOf(model.getTimestamp()));
-        preparedStatement.setString(3, model.getMessage());
+        preparedStatement.setString(2, model.getMessage());
 
         preparedStatement.execute();
         preparedStatement.close();

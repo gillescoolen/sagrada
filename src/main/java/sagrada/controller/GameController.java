@@ -50,6 +50,7 @@ public class GameController implements Consumer<Game> {
     private final FavorTokenRepository favorTokenRepository;
 
     private boolean gameReady = false;
+    private Die selectedDie;
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
         game.observe(this);
@@ -147,21 +148,27 @@ public class GameController implements Consumer<Game> {
         mainGameTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> {
+                try {
                     if (!gameReady) {
                         return;
                     }
 
                     var playerFrameRepository = new PlayerFrameRepository(connection);
 
-                    try {
-                        for (var player : game.getPlayers()) {
-                            playerFrameRepository.getPlayerFrame(player);
-                        }
+                    for (var player : game.getPlayers()) {
+                        playerFrameRepository.getPlayerFrame(player);
+                    }
 
-                        if (player != null && player.isCurrentPlayer()) {
-//                            btnSkipTurn.setDisable(false);
-                            btnSkipTurn.setStyle("-fx-background-color: green");
+                    var playerOne = game.getPlayers().stream().filter(filteredPlayer -> filteredPlayer.getId() == player.getId()).findFirst().orElse(null);
+
+                    Platform.runLater(() -> {
+                        try {
+                            initializeDice();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        if (playerOne != null && playerOne.isCurrentPlayer()) {
+                            btnSkipTurn.setDisable(false);
 
                             if (game.getDraftPool().getDice().isEmpty()) {
                                 btnRollDice.setDisable(false);
@@ -171,10 +178,10 @@ public class GameController implements Consumer<Game> {
                             btnSkipTurn.setStyle("-fx-background-color: red");
                             btnRollDice.setDisable(true);
                         }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                });
+                    });
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }, 0, 1000);
     }
@@ -185,62 +192,67 @@ public class GameController implements Consumer<Game> {
      */
     private void checkForPlayerPatternCards() {
         var playerPatternCardsTimer = new Timer();
-
+        GameController gameController = this;
         playerPatternCardsTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> {
-                    try {
-                        // Check if every player has chosen a pattern card.
-                        var everyoneHasChosen = playerRepository.isPatternCardChosen(game);
+                try {
+                    // Check if every player has chosen a pattern card.
+                    var everyoneHasChosen = playerRepository.isPatternCardChosen(game);
 
-                        if (!everyoneHasChosen) {
-                            return;
-                        }
-
-                        var players = playerRepository.getAllGamePlayers(game);
-                        game.addPlayers(players);
-
-                        if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername()) && startGameUtil != null && !gameReady) {
-                            startGameUtil.shareFavorTokens();
-                        }
-
-                        initializeDieStuffAndFavorTokens(game.getPlayers());
-
-                        // Filter our player from the participating players.
-                        player = players.stream()
-                                .filter(p -> p.getAccount().getUsername().equals(player.getAccount().getUsername()))
-                                .findFirst()
-                                .orElse(null);
-
-                        if (player == null) {
-                            return;
-                        }
-
-                        // If the currentPlayer is our actual player, clear the cards.
-                        rowOne.getChildren().clear();
-                        rowTwo.getChildren().clear();
-
-                        for (var player : players) {
-                            var controller = new WindowPatternCardController(connection, player);
-                            var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
-
-                            loader.setController(controller);
-
-                            if (rowOne.getChildren().size() < 2) {
-                                rowOne.getChildren().add(loader.load());
-                            } else if (rowTwo.getChildren().size() < 2) {
-                                rowTwo.getChildren().add(loader.load());
-                            }
-                        }
-
-                        gameReady = true;
-                        playerPatternCardsTimer.cancel();
-                        playerPatternCardsTimer.purge();
-                    } catch (SQLException | IOException e) {
-                        e.printStackTrace();
+                    if (!everyoneHasChosen) {
+                        return;
                     }
-                });
+
+                    var players = playerRepository.getAllGamePlayers(game);
+                    game.addPlayers(players);
+
+                    initializeDieStuffAndFavorTokens(game.getPlayers());
+
+                    // Filter our player from the participating players.
+                    player = players.stream()
+                            .filter(p -> p.getAccount().getUsername().equals(player.getAccount().getUsername()))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (player == null) {
+                        return;
+                    }
+
+                    if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername()) && startGameUtil != null) {
+                        startGameUtil.shareFavorTokens();
+                        game = startGameUtil.getCreatedGame();
+                    }
+
+                    Platform.runLater(() -> {
+                        try {
+                            // If the currentPlayer is our actual player, clear the cards.
+                            rowOne.getChildren().clear();
+                            rowTwo.getChildren().clear();
+
+                            for (var player : players) {
+                                var controller = new WindowPatternCardController(connection, player, gameController);
+                                var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
+
+                                loader.setController(controller);
+
+                                if (rowOne.getChildren().size() < 2) {
+                                    rowOne.getChildren().add(loader.load());
+                                } else if (rowTwo.getChildren().size() < 2) {
+                                    rowTwo.getChildren().add(loader.load());
+                                }
+                            }
+
+                            gameReady = true;
+                            playerPatternCardsTimer.cancel();
+                            playerPatternCardsTimer.purge();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }, 0, 1000);
     }
@@ -259,7 +271,7 @@ public class GameController implements Consumer<Game> {
         // Show available options when our player hasn't chosen a card yet.
         if (player.getCardOptions().size() > 0) {
             for (var patternCard : player.getCardOptions()) {
-                var controller = new WindowPatternCardController(this.connection, patternCard, this.player);
+                var controller = new WindowPatternCardController(this.connection, patternCard, this.player, this);
                 var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
 
                 loader.setController(controller);
@@ -274,7 +286,7 @@ public class GameController implements Consumer<Game> {
             }
         } else {
             // Load our clients player pattern card when rejoining a game.
-            var controller = new WindowPatternCardController(this.connection, player.getPatternCard(), this.player);
+            var controller = new WindowPatternCardController(this.connection, player.getPatternCard(), this.player, this);
             var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
             loader.setController(controller);
             this.rowOne.getChildren().add(loader.load());
@@ -305,9 +317,11 @@ public class GameController implements Consumer<Game> {
 
     private void initializeDieStuffAndFavorTokens(List<Player> players) throws SQLException {
         var draftedDice = this.dieRepository.getDraftPoolDice(this.game.getId(), this.gameRepository.getCurrentRound(this.game.getId()));
+
         this.game.getDraftPool().addAllDice(draftedDice);
 
         var dice = this.dieRepository.getUnusedDice(this.game.getId());
+
         var diceBag = new DiceBag(dice);
 
         for (var player : players) {
@@ -325,7 +339,7 @@ public class GameController implements Consumer<Game> {
             var loader = new FXMLLoader(getClass().getResource("/views/game/die.fxml"));
             if (i < draftedDice.size()) {
                 var die = draftedDice.get(i);
-                loader.setController(new DieController(die));
+                loader.setController(new DieController(die, this));
             }
             this.diceBox.getChildren().add(loader.load());
         }
@@ -346,6 +360,14 @@ public class GameController implements Consumer<Game> {
     }
 
     public Player getPlayer() {
-        return this.player;
+        return this.game.getPlayerByName(this.player.getAccount().getUsername());
+    }
+
+    public void setSelectedDie(Die selectedDie) {
+        this.selectedDie = selectedDie;
+    }
+
+    public Die getSelectedDie() {
+        return this.selectedDie;
     }
 }

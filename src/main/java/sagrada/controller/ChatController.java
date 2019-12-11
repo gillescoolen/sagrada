@@ -3,6 +3,7 @@ package sagrada.controller;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -55,7 +56,7 @@ public class ChatController {
         this.getMessagesTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> getMessages());
+                getMessages();
             }
         }, 0, 2000);
     }
@@ -67,18 +68,14 @@ public class ChatController {
      */
     private void sendMessage(String message) {
         try {
-            this.chatRepository.add(new ChatLine(this.player, LocalDateTime.now(), message));
-            this.messageField.clear();
+            message = message.trim();
+            if (message.length() > 0 && !message.isBlank()) {
+                this.chatRepository.add(new ChatLine(this.player, message));
+                this.messageField.clear();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * @param message Has username and message of the user
-     */
-    private void addMessage(String message) throws IOException {
-        this.lvMessageBox.getItems().add(message);
     }
 
     /**
@@ -88,12 +85,15 @@ public class ChatController {
         try {
             List<String> lines = this.chatRepository.getMultiple(this.game.getId());
 
-            this.lvMessageBox.getItems().clear();
+            Platform.runLater(() -> {
+                this.lvMessageBox.getItems().clear();
 
-            for (String line : lines) {
-                this.addMessage(line);
-            }
-        } catch (SQLException | IOException e) {
+                for (String line : lines) {
+                    this.lvMessageBox.getItems().add(line);
+                }
+            });
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

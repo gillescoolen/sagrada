@@ -1,5 +1,9 @@
 package sagrada.model;
 
+import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.PlayerFrameRepository;
+
+import java.sql.SQLException;
 import java.util.List;
 
 public class PatternCard extends ObservableCard<PatternCard> {
@@ -55,8 +59,23 @@ public class PatternCard extends ObservableCard<PatternCard> {
         this.update(this);
     }
 
-    public void placeDie() {
-        // TODO: implement this function
+    public void replaceSquare(Square oldSquare, Square newSquare) {
+        this.squares.set(this.squares.indexOf(oldSquare), newSquare);
+        this.update(this);
+    }
+
+    public void placeDie(Player player, Square square, Die die, DatabaseConnection connection) {
+        var foundSquare = this.getSquareByXAndY(square.getPosition().getX(), square.getPosition().getY());
+        if (foundSquare == null) return;
+
+        try {
+            PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(connection);
+            playerFrameRepository.updateSquare(player, foundSquare, die);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        foundSquare.setDie(die);
         this.update(this);
     }
 }

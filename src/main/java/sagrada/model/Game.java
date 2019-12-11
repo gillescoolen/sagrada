@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Game extends Observable<Game> {
     private int id;
@@ -88,6 +89,11 @@ public class Game extends Observable<Game> {
         this.update(this);
     }
 
+    public void updateDraftPool(Die oldDie, Die newDie) {
+        this.draftPool.updateDraft(oldDie, newDie);
+        this.update(this);
+    }
+
     public void addFavorTokens(List<FavorToken> favorTokens) {
         this.favorTokens.addAll(favorTokens);
     }
@@ -119,6 +125,11 @@ public class Game extends Observable<Game> {
 
     public DraftPool getDraftPool() {
         return this.draftPool;
+    }
+
+    public void removeDieFromDraftpool(Die die) {
+        this.draftPool.removeDice(die);
+        this.update(this);
     }
 
     public Player getOwner() {

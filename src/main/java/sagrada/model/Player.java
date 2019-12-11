@@ -154,4 +154,8 @@ public class Player {
     public void skipTurn(PlayerRepository playerRepository, Game game) throws SQLException {
         playerRepository.nextPlayerTurn(this, game);
     }
+
+    public FavorToken getNonAffectedFavorToken() {
+        return this.favorTokens.stream().filter(favorToken -> favorToken.getToolCard() == null).findFirst().orElse(null);
+    }
 }
