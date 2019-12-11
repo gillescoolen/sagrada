@@ -169,6 +169,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     private void placeDie(Square square, Die die) {
         this.playerFrame.placeDie(this.player, square, die, this.connection);
         this.gameController.setSelectedDie(null);
-        this.gameController.getGame().getDraftPool().removeDice(die);
+        this.gameController.getGame().removeDieFromDraftpool(die);
     }
 }

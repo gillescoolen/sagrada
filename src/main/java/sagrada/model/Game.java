@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class Game extends Observable<Game> implements Consumer<DraftPool> {
+public class Game extends Observable<Game> {
     private int id;
     private Player playerTurn;
     private LocalDateTime createdOn;
@@ -22,7 +22,6 @@ public class Game extends Observable<Game> implements Consumer<DraftPool> {
 
     public Game() {
         this.draftPool = new DraftPool();
-        this.draftPool.observe(this);
     }
 
     public int getId() {
@@ -121,6 +120,11 @@ public class Game extends Observable<Game> implements Consumer<DraftPool> {
         return this.draftPool;
     }
 
+    public void removeDieFromDraftpool(Die die) {
+        this.draftPool.removeDice(die);
+        this.update(this);
+    }
+
     public Player getOwner() {
         return this.players
                 .stream()
@@ -161,11 +165,5 @@ public class Game extends Observable<Game> implements Consumer<DraftPool> {
     // FIXME: rename function, init functions are bad practice
     public void init() {
         // TODO: implement
-    }
-
-    @Override
-    public void accept(DraftPool draftPool) {
-        //this.draftPool = draftPool;
-        //this.update(this);
     }
 }
