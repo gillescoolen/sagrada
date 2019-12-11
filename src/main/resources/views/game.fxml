@@ -29,7 +29,7 @@
                 <VBox fx:id="chatWrapper"/>
 
                 <HBox styleClass="control-buttons" spacing="15">
-                    <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
+                    <Button fx:id="btnSkipTurn" styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
                     <Button fx:id="btnRollDice" disable="true" styleClass="btn-controls" prefWidth="150">ROLL DICE</Button>
                 </HBox>
             </VBox>

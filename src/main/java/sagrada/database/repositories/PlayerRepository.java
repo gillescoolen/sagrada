@@ -337,17 +337,26 @@ public final class PlayerRepository extends Repository<Player> {
 
     public void nextPlayerTurn(Player player, Game game) throws SQLException {
 
-        var players  = game.getPlayers();
+//        var players  = game.getPlayers();
+//
+//        players.forEach(p -> {
+//            if (p.isCurrentPlayer()) {
+//                if (p.getSequenceNumber() < 4) {
+//                    // Helft 2
+//                    System.out.println(p);
+//                } else {
+//                    // Helft 1
+//                    System.out.println(p);
+//                }
+//            }
+//        });
+//
+        var MIN = 1;
+        var MAX = 8;
 
-        players.forEach(p -> {
-            if (p.isCurrentPlayer()) {
-                if (p.getSequenceNumber() < 4) {
-                    System.out.println(p);
-                } else {
-                    System.out.println(p);
-                }
-            }
-        });
+        var nextSequence = 1;
+
+        var players = game.getPlayers();
 
         player.setCurrentPlayer(false);
 
@@ -355,29 +364,40 @@ public final class PlayerRepository extends Repository<Player> {
         switch (player.getSequenceNumber()) {
             case 1:
                 player.setSequenceNumber(8);
+                nextSequence = 2;
                 break;
             case 2:
                 player.setSequenceNumber(7);
+                nextSequence = 3;
                 break;
             case 3:
                 player.setSequenceNumber(6);
+                nextSequence = 4;
                 break;
             case 4:
                 player.setSequenceNumber(5);
+                nextSequence = 5;
                 break;
             case 5:
-                player.setSequenceNumber(4);
+                player.setSequenceNumber(1);
+                nextSequence = 6;
                 break;
             case 6:
-                player.setSequenceNumber(3);
+                player.setSequenceNumber(4);
+                nextSequence = 7;
                 break;
             case 7:
-                player.setSequenceNumber(2);
+                player.setSequenceNumber(3);
+                nextSequence = 8;
                 break;
             case 8:
-                player.setSequenceNumber(1);
+                player.setSequenceNumber(2);
+                nextSequence = 1;
                 break;
         }
+
+        int finalNextSequence = nextSequence;
+        var testNextPlayer = players.stream().filter(p -> p.getSequenceNumber() == finalNextSequence).findFirst().orElse(null);
 
         PreparedStatement preparedStatement = this.connection.getConnection()
                 .prepareStatement("UPDATE player SET isCurrentPlayer = ?, seqNr = ? WHERE idplayer = ?;");
@@ -388,14 +408,29 @@ public final class PlayerRepository extends Repository<Player> {
         preparedStatement.setInt(3, player.getId());
 
         preparedStatement.executeUpdate();
+
+        // Set new current Player
+        preparedStatement.setBoolean(1, true);
+        preparedStatement.setInt(2, nextSequence);
+        preparedStatement.setInt(3, testNextPlayer.getId());
+
+        preparedStatement.executeUpdate();
+
         preparedStatement.close();
+
 
         System.out.println(player);
 
         Player nextPlayer = this.getNextGamePlayer(game);
 
         nextPlayer.setCurrentPlayer(true);
+
         this.update(nextPlayer);
+    }
+
+    private Integer getSequenceNumber(int playerAmount, int normalSequenceNumber) {
+      
+        return 1;
     }
 
     private Player getPlayerByGameAndUsername(Game game, String username) throws SQLException {

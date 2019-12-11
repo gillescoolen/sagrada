@@ -160,14 +160,14 @@ public class GameController implements Consumer<Game> {
                         }
 
                         if (player != null && player.isCurrentPlayer()) {
-                            btnSkipTurn.setDisable(false);
+//                            btnSkipTurn.setDisable(false);
                             btnSkipTurn.setStyle("-fx-background-color: green");
 
                             if (game.getDraftPool().getDice().isEmpty()) {
                                 btnRollDice.setDisable(false);
                             }
                         } else {
-                            btnSkipTurn.setDisable(true);
+//                            btnSkipTurn.setDisable(true);
                             btnSkipTurn.setStyle("-fx-background-color: red");
                             btnRollDice.setDisable(true);
                         }
