@@ -114,22 +114,24 @@ public class LobbyItemController {
 
         try {
             FXMLLoader loader;
-
+            GameRepository gameRepository = new GameRepository(this.databaseConnection);
             if (this.account.getUsername().equals(this.game.getOwner().getAccount().getUsername())) {
-                GameRepository gameRepository = new GameRepository(this.databaseConnection);
-
                 if (gameRepository.checkIfGameHasStarted(this.game)) {
                     loader = new GameScreen(this.databaseConnection, this.game, this.account);
                 } else {
                     loader = new GameLobbyCreatorScreen(this.databaseConnection, this.game, this.account);
                 }
             } else {
-                if (!this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
-                    PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
-                    playerRepository.acceptInvite(this.account.getUsername(), this.game);
-                }
+                if (gameRepository.checkIfGameHasStarted(this.game)) {
+                    loader = new GameScreen(this.databaseConnection, this.game, this.account);
+                } else {
+                    if (!this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
+                        PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
+                        playerRepository.acceptInvite(this.account.getUsername(), this.game);
+                    }
 
-                loader = new GameLobbyPlayerScreen(this.databaseConnection, this.game, this.account);
+                    loader = new GameLobbyPlayerScreen(this.databaseConnection, this.game, this.account);
+                }
             }
 
             var stage = ((Stage) this.lbName.getScene().getWindow());

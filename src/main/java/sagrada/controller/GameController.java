@@ -240,8 +240,10 @@ public class GameController implements Consumer<Game> {
 
                                 if (rowOne.getChildren().size() < 2) {
                                     rowOne.getChildren().add(loader.load());
+                                    rowOne.setVisible(true);
                                 } else if (rowTwo.getChildren().size() < 2) {
                                     rowTwo.getChildren().add(loader.load());
+                                    rowTwo.setVisible(true);
                                 }
                             }
 
@@ -280,8 +282,10 @@ public class GameController implements Consumer<Game> {
 
                 if (i <= 2) {
                     this.rowOne.getChildren().add(loader.load());
+                    this.rowOne.setVisible(true);
                 } else {
                     this.rowTwo.getChildren().add(loader.load());
+                    this.rowTwo.setVisible(true);
                 }
 
                 ++i;
