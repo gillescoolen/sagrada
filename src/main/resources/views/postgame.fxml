@@ -6,40 +6,33 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.shape.Ellipse?>
 <?import javafx.scene.shape.Rectangle?>
-<HBox xmlns="http://javafx.com/javafx"
+<VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       stylesheets="/styles/postgame.css"
       styleClass="post-game-wrapper"
+      alignment="TOP_CENTER"
       prefWidth="1400" prefHeight="720">
 
+    <Text styleClass="title" text="Match summary"/>
+
     <!-- LEADERBOARD -->
-    <VBox alignment="TOP_CENTER" styleClass="leader-vbox" maxHeight="100">
-        <Text styleClass="title" text="Leaderboard"/>
+    <HBox alignment="TOP_CENTER" styleClass="leader-vbox" maxHeight="100">
         <fx:include source="game/post-player.fxml"/>
         <fx:include source="game/post-player.fxml"/>
         <fx:include source="game/post-player.fxml"/>
-    </VBox>
-
-    <!-- VICTORY POINTS -->
-    <VBox styleClass="leader-vbox">
-        <Text styleClass="title" text="Victory Points"/>
-    </VBox>
-
-
+    </HBox>
 
     <!-- CARDS -->
-    <VBox styleClass="cards-vbox">
-        <Text styleClass="title" text="Used Tool cards"/>
+    <HBox styleClass="cards-vbox">
         <HBox styleClass="tool-card-hbox">
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>
         </HBox>
-        <Text styleClass="title" text="Used Public objective cards"/>
         <HBox styleClass="tool-card-hbox">
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>
             <fx:include source="game/toolCard.fxml"/>
         </HBox>
-    </VBox>
-</HBox>
+    </HBox>
+</VBox>

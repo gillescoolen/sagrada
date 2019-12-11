@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<?import javafx.scene.shape.Rectangle?>
+<VBox xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1"
+      stylesheets="/styles/game/window-result-card.css"
+      styleClass="window"
+      maxWidth="255"
+      fx:id="resultWindow">
+    <HBox>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+    </HBox>
+    <HBox>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+    </HBox>
+    <HBox>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+    </HBox>
+    <HBox>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+        <Rectangle height="50" width="50" styleClass="res-button"/>
+    </HBox>
+</VBox>
