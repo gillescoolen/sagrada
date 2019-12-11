@@ -336,6 +336,22 @@ public final class PlayerRepository extends Repository<Player> {
     }
 
     public void nextPlayerTurn(Player player, Game game) throws SQLException {
+        // Get the expected next sequence number.
+        var nextSequence = this.getSequenceNumber(game.getPlayers().size(), player);
+
+        // Set current player to false on our player.
+        player.setCurrentPlayer(false);
+
+        // Update current player sequence number and set them to non current player.
+        PreparedStatement preparedStatement = this.connection.getConnection()
+                .prepareStatement("UPDATE player SET isCurrentPlayer = ?, seqNr = ? WHERE idplayer = ?;");
+
+        preparedStatement.setBoolean(1, false);
+        preparedStatement.setInt(2, player.getSequenceNumber());
+        preparedStatement.setInt(3, player.getId());
+
+        preparedStatement.executeUpdate();
+        preparedStatement.close();
 
         // Get new player data from db
         List<Player> newPlayers = new ArrayList<>();
@@ -353,26 +369,9 @@ public final class PlayerRepository extends Repository<Player> {
         playerStatement.close();
         resultSet.close();
 
-        // Get the expected next sequence number.
-        var nextSequence = this.getSequenceNumber(newPlayers.size(), player);
-
-        // Set current player to false on our player.
-        player.setCurrentPlayer(false);
-
         // Get the next expected player based on calculated sequence number.
         int finalNextSequence = nextSequence;
         var expectedNextPlayer = newPlayers.stream().filter(p -> p.getSequenceNumber() == finalNextSequence).findFirst().orElse(null);
-
-        // Update current player sequence number and set them to non current player.
-        PreparedStatement preparedStatement = this.connection.getConnection()
-                .prepareStatement("UPDATE player SET isCurrentPlayer = ?, seqNr = ? WHERE idplayer = ?;");
-
-        preparedStatement.setBoolean(1, false);
-        preparedStatement.setInt(2, player.getSequenceNumber());
-        preparedStatement.setInt(3, player.getId());
-
-        preparedStatement.executeUpdate();
-        preparedStatement.close();
 
         // Set the expected player to current player.
         PreparedStatement statement = this.connection.getConnection()
