@@ -26,10 +26,6 @@ public class GameLobbyPlayerController {
     private VBox vbPanel;
     @FXML
     private AnchorPane panel;
-    @FXML
-    private Label lbWaitText;
-    @FXML
-    private Label lbLoadText;
     private final DatabaseConnection databaseConnection;
     private final Game game;
     private final Account account;
@@ -45,17 +41,6 @@ public class GameLobbyPlayerController {
 
     @FXML
     protected void initialize() {
-        try {
-            var gameRepository = new GameRepository(this.databaseConnection);
-            if (gameRepository.checkIfGameHasStarted(this.game)) {
-                lbLoadText.setVisible(true);
-            } else {
-                lbWaitText.setVisible(true);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-
         this.addBackButton();
 
         this.checkGameStartedTimer.schedule(new TimerTask() {
