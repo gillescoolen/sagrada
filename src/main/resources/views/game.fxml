@@ -33,9 +33,9 @@
                     <Button fx:id="btnRollDice" disable="true" styleClass="btn-controls" prefWidth="150">ROLL DICE</Button>
                 </HBox>
             </VBox>
-            <VBox fx:id="rowOne" styleClass="wpc-vbox">
+            <VBox fx:id="rowOne" styleClass="wpc-vbox" visible="false">
             </VBox>
-            <VBox fx:id="rowTwo" styleClass="wpc-vbox">
+            <VBox fx:id="rowTwo" styleClass="wpc-vbox" visible="false">
             </VBox>
         </HBox>
     </VBox>
