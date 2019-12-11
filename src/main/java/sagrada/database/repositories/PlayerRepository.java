@@ -459,19 +459,19 @@ public final class PlayerRepository extends Repository<Player> {
                     nextSequence = 5;
                     break;
                 case 5:
-                    player.setSequenceNumber(3); // 1
+                    player.setSequenceNumber(3);
                     nextSequence = 6;
                     break;
                 case 6:
-                    player.setSequenceNumber(2); // 4
+                    player.setSequenceNumber(2);
                     nextSequence = 7;
                     break;
                 case 7:
-                    player.setSequenceNumber(1); // 3
+                    player.setSequenceNumber(1);
                     nextSequence = 8;
                     break;
                 case 8:
-                    player.setSequenceNumber(4); // 2
+                    player.setSequenceNumber(4);
                     nextSequence = 1;
                     break;
             }
