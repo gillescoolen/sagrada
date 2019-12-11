@@ -103,6 +103,11 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             this.reportMisplacement.setText("Change field");
         }
 
+        if (this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername())) {
+            this.window.getStyleClass().clear();
+            this.window.getStyleClass().add("window-own");
+        }
+
         this.changeView.setOnAction((e) -> this.changeView());
         this.changeView.setText("Switch");
         this.initializeWindow();
