@@ -159,4 +159,9 @@ public class Player {
     public FavorToken getNonAffectedFavorToken() {
         return this.favorTokens.stream().filter(favorToken -> favorToken.getToolCard() == null).findFirst().orElse(null);
     }
+
+    public boolean getCurrent(PlayerRepository playerRepository, Game game) throws SQLException {
+        var player = playerRepository.getPlayerByGameAndUsername(game, this.account.getUsername());
+        return player.isCurrentPlayer();
+    }
 }

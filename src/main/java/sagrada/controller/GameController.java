@@ -177,7 +177,7 @@ public class GameController implements Consumer<Game> {
                         playerFrameRepository.getPlayerFrame(player);
                     }
 
-//                    var playerOne = game.getPlayers().stream().filter(filteredPlayer -> filteredPlayer.getId() == player.getId()).findFirst().orElse(null);
+                    player.setCurrentPlayer(player.getCurrent(playerRepository, game));
 
                     initializeDieStuffAndFavorTokens(game.getPlayers());
 

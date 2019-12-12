@@ -493,7 +493,7 @@ public final class PlayerRepository extends Repository<Player> {
         return nextSequence;
     }
 
-    private Player getPlayerByGameAndUsername(Game game, String username) throws SQLException {
+    public Player getPlayerByGameAndUsername(Game game, String username) throws SQLException {
         PreparedStatement playerIdStatement = this.connection.getConnection().prepareStatement("SELECT idplayer FROM player WHERE spel_idspel = ? AND username = ?;");
 
         playerIdStatement.setInt(1, game.getId());
