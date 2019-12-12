@@ -1,0 +1,27 @@
+.res-button {
+    -fx-font-size: 18;
+    -fx-background-radius: 0;
+    -fx-border-color: black;
+    -fx-border-width: 2;
+}
+
+.wrc-nametag {
+    -fx-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+.wrc-button {
+    -fx-background-radius: 0px;
+    -fx-background-color: red;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.wrc-hbox {
+    -fx-spacing: 15px;
+    -fx-padding: 5px;
+    -fx-background-color: black;
+}

@@ -25,9 +25,7 @@
         <HBox fx:id="diceBox" alignment="CENTER" VBox.vgrow="ALWAYS" styleClass="dice-hbox"/>
         <HBox styleClass="wpc-hbox" alignment="BOTTOM_RIGHT">
             <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
-
                 <VBox fx:id="chatWrapper"/>
-
                 <HBox styleClass="control-buttons" spacing="15">
                     <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
                     <Button fx:id="btnRollDice" disable="true" styleClass="btn-controls" prefWidth="150">ROLL DICE</Button>
@@ -50,11 +48,11 @@
         <HBox fx:id="toolCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
 
         <!-- Public Objective card -->
-        <Text styleClass="title-tool-cards">Public Objective Card</Text>
+        <Text styleClass="title-tool-cards">Openbare Doel Kaarten</Text>
         <HBox fx:id="publicObjectiveCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
 
         <!-- Private Objective card -->
-        <Text styleClass="title-tool-cards">Private Objective Card</Text>
+        <Text styleClass="title-tool-cards">Prive Doel Kaart</Text>
         <HBox fx:id="privateObjectiveCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
     </VBox>
 </HBox>
