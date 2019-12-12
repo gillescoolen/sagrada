@@ -130,12 +130,17 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         var i = 0;
         var selectedDie = this.gameController.getSelectedDie();
 
+        boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
+        boolean canBeClicked = (isOwnCard && player.isCurrentPlayer());
+
         for (var square : this.windowField.getSquares()) {
             var button = this.windowSquares.get(i);
             var color = square.getColor();
 
             button.setText(square.getValue().toString());
-            button.setDisable(this.playerFrame == null);
+
+
+            button.setDisable(this.playerFrame == null || !canBeClicked);
 
             if (selectedDie != null) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
 

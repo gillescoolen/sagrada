@@ -1,6 +1,7 @@
 package sagrada.controller;
 
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -66,7 +67,7 @@ public class GameController implements Consumer<Game> {
 
         try {
             if (game.getOwner().getAccount().getUsername().equals(account.getUsername()) && !this.gameRepository.checkIfGameHasStarted(game)) {
-                new StartGame(game, connection);
+                this.startGameUtil = new StartGame(game, connection);
             } else {
                 this.game.addObjectiveCard(publicObjectiveCardRepository.getAllByGameId(this.game.getId()));
                 this.game.addToolCard(toolCardRepository.getAllByGameId(this.game.getId()));
@@ -76,8 +77,7 @@ public class GameController implements Consumer<Game> {
                 this.game.addFavorTokens(this.favorTokenRepository.getFavorTokens(this.game.getId()));
             }
 
-            //this.player = this.playerRepository.getGamePlayer(account.getUsername(), game);
-
+            this.game.setPlayerTurn(this.playerRepository.getNextGamePlayer(this.game));
             this.player = this.game.getPlayers().stream().filter(p -> p.getAccount().getUsername().equals(account.getUsername())).findFirst().orElse(null);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -89,15 +89,32 @@ public class GameController implements Consumer<Game> {
         this.game = game;
     }
 
+    private void disableAllButtons() {
+        // TODO: add more things to disable.
+        this.btnSkipTurn.setDisable(true);
+        this.btnRollDice.setDisable(true);
+    }
+
     @FXML
     protected void initialize() {
         this.btnSkipTurn.setOnMouseClicked(e -> {
-            try {
-                this.player.skipTurn(this.playerRepository, this.game);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        });
+          this.disableAllButtons();
+
+            final Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() {
+                    try {
+                       player.skipTurn(playerRepository, game);
+                       player.setCurrentPlayer(false);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                    return null;
+                }
+            };
+
+            new Thread(task).start();
+    });
 
         btnRollDice.setOnMouseClicked(e -> {
             btnRollDice.setDisable(true);
@@ -160,7 +177,7 @@ public class GameController implements Consumer<Game> {
                         playerFrameRepository.getPlayerFrame(player);
                     }
 
-                    var playerOne = game.getPlayers().stream().filter(filteredPlayer -> filteredPlayer.getId() == player.getId()).findFirst().orElse(null);
+                    player.setCurrentPlayer(player.getCurrent(playerRepository, game));
 
                     initializeDieStuffAndFavorTokens(game.getPlayers());
 
@@ -170,7 +187,7 @@ public class GameController implements Consumer<Game> {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        if (playerOne != null && playerOne.isCurrentPlayer()) {
+                        if (player != null && player.isCurrentPlayer()) {
                             btnSkipTurn.setDisable(false);
 
                             if (game.getDraftPool().getDice().isEmpty()) {
