@@ -7,7 +7,7 @@
 <AnchorPane styleClass="tool-card-wrapper" stylesheets="/styles/game/tool-card.css" prefHeight="375.0" prefWidth="200.0" maxWidth="200" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <VBox fx:id="wrapper" styleClass="tool-card-vbox">
         <Text fx:id="name" styleClass="tool-card-title" wrappingWidth="200.0" text="Running Pliers"/>
-        <Text fx:id="description" wrappingWidth="200.0" text="After your first turn, immediately draft a die. Skip your next turn this round."/>
+        <Text fx:id="description" wrappingWidth="210.0" text="After your first turn, immediately draft a die. Skip your next turn this round."/>
     </VBox>
     <StackPane AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">
         <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>
