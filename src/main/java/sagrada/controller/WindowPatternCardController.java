@@ -85,7 +85,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         if (this.changeView != null) {
             this.changeView.setDisable(false);
             this.name.setText(this.player.getAccount().getUsername());
-            this.reportMisplacement.setText("Change field");
+            this.reportMisplacement.setText("Verander veld");
         }
     }
 
@@ -94,17 +94,17 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         if (this.playerFrame == null) {
             this.changeView.setDisable(true);
             this.name.setText(this.windowField.getName());
-            this.reportMisplacement.setText("Choose");
+            this.reportMisplacement.setText("Kies");
 
             this.reportMisplacement.setOnMouseClicked(e -> this.choosePatternCard());
         } else {
             this.changeView.setDisable(false);
             this.name.setText(this.player.getAccount().getUsername());
-            this.reportMisplacement.setText("Change field");
+            this.reportMisplacement.setText("Verander veld");
         }
 
         this.changeView.setOnAction((e) -> this.changeView());
-        this.changeView.setText("Switch");
+        this.changeView.setText("Draai");
         this.initializeWindow();
         this.fillWindow();
     }
