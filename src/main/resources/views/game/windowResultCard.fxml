@@ -10,6 +10,12 @@
       styleClass="window"
       maxWidth="255"
       fx:id="resultWindow">
+    <HBox styleClass="wrc-hbox" alignment="CENTER_LEFT">
+        <Text wrappingWidth="160" styleClass="wrc-nametag" fx:id="name"/>
+        <VBox prefHeight="50">
+            <Button fx:id="changeView" text="Switch" alignment="CENTER_RIGHT" styleClass="wrc-button" prefWidth="100" prefHeight="20"/>
+        </VBox>
+    </HBox>
     <HBox>
         <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>
         <Button prefHeight="50" prefWidth="50" styleClass="res-button"/>

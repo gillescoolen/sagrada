@@ -21,16 +21,16 @@
 
     <!-- CARDS -->
     <HBox styleClass="cards-vbox">
-        <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
-            <Text styleClass="small-title" text="Tool kaarten"/>
+        <VBox styleClass="card-holder-vbox" alignment="CENTER" HBox.hgrow="ALWAYS">
+            <Text styleClass="small-title" text="Hulp kaarten"/>
             <HBox alignment="CENTER" styleClass="cards-hbox-holder">
                 <fx:include source="game/toolCard.fxml"/>
                 <fx:include source="game/toolCard.fxml"/>
                 <fx:include source="game/toolCard.fxml"/>
             </HBox>
         </VBox>
-        <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
-            <Text styleClass="small-title" text="Public objective kaarten"/>
+        <VBox styleClass="card-holder-vbox" alignment="CENTER" HBox.hgrow="ALWAYS">
+            <Text styleClass="small-title" text="Publieke Doel kaarten"/>
             <HBox alignment="CENTER" styleClass="cards-hbox-holder">
                 <fx:include source="game/toolCard.fxml"/>
                 <fx:include source="game/toolCard.fxml"/>

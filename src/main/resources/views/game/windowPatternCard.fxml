@@ -13,11 +13,11 @@
         <Text wrappingWidth="160" styleClass="wpc-nametag" fx:id="name"/>
         <VBox prefHeight="50">
             <Button fx:id="changeView" alignment="CENTER_RIGHT" styleClass="wpc-button" prefWidth="100" prefHeight="20"/>
-    <Button fx:id="reportMisplacement" alignment="CENTER_RIGHT" styleClass="wpc-button" prefWidth="100" prefHeight="20"/>
-</VBox>
-        </HBox>
-<HBox>
-<Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+            <Button fx:id="reportMisplacement" alignment="CENTER_RIGHT" styleClass="wpc-button" prefWidth="100" prefHeight="20"/>
+        </VBox>
+    </HBox>
+    <HBox>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
         <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
         <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
         <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>

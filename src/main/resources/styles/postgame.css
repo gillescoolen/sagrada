@@ -10,13 +10,11 @@
 .leader-vbox {
     -fx-spacing: 15px;
     -fx-padding: 15px;
-    -fx-background-color: purple;
 }
 
 .cards-vbox {
     -fx-spacing: 15px;
     -fx-padding: 15px;
-    -fx-background-color: green;
 }
 
 .favor-token {
@@ -32,15 +30,17 @@
 
 .tool-card-hbox {
     -fx-spacing: -90px;
-    -fx-background-color: red;
 }
 
 .cards-hbox-holder {
-    -fx-background-color: blue;
     -fx-spacing: -90px;
 }
 
 .small-title {
     -fx-font-weight: bold;
     -fx-font-size: 24px;
+}
+
+.card-holder-vbox {
+    -fx-spacing: 15px;
 }
