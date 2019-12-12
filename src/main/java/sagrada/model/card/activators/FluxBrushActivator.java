@@ -7,21 +7,22 @@ import sagrada.model.Game;
 import sagrada.model.Player;
 import sagrada.model.ToolCard;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-public class FluxBrushActivator extends ToolCardActivator {
+public final class FluxBrushActivator extends ToolCardActivator {
     FluxBrushActivator(GameController gameController, ToolCard toolCard) {
         super(gameController, toolCard);
     }
 
     @Override
-    public void activate() {
+    public void activate() throws SQLException {
         Die die = this.question();
 
         Player player = this.controller.getPlayer();
         Game game = this.controller.getGame();
-        this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), die);
+        this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, die);
     }
 
     private Die question() {

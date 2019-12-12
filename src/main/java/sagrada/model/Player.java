@@ -106,6 +106,10 @@ public class Player {
         this.favorTokens.add(favorToken);
     }
 
+    public void addFavorTokens(List<FavorToken> favorTokens) {
+        this.favorTokens.addAll(favorTokens);
+    }
+
     public void removeFavorToken(FavorToken favorToken) {
         this.favorTokens.remove(favorToken);
     }
@@ -118,7 +122,7 @@ public class Player {
         this.patternCard = patternCard;
     }
 
-    public List<Die> grabRandomDice(int amount) {
+    public List<Die> grabFromDiceBag(int amount) {
         return this.diceBag.getRandomDice(amount);
     }
 
@@ -149,5 +153,9 @@ public class Player {
     public void skipTurn(PlayerRepository playerRepository, Game game) throws SQLException {
         this.isCurrentPlayer = false;
         playerRepository.nextPlayerTurn(this, game);
+    }
+
+    public FavorToken getNonAffectedFavorToken() {
+        return this.favorTokens.stream().filter(favorToken -> favorToken.getToolCard() == null).findFirst().orElse(null);
     }
 }

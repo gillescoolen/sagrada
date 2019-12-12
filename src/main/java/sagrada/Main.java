@@ -30,7 +30,9 @@ public class Main extends Application {
             Platform.exit();
 
             try {
-                this.databaseConnection.getConnection().close();
+                var connection = this.databaseConnection.getConnection();
+                connection.endRequest();
+                connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -52,6 +54,7 @@ public class Main extends Application {
         var connection = this.databaseConnection.getConnection();
 
         if (!connection.isClosed()) {
+            connection.endRequest();
             connection.close();
         }
     }
