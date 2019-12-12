@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -83,7 +84,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
             if (this.changeView != null) {
                 this.changeView.setDisable(false);
-                this.name.setText(this.player.getAccount().getUsername());
+                this.setPatternCardInformation();
                 this.reportMisplacement.setText("Change field");
             }
         });
@@ -168,7 +169,13 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     private void changeView() {
         this.showPatternCard = !this.showPatternCard;
         this.windowField = this.showPatternCard ? this.patternCard : this.playerFrame;
+        this.setPatternCardInformation();
         this.fillWindow();
+    }
+
+    private void setPatternCardInformation() {
+        String text = this.showPatternCard ? "Patroon kaart" : "Speler frame";
+        this.name.setText(this.player.getAccount().getUsername() + "'s " + text);
     }
 
     private void placeDie(Square square, Die die) {
