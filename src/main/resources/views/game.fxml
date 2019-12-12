@@ -52,15 +52,15 @@
     <!-- Cards -->
     <VBox styleClass="game-vbox" alignment="CENTER_RIGHT">
         <!-- Tool cards -->
-        <Text styleClass="title-tool-cards">Tool Kaarten</Text>
+        <Text styleClass="title-tool-cards">Hulp Kaarten</Text>
         <HBox fx:id="toolCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
 
         <!-- Public Objective card -->
-        <Text styleClass="title-tool-cards">Public Objective Kaarten</Text>
+        <Text styleClass="title-tool-cards">Openbare Doel Kaarten</Text>
         <HBox fx:id="publicObjectiveCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
 
         <!-- Private Objective card -->
-        <Text styleClass="title-tool-cards">Private Objective Kaart</Text>
+        <Text styleClass="title-tool-cards">Prive Doel Kaart</Text>
         <HBox fx:id="privateObjectiveCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
     </VBox>
 </HBox>
