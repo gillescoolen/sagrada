@@ -68,14 +68,14 @@ public class PatternCard extends ObservableCard<PatternCard> {
         var foundSquare = this.getSquareByXAndY(square.getPosition().getX(), square.getPosition().getY());
         if (foundSquare == null) return;
 
+        foundSquare.setDie(die);
+        this.update(this);
+
         try {
             PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(connection);
             playerFrameRepository.updateSquare(player, foundSquare, die);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        foundSquare.setDie(die);
-        this.update(this);
     }
 }

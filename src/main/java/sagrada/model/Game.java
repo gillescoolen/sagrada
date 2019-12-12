@@ -5,7 +5,6 @@ import sagrada.util.Observable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class Game extends Observable<Game> {
     private int id;
@@ -84,6 +83,11 @@ public class Game extends Observable<Game> {
 
     public void addFavorToken(FavorToken favorToken) {
         this.favorTokens.add(favorToken);
+        this.update(this);
+    }
+
+    public void setDraftPool(DraftPool draftPool) {
+        this.draftPool = draftPool;
         this.update(this);
     }
 

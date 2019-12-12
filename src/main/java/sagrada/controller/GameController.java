@@ -128,7 +128,6 @@ public class GameController implements Consumer<Game> {
                     this.initializePublicObjectiveCards();
                     this.initializeToolCards();
                     this.initializeDice();
-
                     this.checkForPlayerPatternCards();
                     this.startMainGameTimer();
                     this.setCurrentTokenAmount();
@@ -162,14 +161,13 @@ public class GameController implements Consumer<Game> {
 
                     var playerOne = game.getPlayers().stream().filter(filteredPlayer -> filteredPlayer.getId() == player.getId()).findFirst().orElse(null);
 
-                    initializeDieStuffAndFavorTokens(game.getPlayers());
-
                     Platform.runLater(() -> {
                         try {
                             initializeDice();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+
                         if (playerOne != null && playerOne.isCurrentPlayer()) {
                             btnSkipTurn.setDisable(false);
 
@@ -185,7 +183,7 @@ public class GameController implements Consumer<Game> {
                     e.printStackTrace();
                 }
             }
-        }, 0, 1000);
+        }, 0, 750);
     }
 
     /**
@@ -258,7 +256,7 @@ public class GameController implements Consumer<Game> {
                     e.printStackTrace();
                 }
             }
-        }, 0, 1000);
+        }, 0, 750);
     }
 
     private void initializeWindowOptions(Player player) throws IOException {
