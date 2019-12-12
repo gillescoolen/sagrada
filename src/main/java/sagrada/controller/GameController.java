@@ -104,7 +104,8 @@ public class GameController implements Consumer<Game> {
                 @Override
                 protected Void call() {
                     try {
-                        player.skipTurn(playerRepository, game);
+                       player.skipTurn(playerRepository, game);
+                       player.setCurrentPlayer(false);
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
@@ -113,7 +114,7 @@ public class GameController implements Consumer<Game> {
             };
 
             new Thread(task).start();
-        });
+    });
 
         btnRollDice.setOnMouseClicked(e -> {
             btnRollDice.setDisable(true);
@@ -176,7 +177,7 @@ public class GameController implements Consumer<Game> {
                         playerFrameRepository.getPlayerFrame(player);
                     }
 
-                    var playerOne = game.getPlayers().stream().filter(filteredPlayer -> filteredPlayer.getId() == player.getId()).findFirst().orElse(null);
+//                    var playerOne = game.getPlayers().stream().filter(filteredPlayer -> filteredPlayer.getId() == player.getId()).findFirst().orElse(null);
 
                     initializeDieStuffAndFavorTokens(game.getPlayers());
 
@@ -186,7 +187,7 @@ public class GameController implements Consumer<Game> {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        if (playerOne != null && playerOne.isCurrentPlayer()) {
+                        if (player != null && player.isCurrentPlayer()) {
                             btnSkipTurn.setDisable(false);
 
                             if (game.getDraftPool().getDice().isEmpty()) {
