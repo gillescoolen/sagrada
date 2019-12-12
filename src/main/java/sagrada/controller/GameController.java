@@ -1,6 +1,7 @@
 package sagrada.controller;
 
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -88,14 +89,30 @@ public class GameController implements Consumer<Game> {
         this.game = game;
     }
 
+    private void disableAllButtons() {
+        // TODO: add more things to disable.
+        this.btnSkipTurn.setDisable(true);
+        this.btnRollDice.setDisable(true);
+    }
+
     @FXML
     protected void initialize() {
         this.btnSkipTurn.setOnMouseClicked(e -> {
-            try {
-                this.player.skipTurn(this.playerRepository, this.game);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+          this.disableAllButtons();
+
+            final Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() {
+                    try {
+                        player.skipTurn(playerRepository, game);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                    return null;
+                }
+            };
+
+            new Thread(task).start();
         });
 
         btnRollDice.setOnMouseClicked(e -> {
@@ -176,8 +193,7 @@ public class GameController implements Consumer<Game> {
                                 btnRollDice.setDisable(false);
                             }
                         } else {
-//                            btnSkipTurn.setDisable(true);
-                            btnSkipTurn.setStyle("-fx-background-color: red");
+                            btnSkipTurn.setDisable(true);
                             btnRollDice.setDisable(true);
                         }
                     });

@@ -358,9 +358,6 @@ public final class PlayerRepository extends Repository<Player> {
         // Get the expected next sequence number.
         var nextSequence = this.getSequenceNumber(game.getPlayers().size(), player);
 
-        // Set current player to false on our player.
-        player.setCurrentPlayer(false);
-
         // Update current player sequence number and set them to non current player.
         PreparedStatement statement = this.connection.getConnection()
                 .prepareStatement("UPDATE player SET isCurrentPlayer = ?, seqNr = ? WHERE idplayer = ?;");

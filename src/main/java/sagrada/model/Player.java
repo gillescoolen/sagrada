@@ -152,6 +152,7 @@ public class Player {
     }
 
     public void skipTurn(PlayerRepository playerRepository, Game game) throws SQLException {
+        this.setCurrentPlayer(false);
         playerRepository.nextPlayerTurn(this, game);
     }
 
