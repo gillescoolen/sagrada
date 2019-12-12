@@ -17,6 +17,10 @@
             <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>
             <Text styleClass="favor-token-text" text="15"/>
         </StackPane>
+        <StackPane>
+            <Rectangle fx:id="color" styleClass="score-die" fill="purple" height="40" width="40"/>
+            <Text styleClass="favor-token-text" text="15"/>
+        </StackPane>
         <Text styleClass="player-name" text="Brian"/>
     </HBox>
     <fx:include source="windowResultCard.fxml"/>
