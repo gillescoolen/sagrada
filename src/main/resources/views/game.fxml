@@ -36,12 +36,10 @@
         </HBox>
         <HBox styleClass="wpc-hbox" alignment="BOTTOM_RIGHT">
             <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
-
                 <VBox fx:id="chatWrapper"/>
-
                 <HBox styleClass="control-buttons" spacing="15">
-                    <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150">SKIP TURN</Button>
-                    <Button styleClass="btn-controls" prefWidth="150" disable="true">ROLL DICE</Button>
+                    <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150">BEURT OVERSLAAN</Button>
+                    <Button styleClass="btn-controls" prefWidth="150" disable="true">ROLLLEN</Button>
                 </HBox>
             </VBox>
             <VBox fx:id="rowOne" styleClass="wpc-vbox">
@@ -54,15 +52,15 @@
     <!-- Cards -->
     <VBox styleClass="game-vbox" alignment="CENTER_RIGHT">
         <!-- Tool cards -->
-        <Text styleClass="title-tool-cards">Tool Cards</Text>
+        <Text styleClass="title-tool-cards">Tool Kaarten</Text>
         <HBox fx:id="toolCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
 
         <!-- Public Objective card -->
-        <Text styleClass="title-tool-cards">Public Objective Card</Text>
+        <Text styleClass="title-tool-cards">Public Objective Kaarten</Text>
         <HBox fx:id="publicObjectiveCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
 
         <!-- Private Objective card -->
-        <Text styleClass="title-tool-cards">Private Objective Card</Text>
+        <Text styleClass="title-tool-cards">Private Objective Kaart</Text>
         <HBox fx:id="privateObjectiveCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
     </VBox>
 </HBox>
