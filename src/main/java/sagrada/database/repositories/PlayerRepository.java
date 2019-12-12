@@ -356,7 +356,7 @@ public final class PlayerRepository extends Repository<Player> {
 
     public void nextPlayerTurn(Player player, Game game) throws SQLException {
         // Get the expected next sequence number.
-        var nextSequence = this.getSequenceNumber(game.getPlayers().size(), player);
+        var nextSequence = player.getNextSequenceNumber(game.getPlayers().size(), player);
         // Get new player data from db
         var players = this.getPlayersByGame(game);
 
@@ -401,99 +401,7 @@ public final class PlayerRepository extends Repository<Player> {
         return expectedNextPlayer;
     }
 
-    // FIXME: refactor this garbage
-    private Integer getSequenceNumber(int playerAmount, Player player) {
-        int nextSequence = 0;
 
-        if (playerAmount == 2) {
-            switch (player.getSequenceNumber()) {
-                case 1:
-                    player.setSequenceNumber(8);
-                    nextSequence = 2;
-                    break;
-                case 2:
-                    player.setSequenceNumber(7);
-                    nextSequence = 7;
-                    break;
-                case 7:
-                    player.setSequenceNumber(1);
-                    nextSequence = 8;
-                    break;
-                case 8:
-                    player.setSequenceNumber(2);
-                    nextSequence = 1;
-                    break;
-            }
-        }
-
-        if (playerAmount == 3) {
-            switch (player.getSequenceNumber()) {
-                case 1:
-                    player.setSequenceNumber(6);
-                    nextSequence = 2;
-                    break;
-                case 2:
-                    player.setSequenceNumber(5);
-                    nextSequence = 3;
-                    break;
-                case 3:
-                    player.setSequenceNumber(4);
-                    nextSequence = 4;
-                    break;
-                case 4:
-                    player.setSequenceNumber(2);
-                    nextSequence = 5;
-                    break;
-                case 5:
-                    player.setSequenceNumber(1);
-                    nextSequence = 6;
-                    break;
-                case 6:
-                    player.setSequenceNumber(3);
-                    nextSequence = 1;
-                    break;
-            }
-        }
-
-        if (playerAmount == 4) {
-            switch (player.getSequenceNumber()) {
-                case 1:
-                    player.setSequenceNumber(8);
-                    nextSequence = 2;
-                    break;
-                case 2:
-                    player.setSequenceNumber(7);
-                    nextSequence = 3;
-                    break;
-                case 3:
-                    player.setSequenceNumber(6);
-                    nextSequence = 4;
-                    break;
-                case 4:
-                    player.setSequenceNumber(5);
-                    nextSequence = 5;
-                    break;
-                case 5:
-                    player.setSequenceNumber(3);
-                    nextSequence = 6;
-                    break;
-                case 6:
-                    player.setSequenceNumber(2);
-                    nextSequence = 7;
-                    break;
-                case 7:
-                    player.setSequenceNumber(1);
-                    nextSequence = 8;
-                    break;
-                case 8:
-                    player.setSequenceNumber(4);
-                    nextSequence = 1;
-                    break;
-            }
-        }
-
-        return nextSequence;
-    }
 
     public Player getPlayerByGameAndUsername(Game game, String username) throws SQLException {
         PreparedStatement playerIdStatement = this.connection.getConnection().prepareStatement("SELECT idplayer FROM player WHERE spel_idspel = ? AND username = ?;");
