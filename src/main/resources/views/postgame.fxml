@@ -10,7 +10,7 @@
       alignment="TOP_CENTER"
       prefWidth="1400" prefHeight="720">
 
-    <Text styleClass="title" text="Match summary"/>
+    <Text styleClass="title" text="Samenvatting"/>
 
     <!-- LEADERBOARD -->
     <HBox alignment="TOP_CENTER" styleClass="leader-vbox" maxHeight="100">
@@ -22,7 +22,7 @@
     <!-- CARDS -->
     <HBox styleClass="cards-vbox">
         <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
-            <Text styleClass="small-title" text="Tool cards"/>
+            <Text styleClass="small-title" text="Tool kaarten"/>
             <HBox alignment="CENTER" styleClass="cards-hbox-holder">
                 <fx:include source="game/toolCard.fxml"/>
                 <fx:include source="game/toolCard.fxml"/>
@@ -30,7 +30,7 @@
             </HBox>
         </VBox>
         <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
-            <Text styleClass="small-title" text="Public objective cards"/>
+            <Text styleClass="small-title" text="Public objective kaarten"/>
             <HBox alignment="CENTER" styleClass="cards-hbox-holder">
                 <fx:include source="game/toolCard.fxml"/>
                 <fx:include source="game/toolCard.fxml"/>
