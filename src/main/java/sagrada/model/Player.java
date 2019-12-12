@@ -158,7 +158,7 @@ public class Player {
         playerRepository.nextPlayerTurn(this, game);
     }
 
-    public void validateFrameField(DatabaseConnection connection, Game game) {
+    public PatternCard validateFrameField(DatabaseConnection connection, Game game) {
         var playerFrameRepository = new PlayerFrameRepository(connection);
 
         for (var i = 0; i < 20; ++i) {
@@ -239,6 +239,8 @@ public class Player {
                 }
             }
         }
+
+        return this.playerFrame;
     }
 
     private boolean toolCardNotUsed(DatabaseConnection connection, Game game, Die die) {
