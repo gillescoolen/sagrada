@@ -429,26 +429,26 @@ public final class PlayerRepository extends Repository<Player> {
         if (playerAmount == 3) {
             switch (player.getSequenceNumber()) {
                 case 1:
-                    player.setSequenceNumber(8);
+                    player.setSequenceNumber(6);
                     nextSequence = 2;
                     break;
                 case 2:
-                    player.setSequenceNumber(7);
+                    player.setSequenceNumber(5);
                     nextSequence = 3;
                     break;
                 case 3:
-                    player.setSequenceNumber(6);
+                    player.setSequenceNumber(4);
+                    nextSequence = 4;
+                    break;
+                case 4:
+                    player.setSequenceNumber(2);
+                    nextSequence = 5;
+                    break;
+                case 5:
+                    player.setSequenceNumber(1);
                     nextSequence = 6;
                     break;
                 case 6:
-                    player.setSequenceNumber(2);
-                    nextSequence = 7;
-                    break;
-                case 7:
-                    player.setSequenceNumber(1);
-                    nextSequence = 8;
-                    break;
-                case 8:
                     player.setSequenceNumber(3);
                     nextSequence = 1;
                     break;
