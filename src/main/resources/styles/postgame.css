@@ -1,0 +1,46 @@
+.title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.post-game-wrapper {
+    -fx-padding: 15px;
+}
+
+.leader-vbox {
+    -fx-spacing: 15px;
+    -fx-padding: 15px;
+}
+
+.cards-vbox {
+    -fx-spacing: 15px;
+    -fx-padding: 15px;
+}
+
+.favor-token {
+    -fx-fill: white;
+    -fx-stroke-width: 1;
+    -fx-stroke: black;
+}
+
+.favor-token-text {
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+.tool-card-hbox {
+    -fx-spacing: -90px;
+}
+
+.cards-hbox-holder {
+    -fx-spacing: -90px;
+}
+
+.small-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+}
+
+.card-holder-vbox {
+    -fx-spacing: 15px;
+}
