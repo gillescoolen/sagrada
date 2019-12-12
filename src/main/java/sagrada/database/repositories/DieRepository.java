@@ -3,6 +3,7 @@ package sagrada.database.repositories;
 import sagrada.database.DatabaseConnection;
 import sagrada.model.Color;
 import sagrada.model.Die;
+import sagrada.model.PatternCard;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +19,7 @@ public final class DieRepository extends Repository<Die> {
     }
 
     public List<Die> getUnusedDice(int gameId) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT d.number, d.color, g.idgame FROM die d LEFT OUTER JOIN gamedie g ON g.dienumber = d.number AND g.diecolor = d.color AND g.idgame = ? WHERE g.idgame IS NULL;");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT d.number, d.color, g.value FROM die d LEFT OUTER JOIN gamedie g ON g.dienumber = d.number AND g.diecolor = d.color AND g.idgame = ? WHERE g.idgame IS NULL;");
 
         preparedStatement.setInt(1, gameId);
 
@@ -29,7 +30,8 @@ public final class DieRepository extends Repository<Die> {
             Die die = null;
             for (Color color : Color.values()) {
                 if (color.getDutchColorName().equals(resultSet.getString("color"))) {
-                    die = new Die(color);
+                    die = new Die(resultSet.getInt("number"), color);
+                    die.setValue(resultSet.getInt("value"));
                 }
             }
             unusedDice.add(die);
@@ -39,11 +41,10 @@ public final class DieRepository extends Repository<Die> {
     }
 
     public List<Die> getDraftPoolDice(int gameId, int round) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT d.number, d.color FROM die d LEFT OUTER JOIN gamedie g ON g.dienumber = d.number AND g.diecolor = d.color AND g.idgame = ? LEFT JOIN playerframefield p ON p.dienumber = d.number AND p.diecolor = d.color AND g.idgame = ? WHERE g.idgame IS NOT NULL AND p.idgame IS NULL AND g.roundtrack IS NULL AND g.round = ?;");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT g.diecolor, g.dienumber, g.value FROM playerframefield p RIGHT OUTER JOIN gamedie g ON g.idgame = p.idgame AND g.dienumber = p.dienumber AND g.diecolor = p.diecolor WHERE g.idgame = ? AND g.round = ? AND p.dienumber IS NULL AND p.diecolor IS NUll;");
 
         preparedStatement.setInt(1, gameId);
-        preparedStatement.setInt(2, gameId);
-        preparedStatement.setInt(3, round);
+        preparedStatement.setInt(2, round);
 
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Die> draftPoolDice = new ArrayList<>();
@@ -51,8 +52,9 @@ public final class DieRepository extends Repository<Die> {
         while (resultSet.next()) {
             Die die = null;
             for (Color color : Color.values()) {
-                if (color.getDutchColorName().equals(resultSet.getString("color"))) {
-                    die = new Die(color);
+                if (color.getDutchColorName().equals(resultSet.getString("diecolor"))) {
+                    die = new Die(resultSet.getInt("dienumber"), color);
+                    die.setValue(resultSet.getInt("value"));
                 }
             }
             draftPoolDice.add(die);
@@ -61,9 +63,63 @@ public final class DieRepository extends Repository<Die> {
         return draftPoolDice;
     }
 
+    public void addGameDice(int gameId, int round, Collection<Die> dice) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("INSERT INTO gamedie (idgame, dienumber, diecolor, round, value) VALUES (?, ?, ?, ?, ?);");
+
+        int count = 0;
+
+        for (Die die : dice) {
+            preparedStatement.setInt(1, gameId);
+            preparedStatement.setInt(2, die.getNumber());
+            preparedStatement.setString(3, die.getColor().getDutchColorName());
+            preparedStatement.setInt(4, round);
+            preparedStatement.setInt(5, die.getValue());
+
+            preparedStatement.addBatch();
+
+            count++;
+
+            if (count % BATCH_SIZE == 0 || count == dice.size()) {
+                preparedStatement.executeBatch();
+            }
+        }
+
+        preparedStatement.close();
+    }
+
     @Override
     public Die findById(int id) throws SQLException {
         throw new SQLException("Die has no id");
+    }
+
+    public Die findById(int idGame, int dieNumber, String dieColor) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM gamedie WHERE idgame = ? AND dienumber = ? AND diecolor = ?");
+
+        preparedStatement.setInt(1, idGame);
+        preparedStatement.setInt(2, dieNumber);
+        preparedStatement.setString(3, dieColor);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (!resultSet.next()) {
+            return null;
+        }
+
+        int foundDieNumber = resultSet.getInt("dienumber");
+        Color foundDieColor = null;
+
+        for (Color color : Color.values()) {
+            if (color.getDutchColorName().equals(resultSet.getString("diecolor"))) {
+                foundDieColor = color;
+            }
+        }
+
+        int value = resultSet.getInt("value");
+
+        Die die = new Die(foundDieNumber, foundDieColor);
+        die.setValue(value);
+
+        return die;
     }
 
     @Override

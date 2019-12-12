@@ -11,8 +11,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-public final class GrindingStoneActivator extends ToolCardActivator {
-    GrindingStoneActivator(GameController gameController, ToolCard toolCard) {
+public class RunningPliersActivator extends ToolCardActivator {
+    RunningPliersActivator(GameController gameController, ToolCard toolCard) {
         super(gameController, toolCard);
     }
 
@@ -22,15 +22,16 @@ public final class GrindingStoneActivator extends ToolCardActivator {
 
         Player player = this.controller.getPlayer();
         Game game = this.controller.getGame();
+
         this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, die);
     }
 
     private Die question() {
         List<Die> dieList = this.controller.getGame().getDraftPool().getDice();
         ChoiceDialog<Die> dialog = new ChoiceDialog<>(dieList.get(0), dieList);
-        dialog.setTitle("Schuurblok");
+        dialog.setTitle("Glasbreektang");
         dialog.setHeaderText("Dobbelsteen keuze");
-        dialog.setContentText("Kies dobbelsteen:");
+        dialog.setContentText("Kies de twee dobbelstenen:");
 
         Optional<Die> result = dialog.showAndWait();
 

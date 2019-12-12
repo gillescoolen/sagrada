@@ -1,6 +1,7 @@
 package sagrada.database.repositories;
 
 import sagrada.database.DatabaseConnection;
+import sagrada.model.Die;
 import sagrada.model.ToolCard;
 import sagrada.model.card.CardFactory;
 
@@ -26,7 +27,8 @@ public final class ToolCardRepository extends Repository<ToolCard> {
             toolCards.add(CardFactory.getToolCard(
                     resultSet.getInt("idtoolcard"),
                     resultSet.getString("name"),
-                    resultSet.getString("description")
+                    resultSet.getString("description"),
+                    this.connection
             ));
         }
 
@@ -48,12 +50,29 @@ public final class ToolCardRepository extends Repository<ToolCard> {
         preparedStatement.close();
         resultSet.close();
 
-        return CardFactory.getToolCard(id, name, description);
+        return CardFactory.getToolCard(id, name, description, this.connection);
     }
 
     @Override
     public ToolCard findById(int id) throws SQLException {
-        return null;
+        PreparedStatement preparedStatement = this.connection.getConnection()
+                .prepareStatement("SELECT * FROM toolcard WHERE idtoolcard = ?");
+        preparedStatement.setInt(1, id);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (!resultSet.next()) {
+            return null;
+        }
+
+        final int idtoolcard = resultSet.getInt("idtoolcard");
+        final String name = resultSet.getString("name");
+        final String description = resultSet.getString("description");
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return CardFactory.getToolCard(idtoolcard, name, description, this.connection);
     }
 
     @Override
@@ -108,7 +127,8 @@ public final class ToolCardRepository extends Repository<ToolCard> {
             toolCards.add(CardFactory.getToolCard(
                     cardResultSet.getInt("idtoolcard"),
                     cardResultSet.getString("name"),
-                    cardResultSet.getString("description")
+                    cardResultSet.getString("description"),
+                    this.connection
             ));
         }
 
@@ -131,6 +151,71 @@ public final class ToolCardRepository extends Repository<ToolCard> {
             ++count;
 
             if (count % BATCH_SIZE == 0 || count == toolCards.size()) {
+                preparedStatement.executeBatch();
+            }
+        }
+
+        preparedStatement.close();
+    }
+
+    public int getGameToolCardID(int gameId, int toolCardId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection()
+                .prepareStatement("SELECT * FROM gametoolcard WHERE idtoolcard = ? AND idgame = ?;");
+        preparedStatement.setInt(1, toolCardId);
+        preparedStatement.setInt(2, gameId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (!resultSet.next()) {
+            return 0;
+        }
+
+        final int id = resultSet.getInt("gametoolcard");
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return id;
+    }
+
+    public ToolCard getToolCardByGameToolCardId(int gameId, int gameToolCardId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection()
+                .prepareStatement("SELECT * FROM gametoolcard WHERE gametoolcard = ? AND idgame = ?;");
+        preparedStatement.setInt(1, gameToolCardId);
+        preparedStatement.setInt(2, gameId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (!resultSet.next()) {
+            return null;
+        }
+
+        final int id = resultSet.getInt("idtoolcard");
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return this.findById(id);
+    }
+
+    public void addAffectedToolCard(ToolCard toolCard, List<Die> dice, int gameId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(
+                "INSERT INTO gametoolcard_affected_gamedie VALUES (?,?,?,?)"
+        );
+
+        var count = 0;
+
+        for (var die : dice) {
+            preparedStatement.setInt(1, toolCard.getId());
+            preparedStatement.setInt(2, gameId);
+            preparedStatement.setInt(3, die.getNumber());
+            preparedStatement.setString(4, die.getColor().getDutchColorName());
+
+            preparedStatement.addBatch();
+
+            ++count;
+
+            if (count % BATCH_SIZE == 0 || count == dice.size()) {
                 preparedStatement.executeBatch();
             }
         }

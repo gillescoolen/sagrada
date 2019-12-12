@@ -34,10 +34,13 @@ public class LobbyItemController {
     private final DatabaseConnection databaseConnection;
     private final static int MAX_PLAYERS = 4;
 
-    public LobbyItemController(Game game, Account account, DatabaseConnection connection) {
+    private final LobbyController lobbyController;
+
+    public LobbyItemController(Game game, Account account, DatabaseConnection connection, LobbyController lobbyController) {
         this.game = game;
         this.account = account;
         this.databaseConnection = connection;
+        this.lobbyController = lobbyController;
     }
 
     @FXML
@@ -107,24 +110,28 @@ public class LobbyItemController {
     }
 
     private void goToNextScreen() {
+        this.lobbyController.stopTimers();
+
         try {
             FXMLLoader loader;
-
+            GameRepository gameRepository = new GameRepository(this.databaseConnection);
             if (this.account.getUsername().equals(this.game.getOwner().getAccount().getUsername())) {
-                GameRepository gameRepository = new GameRepository(this.databaseConnection);
-
                 if (gameRepository.checkIfGameHasStarted(this.game)) {
                     loader = new GameScreen(this.databaseConnection, this.game, this.account);
                 } else {
                     loader = new GameLobbyCreatorScreen(this.databaseConnection, this.game, this.account);
                 }
             } else {
-                if (!this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
-                    PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
-                    playerRepository.acceptInvite(this.account.getUsername(), this.game);
-                }
+                if (gameRepository.checkIfGameHasStarted(this.game)) {
+                    loader = new GameScreen(this.databaseConnection, this.game, this.account);
+                } else {
+                    if (!this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
+                        PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
+                        playerRepository.acceptInvite(this.account.getUsername(), this.game);
+                    }
 
-                loader = new GameLobbyPlayerScreen(this.databaseConnection, this.game, this.account);
+                    loader = new GameLobbyPlayerScreen(this.databaseConnection, this.game, this.account);
+                }
             }
 
             var stage = ((Stage) this.lbName.getScene().getWindow());

@@ -3,8 +3,18 @@ package sagrada.model;
 import java.util.Random;
 
 public class Die {
+    private final Integer number;
     private final Color color;
     private Integer value = null;
+
+    public Die(Integer number, Color color) {
+        this.number = number;
+        this.color = color;
+    }
+
+    public Integer getNumber() {
+        return this.number;
+    }
 
     public Color getColor() {
         return this.color;
@@ -20,10 +30,6 @@ public class Die {
         if (value >= 1 && value <= 6) {
             this.value = value;
         }
-    }
-
-    public Die(Color color) {
-        this.color = color;
     }
 
     public void flip() {
