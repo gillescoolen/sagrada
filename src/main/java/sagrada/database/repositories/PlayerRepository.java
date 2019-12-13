@@ -325,6 +325,18 @@ public final class PlayerRepository extends Repository<Player> {
         return player;
     }
 
+    public Player createSimplePlayer(ResultSet resultSet) throws SQLException {
+        Player player = new Player();
+
+        player.setId(resultSet.getInt("idplayer"));
+        int seqnr = resultSet.getInt("seqnr");
+        player.setSequenceNumber(seqnr == 0 ? null : seqnr);
+
+        player.setCurrentPlayer(resultSet.getBoolean("isCurrentPlayer"));
+
+        return player;
+    }
+
     public void bindPatternCardToPlayer(Player player) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection()
                 .prepareStatement("UPDATE player SET patterncard_idpatterncard = ? WHERE idplayer = ?;");
@@ -348,7 +360,7 @@ public final class PlayerRepository extends Repository<Player> {
 
         // Add player data to list
         while (resultSet.next()) {
-            Player p = createPlayer(resultSet);
+            Player p = createSimplePlayer(resultSet);
             newPlayers.add(p);
         }
 
@@ -375,18 +387,14 @@ public final class PlayerRepository extends Repository<Player> {
         // Get new player data from db
         var players = this.getPlayersByGame(game);
         // Get the next expected player based on calculated sequence number.
-        var expectedNextPlayer = setTurn(nextSequence, players);
+        var expectedNextPlayerId = setTurn(nextSequence, players);
 
         var gameRepository = new GameRepository(this.connection);
-        gameRepository.updateGamePlayer(expectedNextPlayer, game);
-
-        this.update(expectedNextPlayer);
-        statement.close();
+        gameRepository.updateGamePlayer(expectedNextPlayerId, game);
     }
 
-    private Player setTurn(int nextSequence, List<Player> players) throws SQLException {
-        int finalNextSequence = nextSequence;
-        var expectedNextPlayer = players.stream().filter(p -> p.getSequenceNumber() == finalNextSequence).findFirst().orElse(null);
+    private int setTurn(int nextSequence, List<Player> players) throws SQLException {
+        var expectedNextPlayer = players.stream().filter(p -> p.getSequenceNumber() == nextSequence).findFirst().orElse(null);
 
         // Set the expected player to current player.
         PreparedStatement statement = this.connection.getConnection()
@@ -399,10 +407,7 @@ public final class PlayerRepository extends Repository<Player> {
         statement.executeUpdate();
         statement.close();
 
-        // Set our local next player.
-        expectedNextPlayer.setCurrentPlayer(true);
-
-        return expectedNextPlayer;
+        return expectedNextPlayer.getId();
     }
 
     public Player getPlayerByGameAndUsername(Game game, String username) throws SQLException {
@@ -439,7 +444,7 @@ public final class PlayerRepository extends Repository<Player> {
 
         GameRepository gameRepository = new GameRepository(this.connection);
 
-        gameRepository.updateGamePlayer(nextPlayer, game);
+        gameRepository.updateGamePlayer(nextPlayer.getId(), game);
 
         resultSet.close();
         preparedStatement.close();
