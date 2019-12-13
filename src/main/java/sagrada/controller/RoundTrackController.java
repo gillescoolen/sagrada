@@ -18,7 +18,7 @@ public class RoundTrackController {
     @FXML
     private Text dieValue;
 
-    private final int round;
+    private final Integer round;
     private final Die die;
 
     public RoundTrackController(int round, Die die) {

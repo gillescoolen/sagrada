@@ -45,8 +45,8 @@ public class Die {
         this.setValue(random.nextInt(6) + 1);
     }
 
-    @Override
+    /*@Override
     public String toString() {
         return this.color.getColor() + " - " + this.value;
-    }
+    }*/
 }
