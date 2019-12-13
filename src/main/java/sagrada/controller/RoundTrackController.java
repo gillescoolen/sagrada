@@ -2,12 +2,21 @@ package sagrada.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import sagrada.model.Die;
 
 public class RoundTrackController {
     @FXML
-    private Button singleRound;
+    private Button roundNumber;
+    @FXML
+    private StackPane roundDie;
+    @FXML
+    private Rectangle dieRectangle;
+    @FXML
+    private Text dieValue;
 
     private final int round;
     private final Die die;
@@ -19,12 +28,12 @@ public class RoundTrackController {
 
     @FXML
     protected void initialize() {
-        this.singleRound.setText(String.valueOf(this.round));
-
         if (this.die.getValue() != null && this.die.getColor() != null) {
-            Tooltip tooltip = new Tooltip();
-            tooltip.setText("Kleur: " + this.die.getColor().getDutchColorName() + " " + this.die.getValue());
-            this.singleRound.setTooltip(tooltip);
+            this.roundDie.setVisible(true);
+            this.dieRectangle.setFill(Paint.valueOf(this.die.getColor().getColor()));
+            this.dieValue.setText(this.die.getValue().toString());
+        } else {
+            this.roundNumber.setText(String.valueOf(this.round));
         }
     }
 }
