@@ -44,9 +44,4 @@ public class Die {
         Random random = new Random();
         this.setValue(random.nextInt(6) + 1);
     }
-
-    /*@Override
-    public String toString() {
-        return this.color.getColor() + " - " + this.value;
-    }*/
 }
