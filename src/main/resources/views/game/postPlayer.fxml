@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Ellipse?>
 <?import javafx.scene.layout.HBox?>
@@ -10,21 +9,13 @@
 <VBox styleClass="post-player-wrapper" alignment="CENTER" stylesheets="/styles/game/post-player.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <HBox styleClass="player-info-wrapper">
         <HBox styleClass="player-hbox" alignment="CENTER_LEFT">
-            <StackPane>
-                <Ellipse styleClass="favor-token" radiusX="20.0" radiusY="20.0"/>
-                <Text styleClass="favor-token-text" text="15"/>
-            </StackPane>
-            <StackPane>
-                <Rectangle fx:id="color" styleClass="score-die" fill="purple" height="40" width="40"/>
-                <Text styleClass="score-die-text" text="15"/>
-            </StackPane>
-            <Text styleClass="player-name" text="Brian"/>
+            <Text fx:id="playerName" styleClass="player-name"/>
         </HBox>
         <StackPane>
             <Ellipse styleClass="score-marker" fill="blue" radiusX="30.0" radiusY="30.0"/>
-            <Text styleClass="vp-text" text="55"/>
+            <Text fx:id="score" styleClass="vp-text"/>
         </StackPane>
     </HBox>
-    <fx:include source="windowResultCard.fxml"/>
+    <HBox fx:id="windowPatternCardBox"/>
 </VBox>
 
