@@ -113,6 +113,7 @@ public class GameController implements Consumer<Game> {
                     try {
                         player.skipTurn(playerRepository, game);
                         player.setCurrentPlayer(false);
+                        btnSkipTurn.setDisable(true);
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
@@ -184,7 +185,7 @@ public class GameController implements Consumer<Game> {
                         playerFrameRepository.getPlayerFrame(player);
                     }
 
-                    player.setCurrentPlayer(player.getCurrent(playerRepository, game));
+                    player.setCurrentPlayer(player.getCurrent(playerRepository));
 
                     initializeDieStuffAndFavorTokens(game.getPlayers());
 

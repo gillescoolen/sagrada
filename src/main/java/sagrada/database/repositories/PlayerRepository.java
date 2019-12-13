@@ -349,7 +349,7 @@ public final class PlayerRepository extends Repository<Player> {
 
     public List<Player> getPlayersByGame(Game game) throws SQLException {
         var newPlayers = new ArrayList<Player>();
-        PreparedStatement playerStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player where spel_idspel = ?");
+        PreparedStatement playerStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ?");
         playerStatement.setInt(1, game.getId());
 
         ResultSet resultSet = playerStatement.executeQuery();
@@ -370,6 +370,9 @@ public final class PlayerRepository extends Repository<Player> {
         // Get the expected next sequence number.
         var nextSequence = player.getNextSequenceNumber(game.getPlayers().size(), player);
 
+        // Get new player data from db
+        var players = this.getPlayersByGame(game);
+
         // Update current player sequence number and set them to non current player.
         PreparedStatement statement = this.connection.getConnection()
                 .prepareStatement("UPDATE player SET isCurrentPlayer = ?, seqNr = ? WHERE idplayer = ?;");
@@ -381,8 +384,6 @@ public final class PlayerRepository extends Repository<Player> {
         statement.executeUpdate();
         statement.close();
 
-        // Get new player data from db
-        var players = this.getPlayersByGame(game);
         // Get the next expected player based on calculated sequence number.
         var expectedNextPlayerId = setTurn(nextSequence, players);
 
