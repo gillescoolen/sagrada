@@ -105,7 +105,7 @@ public class GameController implements Consumer<Game> {
     @FXML
     protected void initialize() {
         this.btnSkipTurn.setOnMouseClicked(e -> {
-          this.disableAllButtons();
+            this.disableAllButtons();
 
             final Task<Void> task = new Task<>() {
                 @Override
@@ -119,7 +119,6 @@ public class GameController implements Consumer<Game> {
                     return null;
                 }
             };
-
             new Thread(task).start();
     });
 
@@ -208,7 +207,7 @@ public class GameController implements Consumer<Game> {
                     e.printStackTrace();
                 }
             }
-        }, 0, 500);
+        }, 0, 1000);
     }
 
     /**
