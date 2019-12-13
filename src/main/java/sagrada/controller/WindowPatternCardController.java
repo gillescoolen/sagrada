@@ -102,6 +102,8 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
                     if (!isOwnCard) {
                         this.reportMisplacement.setText("Ongeldig verklaren");
                         this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
+
+                        this.reportMisplacement.setDisable(this.player.hasInvalidFrameField());
                     } else {
                         this.reportMisplacement.setVisible(false);
                     }
@@ -141,10 +143,10 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     }
 
     private void invalidateCard() {
-        PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(this.connection);
+        this.reportMisplacement.setDisable(true);
 
         try {
-            playerFrameRepository.invalidateCard(this.player);
+            this.player.invalidateField(new PlayerFrameRepository(this.connection));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -173,7 +175,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             var color = square.getColor();
 
             button.setText(square.getValue().toString());
-
 
             button.setDisable(this.playerFrame == null || !canBeClicked || this.isEndOfGame);
 
