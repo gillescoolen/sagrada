@@ -109,10 +109,6 @@ public final class PatternCardRepository extends Repository<PatternCard> {
         preparedStatement.setInt(1, id);
         ResultSet resultSet = preparedStatement.executeQuery();
 
-        if (resultSet.getFetchSize() > 1) {
-            throw new SQLException("Multiple results, expected 1.");
-        }
-
         if (!resultSet.next()) {
             return null;
         }
