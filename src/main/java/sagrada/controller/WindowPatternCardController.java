@@ -154,9 +154,8 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             var color = square.getColor();
 
             button.setText(square.getValue().toString());
-            button.setDisable(this.playerFrame == null || this.showPatternCard);
 
-            if (!this.showPatternCard) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
+            if (!this.showPatternCard || !isOwnCard) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
 
             button.setDisable(this.playerFrame == null || !canBeClicked || this.isEndOfGame);
 
