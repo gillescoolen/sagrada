@@ -128,8 +128,8 @@ public class GameLobbyCreatorController {
 
         if (playerName.isBlank() && playerName.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning dialog");
-            alert.setContentText("Please input the name of the player \nyou want to invite.");
+            alert.setTitle("Waarschuwings dialoog");
+            alert.setContentText("Vul alstublieft de naam van de speler in \ndie u wilt uitnodigen.");
 
             alert.showAndWait();
 
@@ -143,13 +143,13 @@ public class GameLobbyCreatorController {
             Account account = accountRepository.findByUsername(playerName);
 
             if (account == null) {
-                throw new SQLException("Account not found.");
+                throw new SQLException("Account niet gevonden.");
             }
 
             if (account.getUsername().equals(this.account.getUsername())) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning dialog");
-                alert.setContentText("You can't invite yourself!");
+                alert.setTitle("Waarschuwings dialoog");
+                alert.setContentText("U kan uzelf niet uitnodigen!");
 
                 alert.showAndWait();
 
@@ -158,8 +158,8 @@ public class GameLobbyCreatorController {
 
             if (this.lvInvitedPlayers.getItems().contains(playerName) || this.lvAcceptedPlayers.getItems().contains(playerName)) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Warning dialog");
-                alert.setContentText("Could not invite the player! \nPlayer is already invited or already accepted the\ninvite.");
+                alert.setTitle("Waarschuwings dialoog");
+                alert.setContentText("Kon de speler niet uitnodigen! \nDe speler is al uitgenodigd, of heeft al\ngeaccepteerd.");
 
                 alert.showAndWait();
 
@@ -176,7 +176,7 @@ public class GameLobbyCreatorController {
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error dialog");
-            alert.setContentText("Could not invite the player! \nConnection not found or player not found.");
+            alert.setContentText("Kon de speler niet uitnodigen! \nConnectie of speler niet gevonden.");
 
             alert.showAndWait();
 

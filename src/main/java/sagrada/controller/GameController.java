@@ -398,7 +398,7 @@ public class GameController implements Consumer<Game> {
     }
 
     private void setCurrentTokenAmount() {
-        String message = "You have %s tokens.";
+        String message = "U heeft %s tokens.";
 
         if (this.player == null || this.player.getFavorTokens() == null) {
             message = String.format(message, 0);

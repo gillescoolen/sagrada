@@ -17,6 +17,6 @@
             <Label fx:id="lbName" styleClass="lobbyTitle" />
             <Label fx:id="lbSpotsLeft" />
         </VBox>
-      <Button fx:id="btnDecline" mnemonicParsing="false" text="Decline"/>
+      <Button fx:id="btnDecline" mnemonicParsing="false" text="Afwijzen"/>
     </HBox>
 </AnchorPane>
