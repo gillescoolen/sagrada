@@ -45,7 +45,7 @@ public class ToolCardController implements Consumer<ToolCard> {
     @Override
     public void accept(ToolCard card) {
         if (card != null) {
-            this.points.setText(Integer.toString(this.toolCard.getCost()));
+            this.points.setText(Integer.toString(card.getCost()));
         }
     }
 }
