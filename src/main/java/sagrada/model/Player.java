@@ -172,18 +172,18 @@ public class Player {
         if (playerAmount == 2) {
             switch (player.getSequenceNumber()) {
                 case 1:
-                    player.setSequenceNumber(8);
+                    player.setSequenceNumber(4);
                     nextSequence = 2;
                     break;
                 case 2:
-                    player.setSequenceNumber(7);
-                    nextSequence = 7;
+                    player.setSequenceNumber(3);
+                    nextSequence = 3;
                     break;
-                case 7:
+                case 3:
                     player.setSequenceNumber(1);
-                    nextSequence = 8;
+                    nextSequence = 4;
                     break;
-                case 8:
+                case 4:
                     player.setSequenceNumber(2);
                     nextSequence = 1;
                     break;
