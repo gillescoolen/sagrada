@@ -16,6 +16,6 @@
             <Text fx:id="score" styleClass="vp-text"/>
         </StackPane>
     </HBox>
-    <fx:include source="windowResultCard.fxml"/>
+    <HBox fx:id="windowPatternCardBox"/>
 </VBox>
 

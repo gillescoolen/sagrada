@@ -12,9 +12,11 @@ public class PostGameController {
     private HBox objectiveCardBox, toolCardBox, leaderBoard;
 
     private final Game game;
+    private final GameController gameController;
 
-    public PostGameController(Game game) {
+    public PostGameController(Game game, GameController gameController) {
         this.game = game;
+        this.gameController = gameController;
     }
 
     @FXML
@@ -47,7 +49,7 @@ public class PostGameController {
     private void loadPlayers() throws IOException {
         for (var player : this.game.getPlayers()) {
             var loader = new FXMLLoader(getClass().getResource("/views/game/postPlayer.fxml"));
-            loader.setController(new PostPlayerController(player));
+            loader.setController(new PostPlayerController(player, this.gameController));
             this.leaderBoard.getChildren().add(loader.load());
         }
     }
