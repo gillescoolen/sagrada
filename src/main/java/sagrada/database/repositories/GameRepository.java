@@ -214,10 +214,10 @@ public final class GameRepository extends Repository<Game> {
 
     }
 
-    public void updateGamePlayer(Player nextPlayer, Game game) throws SQLException {
+    public void updateGamePlayer(int nextPlayerId, Game game) throws SQLException {
         PreparedStatement nextPlayerGameStatement = this.connection.getConnection().prepareStatement("UPDATE game SET turn_idplayer = ? WHERE idgame = ?");
 
-        nextPlayerGameStatement.setInt(1, nextPlayer.getId());
+        nextPlayerGameStatement.setInt(1, nextPlayerId);
         nextPlayerGameStatement.setInt(2, game.getId());
 
         nextPlayerGameStatement.executeUpdate();
