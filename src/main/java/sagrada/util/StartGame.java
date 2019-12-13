@@ -37,20 +37,7 @@ public class StartGame {
         return this.game;
     }
 
-    public void assignFavorTokens()  {
-
-        boolean alreadySetTokens = true;
-
-        try {
-            alreadySetTokens = this.favorTokenRepository.checkIfFavorTokensAreSet(this.game,  this.game.getPlayers().get(0));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        if (alreadySetTokens) {
-            return;
-        }
-
+    public void assignFavorTokens() {
         for (var player : this.game.getPlayers()) {
             var unUsedTokens = this.game.getFavorTokens().subList(0, player.getPatternCard().getDifficulty());
 

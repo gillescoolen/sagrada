@@ -247,7 +247,7 @@ public class GameController implements Consumer<Game> {
                         return;
                     }
 
-                    if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername()) && startGameUtil != null) {
+                    if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername()) && startGameUtil != null && !gameReady) {
                         startGameUtil.assignFavorTokens();
                         game = startGameUtil.getCreatedGame();
                     }
