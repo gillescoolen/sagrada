@@ -96,7 +96,15 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
                 if (this.changeView != null) {
                     this.changeView.setDisable(false);
                     this.setPatternCardInformation();
-                    this.reportMisplacement.setText("Verander veld");
+
+                    boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
+
+                    if (!isOwnCard) {
+                        this.reportMisplacement.setText("Ongeldig verklaren");
+                        this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
+                    } else {
+                        this.reportMisplacement.setVisible(false);
+                    }
                 }
             });
         }
@@ -113,7 +121,8 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         } else {
             this.changeView.setDisable(false);
             this.name.setText(this.player.getAccount().getUsername() + String.format(" (%s tokens)", this.playerFrame.getDifficulty()));
-            this.reportMisplacement.setText("Verander veld");
+            this.reportMisplacement.setText("Ongeldig verklaren");
+            this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
         }
 
         if (this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername())) {
@@ -129,6 +138,16 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         this.changeView.setText("Draai");
         this.initializeWindow();
         this.fillWindow();
+    }
+
+    private void invalidateCard() {
+        PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(this.connection);
+
+        try {
+            playerFrameRepository.invalidateCard(this.player);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void choosePatternCard() {
@@ -195,7 +214,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     }
 
     private void setPatternCardInformation() {
-        String text = this.showPatternCard ? "Patroon kaart" : "Speler frame";
+        String text = this.showPatternCard ? "patroon kaart" : "speler frame";
         this.name.setText(this.player.getAccount().getUsername() + "'s " + text);
     }
 

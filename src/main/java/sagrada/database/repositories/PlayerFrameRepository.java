@@ -79,6 +79,15 @@ public final class PlayerFrameRepository extends Repository<PatternCard> {
         preparedStatement.close();
     }
 
+    public void invalidateCard(Player player) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE player SET invalidframefield = true WHERE idplayer = ?");
+
+        preparedStatement.setInt(1, player.getId());
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
+    }
+
     @Override
     public PatternCard findById(int id) throws SQLException {
         return null;
