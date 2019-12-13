@@ -98,14 +98,14 @@ public class GameController implements Consumer<Game> {
     @FXML
     protected void initialize() {
         this.btnSkipTurn.setOnMouseClicked(e -> {
-          this.disableAllButtons();
+            this.disableAllButtons();
 
             final Task<Void> task = new Task<>() {
                 @Override
                 protected Void call() {
                     try {
-                       player.skipTurn(playerRepository, game);
-                       player.setCurrentPlayer(false);
+                        player.skipTurn(playerRepository, game);
+                        player.setCurrentPlayer(false);
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
@@ -114,7 +114,7 @@ public class GameController implements Consumer<Game> {
             };
 
             new Thread(task).start();
-    });
+        });
 
         btnRollDice.setOnMouseClicked(e -> {
             btnRollDice.setDisable(true);
@@ -182,6 +182,7 @@ public class GameController implements Consumer<Game> {
                     initializeDieStuffAndFavorTokens(game.getPlayers());
 
                     Platform.runLater(() -> {
+                        setCurrentTokenAmount();
                         try {
                             initializeDice();
                         } catch (IOException e) {
@@ -239,7 +240,7 @@ public class GameController implements Consumer<Game> {
                     }
 
                     if (game.getOwner().getAccount().getUsername().equals(player.getAccount().getUsername()) && startGameUtil != null) {
-                        startGameUtil.shareFavorTokens();
+                        startGameUtil.assignFavorTokens();
                         game = startGameUtil.getCreatedGame();
                     }
 
@@ -375,7 +376,16 @@ public class GameController implements Consumer<Game> {
     }
 
     private void setCurrentTokenAmount() {
-        this.currentTokenAmount.setText(String.format("You have %s tokens.", String.valueOf(this.player.getFavorTokens().size())));
+        String message = "You have %s tokens.";
+
+        if (this.player == null || this.player.getFavorTokens() == null) {
+            message = String.format(message, 0);
+        } else {
+            int unusedFavorTokens = (int) this.player.getFavorTokens().stream().filter(token -> token.getToolCard() == null).count();
+            message = String.format(message, unusedFavorTokens);
+        }
+
+        this.currentTokenAmount.setText(message);
     }
 
     public Game getGame() {
