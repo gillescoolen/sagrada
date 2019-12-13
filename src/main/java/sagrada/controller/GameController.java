@@ -152,7 +152,6 @@ public class GameController implements Consumer<Game> {
                     this.initializePublicObjectiveCards();
                     this.initializeToolCards();
                     this.initializeDice();
-                    this.initializeRoundTrack();
 
                     this.checkForPlayerPatternCards();
                     this.startMainGameTimer();
