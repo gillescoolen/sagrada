@@ -2,7 +2,13 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
 <StackPane styleClass="track-wrapper" stylesheets="/styles/game/round-track.css" xmlns="http://javafx.com/javafx/11.0.1"
            xmlns:fx="http://javafx.com/fxml/1">
     <Button fx:id="singleRound" prefWidth="50" prefHeight="50" styleClass="single-track"/>
+    <StackPane>
+        <Rectangle width="26" height="26" fill="yellow"/>
+        <Text styleClass="rt-dice-text" text="5"/>
+    </StackPane>
 </StackPane>
