@@ -50,16 +50,16 @@ public class LobbyItemController {
     }
 
     private void fillItem() {
-        this.lbName.setText(this.game.getOwner().getAccount().getUsername() + "'s Game");
+        this.lbName.setText(this.game.getOwner().getAccount().getUsername() + "'s Spel");
 
         GameRepository gameRepository = new GameRepository(this.databaseConnection);
 
         int spots = this.getSpots(this.game.getPlayers());
-        this.lbSpotsLeft.setText(spots + " spot(s) left!");
+        this.lbSpotsLeft.setText(spots + " plek(ken) over!");
 
         try {
             if (gameRepository.checkIfGameHasStarted(this.game) && !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
-                this.lbSpotsLeft.setText("Game has started");
+                this.lbSpotsLeft.setText("Spel is begonnen");
 
                 this.lobbyItem.setDisable(true);
                 this.lobbyItem.getStyleClass().clear();
@@ -67,7 +67,7 @@ public class LobbyItemController {
 
                 if (this.btnDecline != null) this.btnDecline.setDisable(true);
             } else if (gameRepository.checkIfGameHasStarted(this.game) && this.containsName(this.game.getPlayers(), this.account.getUsername())) {
-                this.lbSpotsLeft.setText("Game has started");
+                this.lbSpotsLeft.setText("Spel is begonnen");
 
                 this.lobbyItem.getStyleClass().clear();
                 this.lobbyItem.getStyleClass().add("item-started");

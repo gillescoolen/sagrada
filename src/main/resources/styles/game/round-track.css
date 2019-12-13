@@ -3,5 +3,11 @@
     -fx-background-radius: 50%;
     -fx-font-weight: bold;
     -fx-text-fill: white;
-    -fx-font-size: 20px;
+    -fx-font-size: 18px;
+}
+
+.rt-dice-text {
+    -fx-fill: black;
+    -fx-bold: white;
+    -fx-font-size: 18px;
 }

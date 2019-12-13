@@ -22,4 +22,13 @@ public enum Color {
     public String getDutchColorName() {
         return this.dutchColor;
     }
+
+    public static Color fromString(String color) {
+        for (Color c : Color.values()) {
+            if (c.dutchColor.equalsIgnoreCase(color)) {
+                return c;
+            }
+        }
+        return null;
+    }
 }

@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.Button?>
-
-<StackPane styleClass="track-wrapper" stylesheets="/styles/game/round-track.css" xmlns="http://javafx.com/javafx/11.0.1">
-    <Button prefWidth="50" prefHeight="50" styleClass="single-track" text="1"/>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
+<StackPane styleClass="track-wrapper" stylesheets="/styles/game/round-track.css" xmlns="http://javafx.com/javafx/11.0.1"
+           xmlns:fx="http://javafx.com/fxml/1">
+    <Button fx:id="roundNumber" prefWidth="50" prefHeight="50" styleClass="single-track"/>
+    <StackPane fx:id="roundDie" visible="false">
+        <Rectangle fx:id="dieRectangle" width="26" height="26"/>
+        <Text fx:id="dieValue" styleClass="rt-dice-text"/>
+    </StackPane>
 </StackPane>

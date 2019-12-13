@@ -23,10 +23,11 @@ public class PrivateObjectiveCardController {
 
     @FXML
     protected void initialize() {
-        var color = this.privateObjectiveCard.getColor().getColor();
+        var color = this.privateObjectiveCard.getColor().getDutchColorName();
+        var colorCode = this.privateObjectiveCard.getColor();
 
-        this.name.setText("Shades of " + color);
-        this.description.setText("Private Sum of values on " + color + " dice");
-        this.color.setFill(Color.web(color));
+        this.name.setText("Tinten van " + color);
+        this.description.setText("Privé Som van alle waarden van " + color + " dobbelstenen");
+        this.color.setFill(Color.valueOf(colorCode.getColor()));
     }
 }

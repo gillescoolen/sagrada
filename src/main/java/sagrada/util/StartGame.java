@@ -37,7 +37,7 @@ public class StartGame {
         return this.game;
     }
 
-    public void shareFavorTokens() {
+    public void assignFavorTokens() {
         for (var player : this.game.getPlayers()) {
             var unUsedTokens = this.game.getFavorTokens().subList(0, player.getPatternCard().getDifficulty());
 

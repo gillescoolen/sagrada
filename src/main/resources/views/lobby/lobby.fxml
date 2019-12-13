@@ -16,7 +16,7 @@
     </ScrollPane>
     <ScrollPane styleClass="main-column" fitToWidth="true" fitToHeight="true">
         <VBox styleClass="main-column-item" prefHeight="720.0" prefWidth="850.0">
-            <Button fx:id="btnCreateGame" text="Create game"/>
+            <Button fx:id="btnCreateGame" text="Spel aanmaken"/>
             <Text styleClass="title" text="Lobbies"/>
             <VBox fx:id="vbLobbyGames" styleClass="lobby-list"/>
         </VBox>

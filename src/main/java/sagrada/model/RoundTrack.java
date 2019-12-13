@@ -7,25 +7,29 @@ public class RoundTrack {
     private int current;
     private Map<Integer, Die> track = new LinkedHashMap<>() {
         {
-            put(1, null);
-            put(2, null);
-            put(3, null);
-            put(4, null);
-            put(5, null);
-            put(6, null);
-            put(7, null);
-            put(8, null);
-            put(9, null);
-            put(10, null);
+            put(1, new Die(null, null));
+            put(2, new Die(null, null));
+            put(3, new Die(null, null));
+            put(4, new Die(null, null));
+            put(5, new Die(null, null));
+            put(6, new Die(null, null));
+            put(7, new Die(null, null));
+            put(8, new Die(null, null));
+            put(9, new Die(null, null));
+            put(10, new Die(null, null));
         }
     };
 
-    public void next(Die die) {
-        this.track.put(this.current + 1, die);
-    }
-
     public void updateTrack(int round, Die die) {
         this.track.replace(round, die);
+    }
+
+    public void putTrack(int round, Die die) {
+        this.track.put(round, die);
+    }
+
+    public void setTrack(Map<Integer, Die> track) {
+        this.track = track;
     }
 
     public Die getDieByKey(int key) {

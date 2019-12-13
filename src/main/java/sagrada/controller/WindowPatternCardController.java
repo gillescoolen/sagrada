@@ -34,11 +34,12 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     private PatternCard windowField;
     private PatternCard patternCard;
     private PatternCard playerFrame;
-    private boolean showPatternCard = false;
     private DatabaseConnection connection;
-    private final GameController gameController;
+    private boolean showPatternCard = false;
+    private boolean isEndOfGame = false;
 
     private final List<Button> windowSquares = new ArrayList<>();
+    private final GameController gameController;
 
     public WindowPatternCardController(DatabaseConnection connection, PatternCard patternCard, Player player, GameController gameController) {
         this.windowField = patternCard;
@@ -73,21 +74,32 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         this.playerFrame.observe(this);
     }
 
+    public WindowPatternCardController(Player player, GameController gameController) {
+        this.patternCard = player.getPatternCard();
+        this.playerFrame = player.getPlayerFrame();
+        this.windowField = this.playerFrame;
+        this.player = player;
+        this.isEndOfGame = true;
+        this.gameController = gameController;
+    }
+
     @Override
     public void accept(PatternCard patternCard) {
         this.playerFrame = patternCard;
 
-        Platform.runLater(() -> {
-            if (this.windowSquares.size() > 0) {
-                this.fillWindow();
-            }
+        if (!this.isEndOfGame) {
+            Platform.runLater(() -> {
+                if (this.windowSquares.size() > 0) {
+                    this.fillWindow();
+                }
 
-            if (this.changeView != null) {
-                this.changeView.setDisable(false);
-                this.setPatternCardInformation();
-            this.reportMisplacement.setText("Verander veld");
-            }
-        });
+                if (this.changeView != null) {
+                    this.changeView.setDisable(false);
+                    this.setPatternCardInformation();
+                    this.reportMisplacement.setText("Verander veld");
+                }
+            });
+        }
     }
 
     @FXML
@@ -107,6 +119,10 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         if (this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername())) {
             this.window.getStyleClass().clear();
             this.window.getStyleClass().add("window-own");
+        }
+
+        if (this.isEndOfGame) {
+            this.window.getChildren().remove(this.reportMisplacement);
         }
 
         this.changeView.setOnAction((e) -> this.changeView());
@@ -141,6 +157,10 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             button.setDisable(this.playerFrame == null || this.showPatternCard);
 
             if (!this.showPatternCard) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
+
+            button.setDisable(this.playerFrame == null || !canBeClicked || this.isEndOfGame);
+
+            if (selectedDie != null) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
 
             if (color != null) {
                 button.setStyle("-fx-background-color: " + square.getColor().getColor());

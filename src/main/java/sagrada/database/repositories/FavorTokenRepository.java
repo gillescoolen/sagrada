@@ -2,6 +2,7 @@ package sagrada.database.repositories;
 
 import sagrada.database.DatabaseConnection;
 import sagrada.model.FavorToken;
+import sagrada.model.Game;
 import sagrada.model.Player;
 
 import java.sql.PreparedStatement;
@@ -109,6 +110,23 @@ public final class FavorTokenRepository extends Repository<FavorToken> {
         resultSet.close();
 
         return favorTokens;
+    }
+
+    public boolean checkIfFavorTokensAreSet(Game game, Player player) throws SQLException {
+        PreparedStatement statement = this.connection.getConnection()
+                .prepareStatement("SELECT * FROM gamefavortoken WHERE idgame = ? AND idplayer = ? LIMIT 1");
+
+        statement.setInt(1, game.getId());
+        statement.setInt(2, player.getId());
+
+        ResultSet resultSet = statement.executeQuery();
+
+        boolean hasTokens = resultSet.next();
+
+        statement.close();
+        resultSet.close();
+
+        return hasTokens;
     }
 
     public List<FavorToken> getPlayerFavorTokens(int gameId, int playerId) throws SQLException {
