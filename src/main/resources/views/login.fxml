@@ -14,17 +14,17 @@
     </HBox>
 
     <HBox styleClass="wrapper">
-        <Label text="Username"/>
+        <Label text="Gebruikersnaam"/>
         <TextField styleClass="textfield" fx:id="tfUsername"/>
     </HBox>
 
     <HBox styleClass="wrapper">
-        <Label text="Password"/>
+        <Label text="Wachtwoord"/>
         <PasswordField styleClass="passwordfield" fx:id="pfPassword"/>
     </HBox>
 
     <HBox styleClass="wrapper" alignment="CENTER">
-        <Button text="Login" fx:id="loginButton"/>
-        <Button text="Register" fx:id="registerButton"/>
+        <Button text="Inloggen" fx:id="loginButton"/>
+        <Button text="Registreren" fx:id="registerButton"/>
     </HBox>
 </VBox>

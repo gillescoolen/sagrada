@@ -85,7 +85,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             if (this.changeView != null) {
                 this.changeView.setDisable(false);
                 this.setPatternCardInformation();
-                this.reportMisplacement.setText("Change field");
+            this.reportMisplacement.setText("Verander veld");
             }
         });
     }
@@ -95,13 +95,13 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         if (this.playerFrame == null) {
             this.changeView.setDisable(true);
             this.name.setText(this.windowField.getName() + String.format(" (%s tokens)", this.windowField.getDifficulty()));
-            this.reportMisplacement.setText("Choose");
+            this.reportMisplacement.setText("Kies");
 
             this.reportMisplacement.setOnMouseClicked(e -> this.choosePatternCard());
         } else {
             this.changeView.setDisable(false);
             this.name.setText(this.player.getAccount().getUsername() + String.format(" (%s tokens)", this.playerFrame.getDifficulty()));
-            this.reportMisplacement.setText("Change field");
+            this.reportMisplacement.setText("Verander veld");
         }
 
         if (this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername())) {
@@ -110,7 +110,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         }
 
         this.changeView.setOnAction((e) -> this.changeView());
-        this.changeView.setText("Switch");
+        this.changeView.setText("Draai");
         this.initializeWindow();
         this.fillWindow();
     }
@@ -129,6 +129,9 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     private void fillWindow() {
         var i = 0;
         var selectedDie = this.gameController.getSelectedDie();
+
+        boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
+        boolean canBeClicked = (isOwnCard && player.isCurrentPlayer());
 
         for (var square : this.windowField.getSquares()) {
             var button = this.windowSquares.get(i);

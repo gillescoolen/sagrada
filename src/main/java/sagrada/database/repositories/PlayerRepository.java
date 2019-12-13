@@ -335,26 +335,79 @@ public final class PlayerRepository extends Repository<Player> {
         preparedStatement.close();
     }
 
-    public void nextPlayerTurn(Player player, Game game) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection()
-                .prepareStatement("UPDATE player SET isCurrentPlayer = ? WHERE idplayer = ?;");
+    public List<Player> getPlayersByGame(Game game) throws SQLException {
+        var newPlayers = new ArrayList<Player>();
+        PreparedStatement playerStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player where spel_idspel = ?");
+        playerStatement.setInt(1, game.getId());
 
-        preparedStatement.setBoolean(1, false);
-        preparedStatement.setInt(2, player.getId());
+        ResultSet resultSet = playerStatement.executeQuery();
 
-        preparedStatement.executeUpdate();
-        preparedStatement.close();
+        // Add player data to list
+        while (resultSet.next()) {
+            Player p = createPlayer(resultSet);
+            newPlayers.add(p);
+        }
 
-        Player nextPlayer = this.getNextGamePlayer(game, player);
+        playerStatement.close();
+        resultSet.close();
 
-        nextPlayer.setCurrentPlayer(true);
-        this.update(nextPlayer);
+        return newPlayers;
     }
 
-    public Player getPlayerByGameAndSequenceNumber(Game game, int sequenceNumber) throws SQLException {
-        PreparedStatement playerIdStatement = this.connection.getConnection().prepareStatement("SELECT idplayer FROM player WHERE spel_idspel = ? AND seqnr = ?;");
+    public void nextPlayerTurn(Player player, Game game) throws SQLException {
+        // Get the expected next sequence number.
+        var nextSequence = player.getNextSequenceNumber(game.getPlayers().size(), player);
+        // Get new player data from db
+        var players = this.getPlayersByGame(game);
+
+        // Update current player sequence number and set them to non current player.
+        PreparedStatement statement = this.connection.getConnection()
+                .prepareStatement("UPDATE player SET isCurrentPlayer = ?, seqNr = ? WHERE idplayer = ?;");
+
+        statement.setBoolean(1, false);
+        statement.setInt(2, player.getSequenceNumber());
+        statement.setInt(3, player.getId());
+
+        statement.executeUpdate();
+        statement.close();
+
+        // Get the next expected player based on calculated sequence number.
+        var expectedNextPlayer = setTurn(nextSequence, players);
+
+        var gameRepository = new GameRepository(this.connection);
+        gameRepository.updateGamePlayer(expectedNextPlayer, game);
+
+        this.update(expectedNextPlayer);
+    }
+
+    private Player setTurn(int nextSequence, List<Player> players) throws SQLException {
+        int finalNextSequence = nextSequence;
+        var expectedNextPlayer = players.stream().filter(p -> p.getSequenceNumber() == finalNextSequence).findFirst().orElse(null);
+
+        // Set the expected player to current player.
+        PreparedStatement statement = this.connection.getConnection()
+                .prepareStatement("UPDATE player SET isCurrentPlayer = ?, seqNr = ? WHERE idplayer = ?;");
+
+        statement.setBoolean(1, true);
+        statement.setInt(2, nextSequence);
+        statement.setInt(3, expectedNextPlayer.getId());
+
+        statement.executeUpdate();
+        statement.close();
+
+        // Set our local next player.
+        expectedNextPlayer.setCurrentPlayer(true);
+
+        return expectedNextPlayer;
+    }
+
+
+
+    public Player getPlayerByGameAndUsername(Game game, String username) throws SQLException {
+        PreparedStatement playerIdStatement = this.connection.getConnection().prepareStatement("SELECT idplayer FROM player WHERE spel_idspel = ? AND username = ?;");
+
         playerIdStatement.setInt(1, game.getId());
-        playerIdStatement.setInt(2, sequenceNumber);
+        playerIdStatement.setString(2, username);
 
         ResultSet playerIdResultSet = playerIdStatement.executeQuery();
         playerIdResultSet.next();
@@ -367,29 +420,25 @@ public final class PlayerRepository extends Repository<Player> {
         return this.findById(playerId);
     }
 
-    public Player getNextGamePlayer(Game game, Player currentPlayer) throws SQLException {
-        PreparedStatement maxStatement = this.connection.getConnection().prepareStatement("SELECT MAX(seqnr) as max_seqnr, MIN(seqnr) as min_seqnr FROM player where spel_idspel = ?;");
-        maxStatement.setInt(1, game.getId());
+    public Player getNextGamePlayer(Game game) throws SQLException {
+        var preparedStatement = this.connection.getConnection().prepareStatement("SELECT username FROM player WHERE spel_idspel = ? AND seqnr = (SELECT MIN(seqnr) FROM player WHERE spel_idspel = ?);");
 
-        ResultSet maxResultSet = maxStatement.executeQuery();
-        maxResultSet.next();
+        preparedStatement.setInt(1, game.getId());
+        preparedStatement.setInt(2, game.getId());
 
-        int maxSequenceNumber = maxResultSet.getInt("max_seqnr");
-        int minSequenceNumber = maxResultSet.getInt("min_seqnr");
-        int nextSequenceNumber = currentPlayer.getSequenceNumber() + 1;
+        var resultSet = preparedStatement.executeQuery();
 
-        maxResultSet.close();
-        maxStatement.close();
+        resultSet.next();
+        var username = resultSet.getString("username");
 
-        if (currentPlayer.getSequenceNumber() >= maxSequenceNumber) {
-            nextSequenceNumber = minSequenceNumber;
-        }
-        
-        Player nextPlayer = this.getPlayerByGameAndSequenceNumber(game, nextSequenceNumber);
+        Player nextPlayer = this.getPlayerByGameAndUsername(game, username);
 
         GameRepository gameRepository = new GameRepository(this.connection);
 
         gameRepository.updateGamePlayer(nextPlayer, game);
+
+        resultSet.close();
+        preparedStatement.close();
 
         return nextPlayer;
     }

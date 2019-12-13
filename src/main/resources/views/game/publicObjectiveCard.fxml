@@ -7,7 +7,7 @@
 <AnchorPane styleClass="pub-obj-card-wrapper" stylesheets="/styles/game/public-objective-card.css"
             xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml">
     <VBox styleClass="pub-obj-card-vbox" prefHeight="150.0" prefWidth="200.0" maxWidth="200.0">
-        <Text fx:id="name" styleClass="pub-obj-card-title" wrappingWidth="150.0"/>
+        <Text fx:id="name" styleClass="pub-obj-card-title" wrappingWidth="170.0"/>
         <Text fx:id="description" wrappingWidth="200.0"/>
     </VBox>
     <StackPane AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0">

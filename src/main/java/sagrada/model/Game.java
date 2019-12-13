@@ -1,7 +1,9 @@
 package sagrada.model;
 
+import sagrada.database.repositories.PlayerRepository;
 import sagrada.util.Observable;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
