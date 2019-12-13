@@ -141,6 +141,11 @@ public class Game extends Observable<Game> {
         this.update(this);
     }
 
+    public void throwDice() {
+        this.draftPool.throwDice();
+        this.update(this);
+    }
+
     public Player getOwner() {
         return this.players
                 .stream()

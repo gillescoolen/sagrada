@@ -337,8 +337,10 @@ public final class PlayerRepository extends Repository<Player> {
 
     public List<Player> getPlayersByGame(Game game) throws SQLException {
         var newPlayers = new ArrayList<Player>();
-        PreparedStatement playerStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player where spel_idspel = ?");
+        PreparedStatement playerStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN(?,?)");
         playerStatement.setInt(1, game.getId());
+        playerStatement.setString(2, PlayStatus.CHALLENGER.getPlayState());
+        playerStatement.setString(3, PlayStatus.ACCEPTED.getPlayState());
 
         ResultSet resultSet = playerStatement.executeQuery();
 
@@ -401,13 +403,13 @@ public final class PlayerRepository extends Repository<Player> {
         return expectedNextPlayer;
     }
 
-
-
     public Player getPlayerByGameAndUsername(Game game, String username) throws SQLException {
-        PreparedStatement playerIdStatement = this.connection.getConnection().prepareStatement("SELECT idplayer FROM player WHERE spel_idspel = ? AND username = ?;");
+        PreparedStatement playerIdStatement = this.connection.getConnection().prepareStatement("SELECT idplayer FROM player WHERE spel_idspel = ? AND username = ? AND playstatus_playstatus IN (?,?);");
 
         playerIdStatement.setInt(1, game.getId());
         playerIdStatement.setString(2, username);
+        playerIdStatement.setString(3, PlayStatus.ACCEPTED.getPlayState());
+        playerIdStatement.setString(4, PlayStatus.CHALLENGER.getPlayState());
 
         ResultSet playerIdResultSet = playerIdStatement.executeQuery();
         playerIdResultSet.next();

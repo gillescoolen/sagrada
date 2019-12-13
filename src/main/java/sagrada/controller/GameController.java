@@ -126,16 +126,13 @@ public class GameController implements Consumer<Game> {
             btnRollDice.setDisable(true);
 
             try {
-                var draftPool = this.game.getDraftPool();
-                draftPool.removeAllDice();
-
                 var dice = this.player.grabFromDiceBag(this.game.getDiceCount());
 
-                draftPool.addAllDice(dice);
-                draftPool.throwDice();
+                this.game.addDiceInDraftPool(dice);
+                this.game.throwDice();
 
                 var round = this.gameRepository.getCurrentRound(this.game.getId());
-                this.dieRepository.addGameDice(this.game.getId(), round, draftPool.getDice());
+                this.dieRepository.addGameDice(this.game.getId(), round, dice);
 
                 this.drawDice();
             } catch (Exception ex) {
