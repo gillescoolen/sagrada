@@ -87,6 +87,13 @@ public class GameController implements Consumer<Game> {
     @Override
     public void accept(Game game) {
         this.game = game;
+        Platform.runLater(() -> {
+            try {
+                this.drawDice();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML
@@ -114,7 +121,7 @@ public class GameController implements Consumer<Game> {
                 var round = this.gameRepository.getCurrentRound(this.game.getId());
                 this.dieRepository.addGameDice(this.game.getId(), round, draftPool.getDice());
 
-                this.initializeDice();
+                this.drawDice();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -127,7 +134,7 @@ public class GameController implements Consumer<Game> {
                     this.initializePrivateObjectiveCard(this.game.getPlayerByName(player.getAccount().getUsername()));
                     this.initializePublicObjectiveCards();
                     this.initializeToolCards();
-                    this.initializeDice();
+                    this.drawDice();
                     this.checkForPlayerPatternCards();
                     this.startMainGameTimer();
                     this.setCurrentTokenAmount();
@@ -165,7 +172,7 @@ public class GameController implements Consumer<Game> {
 
                     Platform.runLater(() -> {
                         try {
-                            initializeDice();
+                            drawDice();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -185,7 +192,7 @@ public class GameController implements Consumer<Game> {
                     e.printStackTrace();
                 }
             }
-        }, 0, 750);
+        }, 0, 500);
     }
 
     /**
@@ -324,7 +331,7 @@ public class GameController implements Consumer<Game> {
     private void initializeDieStuffAndFavorTokens(List<Player> players) throws SQLException {
         var draftedDice = this.dieRepository.getDraftPoolDice(this.game.getId(), this.gameRepository.getCurrentRound(this.game.getId()));
 
-        this.game.getDraftPool().addAllDice(draftedDice);
+        this.game.addDiceInDraftPool(draftedDice);
 
         var dice = this.dieRepository.getUnusedDice(this.game.getId());
 
@@ -336,7 +343,7 @@ public class GameController implements Consumer<Game> {
         }
     }
 
-    private void initializeDice() throws IOException {
+    private void drawDice() throws IOException {
         var diceCount = this.game.getDiceCount();
         var draftedDice = this.game.getDraftPool().getDice();
 

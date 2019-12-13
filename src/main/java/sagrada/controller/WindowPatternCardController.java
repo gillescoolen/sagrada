@@ -182,6 +182,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         if (die == null) return;
         this.playerFrame.placeDie(this.player, square, die, this.connection);
         this.gameController.setSelectedDie(null);
-        this.gameController.getGame().removeDieFromDraftpool(die);
+        this.gameController.getGame().removeDieFromDraftPool(die);
     }
 }
