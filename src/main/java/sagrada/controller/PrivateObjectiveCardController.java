@@ -26,7 +26,7 @@ public class PrivateObjectiveCardController {
         var color = this.privateObjectiveCard.getColor().getDutchColorName();
 
         this.name.setText("Tinten van " + color);
-        this.description.setText("Privé Som van alle waarden van " + color + " dobbelsteen");
+        this.description.setText("Privé Som van alle waarden van " + color + " dobbelstenen");
         this.color.setFill(Color.web(color));
     }
 }
