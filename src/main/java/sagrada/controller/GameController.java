@@ -16,7 +16,10 @@ import sagrada.util.StartGame;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 
 public class GameController implements Consumer<Game> {
@@ -40,6 +43,8 @@ public class GameController implements Consumer<Game> {
     private Button btnRollDice;
     @FXML
     private Text currentTokenAmount;
+    @FXML
+    private HBox roundTrackBox;
 
     private Game game;
     private StartGame startGameUtil;
@@ -49,6 +54,7 @@ public class GameController implements Consumer<Game> {
     private final GameRepository gameRepository;
     private final DieRepository dieRepository;
     private final FavorTokenRepository favorTokenRepository;
+    private final RoundTrackRepository roundTrackRepository;
 
     private boolean gameReady = false;
     private Die selectedDie;
@@ -61,6 +67,7 @@ public class GameController implements Consumer<Game> {
         this.gameRepository = new GameRepository(connection);
         this.dieRepository = new DieRepository(connection);
         this.favorTokenRepository = new FavorTokenRepository(connection);
+        this.roundTrackRepository = new RoundTrackRepository(connection);
 
         var publicObjectiveCardRepository = new PublicObjectiveCardRepository(connection);
         var toolCardRepository = new ToolCardRepository(connection);
@@ -98,14 +105,14 @@ public class GameController implements Consumer<Game> {
     @FXML
     protected void initialize() {
         this.btnSkipTurn.setOnMouseClicked(e -> {
-          this.disableAllButtons();
+            this.disableAllButtons();
 
             final Task<Void> task = new Task<>() {
                 @Override
                 protected Void call() {
                     try {
-                       player.skipTurn(playerRepository, game);
-                       player.setCurrentPlayer(false);
+                        player.skipTurn(playerRepository, game);
+                        player.setCurrentPlayer(false);
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
@@ -114,7 +121,7 @@ public class GameController implements Consumer<Game> {
             };
 
             new Thread(task).start();
-    });
+        });
 
         btnRollDice.setOnMouseClicked(e -> {
             btnRollDice.setDisable(true);
@@ -145,6 +152,7 @@ public class GameController implements Consumer<Game> {
                     this.initializePublicObjectiveCards();
                     this.initializeToolCards();
                     this.initializeDice();
+                    this.initializeRoundTrack();
 
                     this.checkForPlayerPatternCards();
                     this.startMainGameTimer();
@@ -184,6 +192,7 @@ public class GameController implements Consumer<Game> {
                     Platform.runLater(() -> {
                         try {
                             initializeDice();
+                            initializeRoundTrack();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -351,6 +360,8 @@ public class GameController implements Consumer<Game> {
             player.setDiceBag(diceBag);
             player.addFavorTokens(this.favorTokenRepository.getPlayerFavorTokens(this.game.getId(), player.getId()));
         }
+
+        this.game.setRoundTrack(roundTrackRepository.getRoundTrack(game.getId()));
     }
 
     private void initializeDice() throws IOException {
@@ -365,6 +376,17 @@ public class GameController implements Consumer<Game> {
                 loader.setController(new DieController(die, this));
             }
             this.diceBox.getChildren().add(loader.load());
+        }
+    }
+
+    private void initializeRoundTrack() throws IOException {
+        var roundTrack = new TreeMap<>(this.game.getRoundTrack().getTrack());
+
+        this.roundTrackBox.getChildren().clear();
+        for (var track : roundTrack.entrySet()) {
+            var loader = new FXMLLoader(getClass().getResource("/views/game/roundTrack.fxml"));
+            loader.setController(new RoundTrackController(track.getKey(), track.getValue()));
+            this.roundTrackBox.getChildren().add(loader.load());
         }
     }
 

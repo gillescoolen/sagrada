@@ -10,24 +10,15 @@
       prefWidth="1400" prefHeight="720">
 
     <VBox styleClass="main-vbox" HBox.hgrow="ALWAYS">
-        <HBox alignment="CENTER" VBox.vgrow="ALWAYS" styleClass="dice-hbox">
-            <fx:include source="game/roundTrack.fxml"/>
-            <fx:include source="game/roundTrack.fxml"/>
-            <fx:include source="game/roundTrack.fxml"/>
-            <fx:include source="game/roundTrack.fxml"/>
-            <fx:include source="game/roundTrack.fxml"/>
-            <fx:include source="game/roundTrack.fxml"/>
-            <fx:include source="game/roundTrack.fxml"/>
-            <fx:include source="game/roundTrack.fxml"/>
-            <fx:include source="game/roundTrack.fxml"/>
-            <fx:include source="game/roundTrack.fxml"/>
-        </HBox>
+        <HBox fx:id="roundTrackBox" alignment="CENTER" VBox.vgrow="ALWAYS" styleClass="dice-hbox"/>
         <HBox fx:id="diceBox" alignment="CENTER" VBox.vgrow="ALWAYS" styleClass="dice-hbox"/>
         <HBox styleClass="wpc-hbox" alignment="BOTTOM_RIGHT">
             <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
                 <VBox fx:id="chatWrapper"/>
                 <HBox styleClass="control-buttons" spacing="15">
-                    <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150">BEURT OVERSLAAN</Button>
+                    <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150">BEURT
+                        OVERSLAAN
+                    </Button>
                     <Button fx:id="btnRollDice" disable="true" styleClass="btn-controls" prefWidth="150">ROLLEN</Button>
                 </HBox>
             </VBox>
