@@ -27,7 +27,12 @@ public final class PlayerRepository extends Repository<Player> {
             return false;
         }
 
-        return resultSet.getInt("amountOfChosenCards") == game.getPlayers().size();
+        boolean x = resultSet.getInt("amountOfChosenCards") == game.getPlayers().size();
+
+        resultSet.close();
+        playerPreparedStatement.close();
+
+        return x;
     }
 
     public List<Player> prepareAllGamePlayers(Game game) throws SQLException {
@@ -60,6 +65,7 @@ public final class PlayerRepository extends Repository<Player> {
             playerUpdatePreparedStatement.setInt(6, playerId);
 
             playerUpdatePreparedStatement.executeUpdate();
+            playerUpdatePreparedStatement.close();
 
             PreparedStatement playerFrameRepository = this.connection.getConnection().prepareStatement(
                     "INSERT INTO playerframefield (player_idplayer, position_x, position_y, idgame) VALUES(?, ?, ?, ?);"
@@ -77,6 +83,7 @@ public final class PlayerRepository extends Repository<Player> {
             }
 
             playerFrameRepository.executeBatch();
+            playerFrameRepository.close();
 
             for (int insertAmount = 0; insertAmount < 4; ++insertAmount) {
                 var randomPatternCard = patternCards.get(random.nextInt(patternCards.size()));
@@ -84,7 +91,6 @@ public final class PlayerRepository extends Repository<Player> {
                 patternCards.remove(randomPatternCard);
             }
 
-            playerUpdatePreparedStatement.close();
             players.add(this.createPlayer(playerResultSet));
             ++sequenceNumber;
         }
@@ -294,11 +300,7 @@ public final class PlayerRepository extends Repository<Player> {
         int seqnr = resultSet.getInt("seqnr");
         player.setSequenceNumber(seqnr == 0 ? null : seqnr);
 
-        for (Color color : Color.values()) {
-            if (color.getDutchColorName().equals(resultSet.getString("private_objectivecard_color"))) {
-                player.setPrivateObjectiveCard(new PrivateObjectiveCard(color));
-            }
-        }
+        player.setPrivateObjectiveCard(new PrivateObjectiveCard(Color.fromString(resultSet.getString("private_objectivecard_color"))));
 
         player.setCurrentPlayer(resultSet.getBoolean("isCurrentPlayer"));
 
@@ -350,8 +352,8 @@ public final class PlayerRepository extends Repository<Player> {
             newPlayers.add(p);
         }
 
-        playerStatement.close();
         resultSet.close();
+        playerStatement.close();
 
         return newPlayers;
     }
@@ -359,7 +361,6 @@ public final class PlayerRepository extends Repository<Player> {
     public void nextPlayerTurn(Player player, Game game) throws SQLException {
         // Get the expected next sequence number.
         var nextSequence = player.getNextSequenceNumber(game.getPlayers().size(), player);
-
 
         // Update current player sequence number and set them to non current player.
         PreparedStatement statement = this.connection.getConnection()
@@ -370,7 +371,6 @@ public final class PlayerRepository extends Repository<Player> {
         statement.setInt(3, player.getId());
 
         statement.executeUpdate();
-        statement.close();
 
         // Get new player data from db
         var players = this.getPlayersByGame(game);
@@ -381,6 +381,7 @@ public final class PlayerRepository extends Repository<Player> {
         gameRepository.updateGamePlayer(expectedNextPlayer, game);
 
         this.update(expectedNextPlayer);
+        statement.close();
     }
 
     private Player setTurn(int nextSequence, List<Player> players) throws SQLException {

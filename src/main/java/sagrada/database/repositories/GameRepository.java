@@ -61,6 +61,9 @@ public final class GameRepository extends Repository<Game> {
             invitedGames.add(this.getGame(resultSet));
         }
 
+        preparedStatement.close();
+        resultSet.close();
+
         return invitedGames;
     }
 
