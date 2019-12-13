@@ -161,6 +161,8 @@ public class GameController implements Consumer<Game> {
 
                     var playerOne = game.getPlayers().stream().filter(filteredPlayer -> filteredPlayer.getId() == player.getId()).findFirst().orElse(null);
 
+                    initializeDieStuffAndFavorTokens(game.getPlayers());
+
                     Platform.runLater(() -> {
                         try {
                             initializeDice();
