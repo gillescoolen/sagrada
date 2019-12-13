@@ -370,8 +370,7 @@ public final class PlayerRepository extends Repository<Player> {
         // Get the expected next sequence number.
         var nextSequence = player.getNextSequenceNumber(game.getPlayers().size(), player);
 
-        // Get new player data from db
-        var players = this.getPlayersByGame(game);
+
 
         // Update current player sequence number and set them to non current player.
         PreparedStatement statement = this.connection.getConnection()
@@ -384,6 +383,8 @@ public final class PlayerRepository extends Repository<Player> {
         statement.executeUpdate();
         statement.close();
 
+        // Get new player data from db
+        var players = this.getPlayersByGame(game);
         // Get the next expected player based on calculated sequence number.
         var expectedNextPlayerId = setTurn(nextSequence, players);
 
