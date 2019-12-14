@@ -96,6 +96,6 @@ public class PatternCard extends ObservableCard<PatternCard> {
     }
 
     public int countEmptySquares() {
-        return ((int) this.squares.stream().filter(Objects::isNull).count());
+        return ((int) this.squares.stream().filter(square -> square.getDie() == null).count());
     }
 }

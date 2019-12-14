@@ -217,7 +217,12 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
             if (!this.showPatternCard || !isOwnCard) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
 
-            button.setDisable(this.playerFrame == null || !canBeClicked || this.isEndOfGame);
+            if (this.playerFrame == null || !canBeClicked || this.isEndOfGame) {
+                button.setDisable(true);
+            } else {
+                var emptyCount = this.player.getPlayerFrame().countEmptySquares();
+                button.setDisable(emptyCount == 20 && (square.getPosition().getX() != 1 && square.getPosition().getX() != 5 && square.getPosition().getY() != 1 && square.getPosition().getY() != 4));
+            }
 
             if (selectedDie != null) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
 
