@@ -349,7 +349,7 @@ public final class PlayerRepository extends Repository<Player> {
 
     public List<Player> getPlayersByGame(Game game) throws SQLException {
         var newPlayers = new ArrayList<Player>();
-        PreparedStatement playerStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player where spel_idspel = ?");
+        PreparedStatement playerStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ?");
         playerStatement.setInt(1, game.getId());
 
         ResultSet resultSet = playerStatement.executeQuery();
