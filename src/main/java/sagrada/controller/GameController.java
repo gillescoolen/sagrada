@@ -58,6 +58,7 @@ public class GameController implements Consumer<Game> {
 
     private boolean gameReady = false;
     private Die selectedDie;
+    private boolean placedDie = false;
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
         game.observe(this);
@@ -426,5 +427,13 @@ public class GameController implements Consumer<Game> {
 
     public Die getSelectedDie() {
         return this.selectedDie;
+    }
+
+    public boolean isPlacedDie() {
+        return placedDie;
+    }
+
+    public void setPlacedDie(boolean placedDie) {
+        this.placedDie = placedDie;
     }
 }
