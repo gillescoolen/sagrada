@@ -27,7 +27,12 @@ public final class PlayerRepository extends Repository<Player> {
             return false;
         }
 
-        return resultSet.getInt("amountOfChosenCards") == game.getPlayers().size();
+        boolean x = resultSet.getInt("amountOfChosenCards") == game.getPlayers().size();
+
+        resultSet.close();
+        playerPreparedStatement.close();
+
+        return x;
     }
 
     public List<Player> prepareAllGamePlayers(Game game) throws SQLException {
@@ -60,6 +65,7 @@ public final class PlayerRepository extends Repository<Player> {
             playerUpdatePreparedStatement.setInt(6, playerId);
 
             playerUpdatePreparedStatement.executeUpdate();
+            playerUpdatePreparedStatement.close();
 
             PreparedStatement playerFrameRepository = this.connection.getConnection().prepareStatement(
                     "INSERT INTO playerframefield (player_idplayer, position_x, position_y, idgame) VALUES(?, ?, ?, ?);"
@@ -77,6 +83,7 @@ public final class PlayerRepository extends Repository<Player> {
             }
 
             playerFrameRepository.executeBatch();
+            playerFrameRepository.close();
 
             for (int insertAmount = 0; insertAmount < 4; ++insertAmount) {
                 var randomPatternCard = patternCards.get(random.nextInt(patternCards.size()));
@@ -84,7 +91,6 @@ public final class PlayerRepository extends Repository<Player> {
                 patternCards.remove(randomPatternCard);
             }
 
-            playerUpdatePreparedStatement.close();
             players.add(this.createPlayer(playerResultSet));
             ++sequenceNumber;
         }
@@ -294,11 +300,7 @@ public final class PlayerRepository extends Repository<Player> {
         int seqnr = resultSet.getInt("seqnr");
         player.setSequenceNumber(seqnr == 0 ? null : seqnr);
 
-        for (Color color : Color.values()) {
-            if (color.getDutchColorName().equals(resultSet.getString("private_objectivecard_color"))) {
-                player.setPrivateObjectiveCard(new PrivateObjectiveCard(color));
-            }
-        }
+        player.setPrivateObjectiveCard(new PrivateObjectiveCard(Color.fromString(resultSet.getString("private_objectivecard_color"))));
 
         player.setCurrentPlayer(resultSet.getBoolean("isCurrentPlayer"));
 
@@ -349,8 +351,10 @@ public final class PlayerRepository extends Repository<Player> {
 
     public List<Player> getPlayersByGame(Game game) throws SQLException {
         var newPlayers = new ArrayList<Player>();
-        PreparedStatement playerStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ?");
+        PreparedStatement playerStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN(?,?)");
         playerStatement.setInt(1, game.getId());
+        playerStatement.setString(2, PlayStatus.CHALLENGER.getPlayState());
+        playerStatement.setString(3, PlayStatus.ACCEPTED.getPlayState());
 
         ResultSet resultSet = playerStatement.executeQuery();
 
@@ -360,8 +364,8 @@ public final class PlayerRepository extends Repository<Player> {
             newPlayers.add(p);
         }
 
-        playerStatement.close();
         resultSet.close();
+        playerStatement.close();
 
         return newPlayers;
     }
@@ -379,7 +383,6 @@ public final class PlayerRepository extends Repository<Player> {
         statement.setInt(3, player.getId());
 
         statement.executeUpdate();
-        statement.close();
 
         // Get new player data from db
         var players = this.getPlayersByGame(game);
@@ -408,10 +411,12 @@ public final class PlayerRepository extends Repository<Player> {
     }
 
     public Player getPlayerByGameAndUsername(Game game, String username) throws SQLException {
-        PreparedStatement playerIdStatement = this.connection.getConnection().prepareStatement("SELECT idplayer FROM player WHERE spel_idspel = ? AND username = ?;");
+        PreparedStatement playerIdStatement = this.connection.getConnection().prepareStatement("SELECT idplayer FROM player WHERE spel_idspel = ? AND username = ? AND playstatus_playstatus IN (?,?);");
 
         playerIdStatement.setInt(1, game.getId());
         playerIdStatement.setString(2, username);
+        playerIdStatement.setString(3, PlayStatus.ACCEPTED.getPlayState());
+        playerIdStatement.setString(4, PlayStatus.CHALLENGER.getPlayState());
 
         ResultSet playerIdResultSet = playerIdStatement.executeQuery();
         playerIdResultSet.next();

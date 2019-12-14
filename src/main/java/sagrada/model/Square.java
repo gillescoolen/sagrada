@@ -43,7 +43,14 @@ public class Square {
 
     @Override
     public String toString() {
-        // TODO: find out what happens when die is null.
-        return "[ " + this.position.toString() + " ]: " + this.die.toString();
+        if (this.die == null && this.position == null) {
+            return "[ ]: X: 0 Y: 0";
+        } else if (this.position != null && this.die == null) {
+            return "[ " + this.position.toString() + " ]: X: 0 Y: 0";
+        } else if (this.position != null) {
+            return "[ " + this.position.toString() + " ]: " + this.die.toString();
+        } else {
+            return "";
+        }
     }
 }

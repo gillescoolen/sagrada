@@ -32,6 +32,9 @@ public final class ToolCardRepository extends Repository<ToolCard> {
             ));
         }
 
+        preparedStatement.close();
+        resultSet.close();
+
         return toolCards;
     }
 
@@ -130,7 +133,13 @@ public final class ToolCardRepository extends Repository<ToolCard> {
                     cardResultSet.getString("description"),
                     this.connection
             ));
+
+            cardPreparedStatement.close();
+            cardResultSet.close();
         }
+
+        preparedStatement.close();
+        resultSet.close();
 
         return toolCards;
     }

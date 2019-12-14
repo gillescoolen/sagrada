@@ -112,23 +112,6 @@ public final class FavorTokenRepository extends Repository<FavorToken> {
         return favorTokens;
     }
 
-    public boolean checkIfFavorTokensAreSet(Game game, Player player) throws SQLException {
-        PreparedStatement statement = this.connection.getConnection()
-                .prepareStatement("SELECT * FROM gamefavortoken WHERE idgame = ? AND idplayer = ? LIMIT 1");
-
-        statement.setInt(1, game.getId());
-        statement.setInt(2, player.getId());
-
-        ResultSet resultSet = statement.executeQuery();
-
-        boolean hasTokens = resultSet.next();
-
-        statement.close();
-        resultSet.close();
-
-        return hasTokens;
-    }
-
     public List<FavorToken> getPlayerFavorTokens(int gameId, int playerId) throws SQLException {
         ToolCardRepository toolCardRepository = new ToolCardRepository(this.connection);
 

@@ -126,8 +126,18 @@ public class Game extends Observable<Game> {
         return this.draftPool;
     }
 
-    public void removeDieFromDraftpool(Die die) {
+    public void removeDieFromDraftPool(Die die) {
         this.draftPool.removeDice(die);
+        this.update(this);
+    }
+
+    public void addDiceInDraftPool(List<Die> dieList) {
+        this.draftPool.addAllDice(dieList);
+        this.update(this);
+    }
+
+    public void throwDice() {
+        this.draftPool.throwDice();
         this.update(this);
     }
 
