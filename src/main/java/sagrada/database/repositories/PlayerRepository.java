@@ -410,6 +410,22 @@ public final class PlayerRepository extends Repository<Player> {
         return expectedNextPlayer.getId();
     }
 
+    public boolean getIfCurrent(int id) throws SQLException {
+        // Set the expected player to current player.
+        PreparedStatement statement = this.connection.getConnection()
+                .prepareStatement("SELECT isCurrentPlayer from player where idplayer = ?;");
+
+        statement.setInt(1, id);
+
+        var result = statement.executeQuery();
+        result.next();
+        var isCurrent = result.getBoolean(1);
+        result.close();
+        statement.close();
+
+        return isCurrent;
+    }
+
     public Player getPlayerByGameAndUsername(Game game, String username) throws SQLException {
         PreparedStatement playerIdStatement = this.connection.getConnection().prepareStatement("SELECT idplayer FROM player WHERE spel_idspel = ? AND username = ? AND playstatus_playstatus IN (?,?);");
 
