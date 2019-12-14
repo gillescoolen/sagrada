@@ -1,5 +1,6 @@
 package sagrada.model;
 
+import sagrada.database.repositories.PlayerFrameRepository;
 import sagrada.database.repositories.PlayerRepository;
 
 import java.sql.SQLException;
@@ -149,6 +150,24 @@ public class Player {
 
     public void setInvalidFrameField(boolean invalidFrameField) {
         this.invalidFrameField = invalidFrameField;
+    }
+
+    public void invalidateField(PlayerFrameRepository repository) throws SQLException {
+        repository.invalidateCard(this);
+        this.setInvalidFrameField(true);
+    }
+
+    public void setCardAsValid(PlayerFrameRepository repository) throws SQLException {
+        repository.setCardValid(this);
+        this.setInvalidFrameField(false);
+    }
+
+    public boolean checkIfCardIsValid(PlayerFrameRepository repository) throws SQLException {
+        boolean result = repository.checkIfCardIsValid(this);
+
+        this.setInvalidFrameField(result);
+
+        return result;
     }
 
     public void skipTurn(PlayerRepository playerRepository, Game game) throws SQLException {
