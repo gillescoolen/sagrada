@@ -145,6 +145,9 @@ public final class DieRepository extends Repository<Die> {
             placed = true;
         }
 
+        preparedStatement.close();
+        resultSet.close();
+
         return placed;
     }
 

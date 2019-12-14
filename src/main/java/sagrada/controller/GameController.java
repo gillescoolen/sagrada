@@ -118,7 +118,7 @@ public class GameController implements Consumer<Game> {
     protected void initialize() {
         this.btnSkipTurn.setOnMouseClicked(e -> {
             this.disableAllButtons();
-
+            placedDie = false;
             final Task<Void> task = new Task<>() {
                 @Override
                 protected Void call() {
@@ -165,7 +165,7 @@ public class GameController implements Consumer<Game> {
                     this.startMainGameTimer();
                     this.setCurrentTokenAmount();
                     this.initializeChat();
-                    this.initializeRoundTrack();
+                    //this.initializeRoundTrack();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -179,11 +179,6 @@ public class GameController implements Consumer<Game> {
         }
 
         try {
-            var dieRepository = new DieRepository(connection);
-            var round = gameRepository.getCurrentRound(game.getId());
-
-            placedDie = dieRepository.placedDieThisRound(game.getId(), player.getId(), round);
-
             initializeDieStuffAndFavorTokens(game.getPlayers());
             Platform.runLater(() -> {
                 try {
@@ -227,11 +222,11 @@ public class GameController implements Consumer<Game> {
         }
 
         setCurrentTokenAmount();
-        try {
-            initializeRoundTrack();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            initializeRoundTrack();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     };
 
     Runnable playerFrame = () -> {
