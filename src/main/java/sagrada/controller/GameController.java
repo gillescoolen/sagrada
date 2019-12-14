@@ -183,6 +183,7 @@ public class GameController implements Consumer<Game> {
                     }
 
                     var playerFrameRepository = new PlayerFrameRepository(connection);
+                    var dieRepository = new DieRepository(connection);
 
                     for (var player : game.getPlayers()) {
                         playerFrameRepository.getPlayerFrame(player);
@@ -191,6 +192,9 @@ public class GameController implements Consumer<Game> {
                     player.setCurrentPlayer(player.getCurrent(playerRepository));
 
                     initializeDieStuffAndFavorTokens(game.getPlayers());
+
+                    var round = gameRepository.getCurrentRound(game.getId());
+                    placedDie = dieRepository.placedDieThisRound(game.getId(), player.getId(), round);
 
                     Platform.runLater(() -> {
                         setCurrentTokenAmount();
@@ -215,7 +219,7 @@ public class GameController implements Consumer<Game> {
                     e.printStackTrace();
                 }
             }
-        }, 0, 500);
+        }, 0, 1000);
     }
 
     /**

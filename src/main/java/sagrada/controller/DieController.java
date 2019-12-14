@@ -18,7 +18,7 @@ public class DieController {
 
     @FXML
     protected void initialize() {
-        this.singleDie.setDisable(this.gameController.isPlacedDie());
+        this.singleDie.setDisable(this.gameController.isPlacedDie() || !this.gameController.getPlayer().isCurrentPlayer());
         this.singleDie.setText(this.die.getValue().toString());
         this.singleDie.setStyle("-fx-background-color: " + this.die.getColor().getColor());
 
