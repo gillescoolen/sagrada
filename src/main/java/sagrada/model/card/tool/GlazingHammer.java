@@ -27,6 +27,6 @@ public final class GlazingHammer extends ToolCard {
         List<Die> dice = draftPool.getDice();
         game.updateDraftPool(dice.get(0), dice.get(0));
 
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false);
+        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
     }
 }

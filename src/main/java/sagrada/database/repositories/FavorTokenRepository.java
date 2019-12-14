@@ -2,7 +2,6 @@ package sagrada.database.repositories;
 
 import sagrada.database.DatabaseConnection;
 import sagrada.model.FavorToken;
-import sagrada.model.Game;
 import sagrada.model.Player;
 
 import java.sql.PreparedStatement;
@@ -73,9 +72,12 @@ public final class FavorTokenRepository extends Repository<FavorToken> {
         preparedStatement.close();
     }
 
-    public void updateFavorToken(FavorToken favorToken, int gameToolCardId, int round, boolean inFirstTurn) throws SQLException {
+    public void updateFavorToken(FavorToken favorToken, int toolCardId, int round, boolean inFirstTurn, int gameId) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection()
                 .prepareStatement("UPDATE gamefavortoken SET gametoolcard = ?, round = ?, inFirstTurn = ? WHERE idfavortoken = ?;");
+
+        ToolCardRepository repository = new ToolCardRepository(this.connection);
+        var gameToolCardId = repository.getGameToolCardIdByToolCardId(toolCardId, gameId);
 
         preparedStatement.setInt(1, gameToolCardId);
         preparedStatement.setInt(2, round);

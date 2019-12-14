@@ -207,6 +207,26 @@ public final class ToolCardRepository extends Repository<ToolCard> {
         return this.findById(id);
     }
 
+    public int getGameToolCardIdByToolCardId(int toolCardId, int gameId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection()
+                .prepareStatement("SELECT gametoolcard FROM gametoolcard WHERE idtoolcard = ? AND idgame = ?;");
+        preparedStatement.setInt(1, toolCardId);
+        preparedStatement.setInt(2, gameId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (!resultSet.next()) {
+            return 0;
+        }
+
+        final int id = resultSet.getInt("gametoolcard");
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return id;
+    }
+
     public void addAffectedToolCard(ToolCard toolCard, List<Die> dice, int gameId) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(
                 "INSERT INTO gametoolcard_affected_gamedie VALUES (?,?,?,?)"
