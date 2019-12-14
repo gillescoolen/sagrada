@@ -18,6 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class WindowPatternCardController implements Consumer<PatternCard> {
@@ -49,27 +53,26 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     }
 
     public WindowPatternCardController(DatabaseConnection connection, Player player, GameController gameController) {
-        var timer = new Timer();
         this.connection = connection;
 
         PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(connection);
+
+        Runnable playerFrameTimer = () -> {
+            try {
+                playerFrameRepository.getPlayerFrame(player);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        };
+
+        ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+        ScheduledFuture<?> scheduledFuture2 = ses.scheduleAtFixedRate(playerFrameTimer, 0, 750, TimeUnit.MILLISECONDS);
 
         this.patternCard = player.getPatternCard();
         this.playerFrame = player.getPlayerFrame();
         this.windowField = this.playerFrame;
         this.player = player;
         this.gameController = gameController;
-
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    playerFrameRepository.getPlayerFrame(player);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 0, 750);
 
         this.playerFrame.observe(this);
     }
