@@ -55,7 +55,7 @@ public class GameController implements Consumer<Game> {
     private Player player;
     private DatabaseConnection connection = null;
     private PlayerRepository playerRepository = null;
-    private final GameRepository gameRepository;
+    private GameRepository gameRepository = null;
     private final DieRepository dieRepository;
     private final FavorTokenRepository favorTokenRepository;
     private final RoundTrackRepository roundTrackRepository;
@@ -178,6 +178,11 @@ public class GameController implements Consumer<Game> {
         }
 
         try {
+            var dieRepository = new DieRepository(connection);
+            var round = gameRepository.getCurrentRound(game.getId());
+
+            placedDie = dieRepository.placedDieThisRound(game.getId(), player.getId(), round);
+
             initializeDieStuffAndFavorTokens(game.getPlayers());
             Platform.runLater(() -> {
                 try {
