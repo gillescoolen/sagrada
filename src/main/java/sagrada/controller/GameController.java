@@ -212,7 +212,7 @@ public class GameController implements Consumer<Game> {
                     e.printStackTrace();
                 }
             }
-        }, 0, 1000);
+        }, 0, 500);
     }
 
     /**
