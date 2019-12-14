@@ -3,18 +3,16 @@ package sagrada.model;
 import sagrada.database.repositories.PlayerRepository;
 import sagrada.util.Observable;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class Game extends Observable<Game> {
     private int id;
     private Player playerTurn;
     private LocalDateTime createdOn;
-    private RoundTrack roundTrack;
-    private DraftPool draftPool;
+    private final RoundTrack roundTrack;
+    private final DraftPool draftPool;
     private final List<Player> players = new ArrayList<>(2);
 
     private final List<ToolCard> toolCards = new ArrayList<>(3);
@@ -24,6 +22,7 @@ public class Game extends Observable<Game> {
 
     public Game() {
         this.draftPool = new DraftPool();
+        this.roundTrack = new RoundTrack();
     }
 
     public int getId() {
@@ -153,7 +152,8 @@ public class Game extends Observable<Game> {
     }
 
     public void setRoundTrack(RoundTrack roundTrack) {
-        this.roundTrack = roundTrack;
+        this.roundTrack.setCurrent(roundTrack.getCurrent());
+        this.roundTrack.setTrack(roundTrack.getTrack());
         this.update(this);
     }
 

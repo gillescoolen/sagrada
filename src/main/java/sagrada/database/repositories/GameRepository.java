@@ -138,6 +138,24 @@ public final class GameRepository extends Repository<Game> {
         return round;
     }
 
+    public int getNextRound(int gameId) throws SQLException {
+        int round = 0;
+
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT COALESCE(MAX(round), 0) + 1 AS round FROM gamedie WHERE idgame = ?;");
+        preparedStatement.setInt(1, gameId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            round = resultSet.getInt("round");
+        }
+
+        resultSet.close();
+        preparedStatement.close();
+
+        return round;
+    }
+
     @Override
     public Game findById(int id) throws SQLException {
         Game game = new Game();
