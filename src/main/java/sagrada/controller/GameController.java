@@ -225,16 +225,10 @@ public class GameController implements Consumer<Game> {
         }
     };
 
-                    Platform.runLater(() -> {
-                        setCurrentTokenAmount();
-                        try {
-                            drawDice();
-                            initializeRoundTrack();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        if (player != null && player.isCurrentPlayer()) {
-                            btnSkipTurn.setDisable(false);
+    Runnable playerFrame = () -> {
+        if (!gameReady) {
+            return;
+        }
 
         var playerFrameRepository = new PlayerFrameRepository(connection);
 
