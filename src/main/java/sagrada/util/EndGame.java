@@ -5,8 +5,6 @@ import sagrada.model.Game;
 import sagrada.model.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class EndGame {
     private final Game game;
@@ -62,28 +60,34 @@ public class EndGame {
 
         if (!tiePlayerList.isEmpty()) {
             var winner = getWinnerWhenTie(tiePlayerList);
-            // TODO: add 1 point for the winner
+            winner.setScore(winner.getScore() + 1);
         }
 
         this.game.addPlayers(updatedPlayerList);
     }
 
-    private Player getWinnerWhenTie(ArrayList<Player> tiePlayerList) {
-        var tiePrivatePoints = new ArrayList<Player>();
+    private Player winningPlayer(ArrayList<Player> playerList, String type) {
+        var tiePlayerList = new ArrayList<Player>();
+
         Player bestScoringPlayer = null;
         var highestScore = 0;
-        for (var player : tiePlayerList) {
-            var points = player.getPrivateObjectiveCard().calculatePoints(player.getPlayerFrame());
+        for (var player : playerList) {
+            var points = 0;
+            if (type.equals("poc_points")) {
+                points = player.getPrivateObjectiveCard().calculatePoints(player.getPlayerFrame());
+            } else if (type.equals("ft_points")) {
+                points = player.getFavorTokens().size();
+            }
 
             if (bestScoringPlayer == null) {
                 bestScoringPlayer = player;
                 highestScore = points;
             } else {
                 if (highestScore == points) {
-                    if (!tiePrivatePoints.contains(bestScoringPlayer)) {
-                        tiePrivatePoints.add(bestScoringPlayer);
+                    if (!tiePlayerList.contains(bestScoringPlayer)) {
+                        tiePlayerList.add(bestScoringPlayer);
                     }
-                    tiePrivatePoints.add(player);
+                    tiePlayerList.add(player);
                 } else if (highestScore < points) {
                     bestScoringPlayer = player;
                     highestScore = points;
@@ -91,36 +95,30 @@ public class EndGame {
             }
         }
 
-        if (tiePrivatePoints.isEmpty()) {
+        if (tiePlayerList.isEmpty()) {
             return bestScoringPlayer;
         }
 
-        var tieFavorPoints = new ArrayList<Player>();
-        bestScoringPlayer = null;
-        highestScore = 0;
-        for (var player : tiePlayerList) {
-            var points = player.getFavorTokens().size();
+        return null;
+    }
 
-            if (bestScoringPlayer == null) {
-                bestScoringPlayer = player;
-                highestScore = points;
-            } else {
-                if (highestScore == points) {
-                    if (!tieFavorPoints.contains(bestScoringPlayer)) {
-                        tieFavorPoints.add(bestScoringPlayer);
-                    }
-                    tieFavorPoints.add(player);
-                } else if (highestScore < points) {
-                    bestScoringPlayer = player;
-                    highestScore = points;
-                }
+    private Player getWinnerWhenTie(ArrayList<Player> tiePlayerList) {
+        Player winner = this.winningPlayer(tiePlayerList, "poc_points");
+        if (winner != null) {
+            return winner;
+        }
+
+        winner = this.winningPlayer(tiePlayerList, "ft_points");
+        if (winner != null) {
+            return winner;
+        }
+
+        for (var player : tiePlayerList) {
+            if (winner == null || winner.getSequenceNumber() < player.getSequenceNumber()) {
+                winner = player;
             }
         }
 
-        if (tieFavorPoints.isEmpty()) {
-            return bestScoringPlayer;
-        }
-
-        // TODO: decide winner by reverse player order
+        return winner;
     }
 }
