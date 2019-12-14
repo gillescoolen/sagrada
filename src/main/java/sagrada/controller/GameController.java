@@ -20,6 +20,10 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class GameController implements Consumer<Game> {
@@ -49,8 +53,8 @@ public class GameController implements Consumer<Game> {
     private Game game;
     private StartGame startGameUtil;
     private Player player;
-    private final DatabaseConnection connection;
-    private final PlayerRepository playerRepository;
+    private DatabaseConnection connection = null;
+    private PlayerRepository playerRepository = null;
     private final GameRepository gameRepository;
     private final DieRepository dieRepository;
     private final FavorTokenRepository favorTokenRepository;
@@ -165,54 +169,89 @@ public class GameController implements Consumer<Game> {
         }
     }
 
+    Runnable dieStuff = () -> {
+        if (!gameReady) {
+            return;
+        }
+
+        try {
+            initializeDieStuffAndFavorTokens(game.getPlayers());
+            Platform.runLater(() -> {
+                try {
+                    drawDice();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    };
+
+    Runnable other = () -> {
+        try {
+            if (!gameReady) {
+                return;
+            }
+            player.setCurrentPlayer(player.getCurrent(playerRepository));
+
+            Platform.runLater(() -> {
+                if (player != null && player.isCurrentPlayer()) {
+                    btnSkipTurn.setDisable(false);
+
+                    if (game.getDraftPool().getDice().isEmpty()) {
+                        btnRollDice.setDisable(false);
+                    }
+                } else {
+                    btnSkipTurn.setDisable(true);
+                    btnRollDice.setDisable(true);
+                }
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    };
+
+    Runnable roundTrack = () -> {
+        if (!gameReady) {
+            return;
+        }
+
+        setCurrentTokenAmount();
+        try {
+            initializeRoundTrack();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    };
+
+    Runnable playerFrame = () -> {
+        if (!gameReady) {
+            return;
+        }
+
+        var playerFrameRepository = new PlayerFrameRepository(connection);
+
+        for (var player : game.getPlayers()) {
+            try {
+                playerFrameRepository.getPlayerFrame(player);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+
     /**
      * This is the main event loop for a game.
      */
     private void startMainGameTimer() {
-        Timer mainGameTimer = new Timer();
+        ScheduledExecutorService ses = Executors.newScheduledThreadPool(4);
 
-        mainGameTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    if (!gameReady) {
-                        return;
-                    }
-
-                    var playerFrameRepository = new PlayerFrameRepository(connection);
-
-                    for (var player : game.getPlayers()) {
-                        playerFrameRepository.getPlayerFrame(player);
-                    }
-
-                    player.setCurrentPlayer(player.getCurrent(playerRepository));
-
-                    initializeDieStuffAndFavorTokens(game.getPlayers());
-
-                    Platform.runLater(() -> {
-                        setCurrentTokenAmount();
-                        try {
-                            initializeDice();
-                            initializeRoundTrack();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        if (player != null && player.isCurrentPlayer()) {
-                            btnSkipTurn.setDisable(false);
-
-                            if (game.getDraftPool().getDice().isEmpty()) {
-                                btnRollDice.setDisable(false);
-                            }
-                        } else {
-                            btnSkipTurn.setDisable(true);
-                            btnRollDice.setDisable(true);
-                        }
-                    });
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 0, 500);
+        ScheduledFuture<?> scheduledFuture = ses.scheduleAtFixedRate(dieStuff, 0, 1, TimeUnit.SECONDS);
+        ScheduledFuture<?> scheduledFuture1 = ses.scheduleAtFixedRate(other, 0, 1, TimeUnit.SECONDS);
+        ScheduledFuture<?> scheduledFuture2 = ses.scheduleAtFixedRate(playerFrame, 0, 1, TimeUnit.SECONDS);
+        ScheduledFuture<?> scheduledFuture3 = ses.scheduleAtFixedRate(roundTrack, 2, 1, TimeUnit.SECONDS);
     }
 
     /**
