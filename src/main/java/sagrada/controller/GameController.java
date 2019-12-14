@@ -123,6 +123,11 @@ public class GameController implements Consumer<Game> {
                             for (var die : unusedDice) {
                                 game.removeDieFromDraftPool(die);
                             }
+
+                            if (round >= 10) {
+                                // TODO: Go to end screen
+                                System.out.println(":D");
+                            }
                         } catch (SQLException ex) {
                             ex.printStackTrace();
                         }
