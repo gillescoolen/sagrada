@@ -408,8 +408,6 @@ public class GameController implements Consumer<Game> {
             player.setDiceBag(diceBag);
             player.addFavorTokens(this.favorTokenRepository.getPlayerFavorTokens(this.game.getId(), player.getId()));
         }
-
-        this.game.setRoundTrack(roundTrackRepository.getRoundTrack(game.getId()));
     }
 
     private void drawDice() throws IOException {
@@ -428,6 +426,12 @@ public class GameController implements Consumer<Game> {
     }
 
     private void initializeRoundTrack() throws IOException {
+        try {
+            this.game.setRoundTrack(roundTrackRepository.getRoundTrack(game.getId()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         var loader = new FXMLLoader(getClass().getResource("/views/game/roundTrack.fxml"));
         loader.setController(new RoundTrackController(this.game.getRoundTrack()));
         this.mainBox.getChildren().add(0, loader.load());

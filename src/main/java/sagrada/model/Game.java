@@ -1,6 +1,5 @@
 package sagrada.model;
 
-import sagrada.database.repositories.PlayerRepository;
 import sagrada.util.Observable;
 
 import java.time.LocalDateTime;
