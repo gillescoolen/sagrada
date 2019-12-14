@@ -131,26 +131,6 @@ public final class DieRepository extends Repository<Die> {
         return die;
     }
 
-    public boolean placedDieThisRound(int gameId, int playerId, int round) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM playerframefield p INNER JOIN gamedie g ON p.idgame = g.idgame AND p.dienumber = g.dienumber AND p.diecolor = g.diecolor WHERE p.idgame = ? AND p.player_idplayer = ? AND g.round = ?");
-        preparedStatement.setInt(1, gameId);
-        preparedStatement.setInt(2, playerId);
-        preparedStatement.setInt(3, round);
-
-        ResultSet resultSet = preparedStatement.executeQuery();
-
-        boolean placed = false;
-
-        if (resultSet.next()) {
-            placed = true;
-        }
-
-        preparedStatement.close();
-        resultSet.close();
-
-        return placed;
-    }
-
     @Override
     public void update(Die model) throws SQLException {
 
