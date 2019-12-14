@@ -37,6 +37,9 @@ public final class DieRepository extends Repository<Die> {
             unusedDice.add(die);
         }
 
+        preparedStatement.close();
+        resultSet.close();
+
         return unusedDice;
     }
 
@@ -59,6 +62,9 @@ public final class DieRepository extends Repository<Die> {
             }
             draftPoolDice.add(die);
         }
+
+        preparedStatement.close();
+        resultSet.close();
 
         return draftPoolDice;
     }
@@ -118,6 +124,9 @@ public final class DieRepository extends Repository<Die> {
 
         Die die = new Die(foundDieNumber, foundDieColor);
         die.setValue(value);
+
+        preparedStatement.close();
+        resultSet.close();
 
         return die;
     }

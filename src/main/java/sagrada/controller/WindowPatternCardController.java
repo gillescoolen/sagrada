@@ -69,7 +69,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
                     e.printStackTrace();
                 }
             }
-        }, 0, 1500);
+        }, 0, 750);
 
         this.playerFrame.observe(this);
     }
@@ -212,6 +212,8 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
             button.setText(square.getValue().toString());
 
+            if (!this.showPatternCard || !isOwnCard) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
+
             button.setDisable(this.playerFrame == null || !canBeClicked || this.isEndOfGame);
 
             if (selectedDie != null) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
@@ -256,8 +258,10 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     }
 
     private void placeDie(Square square, Die die) {
+        if (die == null || square.getDie() != null) return;
         this.playerFrame.placeDie(this.player, square, die, this.connection);
         this.gameController.setSelectedDie(null);
-        this.gameController.getGame().removeDieFromDraftpool(die);
+        this.gameController.getGame().removeDieFromDraftPool(die);
+        this.gameController.setPlacedDie(true);
     }
 }

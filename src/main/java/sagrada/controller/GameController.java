@@ -55,13 +55,14 @@ public class GameController implements Consumer<Game> {
     private Player player;
     private DatabaseConnection connection = null;
     private PlayerRepository playerRepository = null;
-    private final GameRepository gameRepository;
+    private GameRepository gameRepository = null;
     private final DieRepository dieRepository;
     private final FavorTokenRepository favorTokenRepository;
     private final RoundTrackRepository roundTrackRepository;
 
     private boolean gameReady = false;
     private Die selectedDie;
+    private boolean placedDie = false;
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
         game.observe(this);
@@ -98,6 +99,13 @@ public class GameController implements Consumer<Game> {
     @Override
     public void accept(Game game) {
         this.game = game;
+        Platform.runLater(() -> {
+            try {
+                this.drawDice();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private void disableAllButtons() {
@@ -110,7 +118,7 @@ public class GameController implements Consumer<Game> {
     protected void initialize() {
         this.btnSkipTurn.setOnMouseClicked(e -> {
             this.disableAllButtons();
-
+            placedDie = false;
             final Task<Void> task = new Task<>() {
                 @Override
                 protected Void call() {
@@ -124,7 +132,6 @@ public class GameController implements Consumer<Game> {
                     return null;
                 }
             };
-
             new Thread(task).start();
         });
 
@@ -132,16 +139,13 @@ public class GameController implements Consumer<Game> {
             btnRollDice.setDisable(true);
 
             try {
-                var draftPool = this.game.getDraftPool();
-                draftPool.removeAllDice();
-
                 var dice = this.player.grabFromDiceBag(this.game.getDiceCount());
 
-                draftPool.addAllDice(dice);
-                draftPool.throwDice();
+                this.game.addDiceInDraftPool(dice);
+                this.game.throwDice();
 
-                var round = this.gameRepository.getNextRound(this.game.getId());
-                this.dieRepository.addGameDice(this.game.getId(), round, draftPool.getDice());
+                var round = this.gameRepository.getCurrentRound(this.game.getId());
+                this.dieRepository.addGameDice(this.game.getId(), round, dice);
 
                 this.drawDice();
             } catch (Exception ex) {
@@ -201,6 +205,7 @@ public class GameController implements Consumer<Game> {
 
                     if (game.getDraftPool().getDice().isEmpty()) {
                         btnRollDice.setDisable(false);
+                        btnSkipTurn.setDisable(true);
                     }
                 } else {
                     btnSkipTurn.setDisable(true);
@@ -268,6 +273,8 @@ public class GameController implements Consumer<Game> {
                 try {
                     // Check if every player has chosen a pattern card.
                     var everyoneHasChosen = playerRepository.isPatternCardChosen(game);
+
+                    disableAllButtons();
 
                     if (!everyoneHasChosen) {
                         return;
@@ -391,7 +398,7 @@ public class GameController implements Consumer<Game> {
     private void initializeDieStuffAndFavorTokens(List<Player> players) throws SQLException {
         var draftedDice = this.dieRepository.getDraftPoolDice(this.game.getId(), this.gameRepository.getCurrentRound(this.game.getId()));
 
-        this.game.getDraftPool().addAllDice(draftedDice);
+        this.game.addDiceInDraftPool(draftedDice);
 
         var dice = this.dieRepository.getUnusedDice(this.game.getId());
 
@@ -401,8 +408,6 @@ public class GameController implements Consumer<Game> {
             player.setDiceBag(diceBag);
             player.addFavorTokens(this.favorTokenRepository.getPlayerFavorTokens(this.game.getId(), player.getId()));
         }
-
-        this.game.setRoundTrack(roundTrackRepository.getRoundTrack(game.getId()));
     }
 
     private void drawDice() throws IOException {
@@ -421,6 +426,12 @@ public class GameController implements Consumer<Game> {
     }
 
     private void initializeRoundTrack() throws IOException {
+        try {
+            this.game.setRoundTrack(roundTrackRepository.getRoundTrack(game.getId()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         var loader = new FXMLLoader(getClass().getResource("/views/game/roundTrack.fxml"));
         loader.setController(new RoundTrackController(this.game.getRoundTrack()));
         this.mainBox.getChildren().add(0, loader.load());
@@ -459,5 +470,13 @@ public class GameController implements Consumer<Game> {
 
     public Die getSelectedDie() {
         return this.selectedDie;
+    }
+
+    public boolean isPlacedDie() {
+        return placedDie;
+    }
+
+    public void setPlacedDie(boolean placedDie) {
+        this.placedDie = placedDie;
     }
 }

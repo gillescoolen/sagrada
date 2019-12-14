@@ -32,6 +32,9 @@ public final class PublicObjectiveCardRepository extends Repository<PublicObject
             ));
         }
 
+        preparedStatement.close();
+        resultSet.close();
+
         return publicObjectiveCards;
     }
 
@@ -114,7 +117,13 @@ public final class PublicObjectiveCardRepository extends Repository<PublicObject
                     cardResultSet.getString("description"),
                     cardResultSet.getInt("points")
             ));
+
+            cardPreparedStatement.close();
+            cardResultSet.close();
         }
+
+        preparedStatement.close();
+        resultSet.close();
 
         return publicObjectiveCards;
     }

@@ -125,6 +125,19 @@ public final class PlayerFrameRepository extends Repository<PatternCard> {
         return invalidFrameField;
     }
 
+    public void resetSquare(Player player, Square square, Game game) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE playerframefield SET dienumber = NULL, diecolor = NULL WHERE player_idplayer = ? AND position_x = ? AND position_y = ? AND idgame = ?");
+
+        preparedStatement.setInt(1, player.getId());
+        preparedStatement.setInt(2, square.getPosition().getX());
+        preparedStatement.setInt(3, square.getPosition().getY());
+        preparedStatement.setInt(4, game.getId());
+
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
+    }
+
     @Override
     public PatternCard findById(int id) throws SQLException {
         return null;

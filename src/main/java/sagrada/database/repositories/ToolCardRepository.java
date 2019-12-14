@@ -32,6 +32,9 @@ public final class ToolCardRepository extends Repository<ToolCard> {
             ));
         }
 
+        preparedStatement.close();
+        resultSet.close();
+
         return toolCards;
     }
 
@@ -130,7 +133,13 @@ public final class ToolCardRepository extends Repository<ToolCard> {
                     cardResultSet.getString("description"),
                     this.connection
             ));
+
+            cardPreparedStatement.close();
+            cardResultSet.close();
         }
+
+        preparedStatement.close();
+        resultSet.close();
 
         return toolCards;
     }
@@ -221,5 +230,15 @@ public final class ToolCardRepository extends Repository<ToolCard> {
         }
 
         preparedStatement.close();
+    }
+
+    public boolean isGameDieAffected(int gameId, Die die) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM gametoolcard_affected_gamedie WHERE gamedie_idgame = ? AND gamedie_diecolor = ? AND gamedie_dienumber = ?;");
+
+        preparedStatement.setInt(1, gameId);
+        preparedStatement.setString(2, die.getColor().getDutchColorName());
+        preparedStatement.setInt(3, die.getNumber());
+
+        return preparedStatement.executeQuery().next();
     }
 }
