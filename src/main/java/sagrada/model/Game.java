@@ -88,11 +88,6 @@ public class Game extends Observable<Game> {
         this.update(this);
     }
 
-    public void setDraftPool(DraftPool draftPool) {
-        this.draftPool = draftPool;
-        this.update(this);
-    }
-
     public void updateDraftPool(Die oldDie, Die newDie) {
         this.draftPool.updateDraft(oldDie, newDie);
         this.update(this);

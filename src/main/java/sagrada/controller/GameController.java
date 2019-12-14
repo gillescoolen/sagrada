@@ -278,6 +278,8 @@ public class GameController implements Consumer<Game> {
                     // Check if every player has chosen a pattern card.
                     var everyoneHasChosen = playerRepository.isPatternCardChosen(game);
 
+                    disableAllButtons();
+
                     if (!everyoneHasChosen) {
                         return;
                     }
