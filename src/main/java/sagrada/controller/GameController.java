@@ -139,7 +139,7 @@ public class GameController implements Consumer<Game> {
                 var round = this.gameRepository.getNextRound(this.game.getId());
                 this.dieRepository.addGameDice(this.game.getId(), round, draftPool.getDice());
 
-                this.initializeDice();
+                this.drawDice();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -192,7 +192,7 @@ public class GameController implements Consumer<Game> {
                     Platform.runLater(() -> {
                         setCurrentTokenAmount();
                         try {
-                            initializeDice();
+                            drawDice();
                             initializeRoundTrack();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -366,7 +366,7 @@ public class GameController implements Consumer<Game> {
         this.game.setRoundTrack(roundTrackRepository.getRoundTrack(game.getId()));
     }
 
-    private void initializeDice() throws IOException {
+    private void drawDice() throws IOException {
         var diceCount = this.game.getDiceCount();
         var draftedDice = this.game.getDraftPool().getDice();
 
