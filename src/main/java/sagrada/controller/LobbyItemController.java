@@ -50,16 +50,16 @@ public class LobbyItemController {
     }
 
     private void fillItem() {
-        this.lbName.setText(this.game.getOwner().getAccount().getUsername() + "'s Game");
+        this.lbName.setText(this.game.getOwner().getAccount().getUsername() + "'s Spel");
 
         GameRepository gameRepository = new GameRepository(this.databaseConnection);
 
         int spots = this.getSpots(this.game.getPlayers());
-        this.lbSpotsLeft.setText(spots + " spot(s) left!");
+        this.lbSpotsLeft.setText(spots + " plek(ken) over!");
 
         try {
             if (gameRepository.checkIfGameHasStarted(this.game) && !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
-                this.lbSpotsLeft.setText("Game has started");
+                this.lbSpotsLeft.setText("Spel is begonnen");
 
                 this.lobbyItem.setDisable(true);
                 this.lobbyItem.getStyleClass().clear();
@@ -67,7 +67,7 @@ public class LobbyItemController {
 
                 if (this.btnDecline != null) this.btnDecline.setDisable(true);
             } else if (gameRepository.checkIfGameHasStarted(this.game) && this.containsName(this.game.getPlayers(), this.account.getUsername())) {
-                this.lbSpotsLeft.setText("Game has started");
+                this.lbSpotsLeft.setText("Spel is begonnen");
 
                 this.lobbyItem.getStyleClass().clear();
                 this.lobbyItem.getStyleClass().add("item-started");
@@ -114,22 +114,24 @@ public class LobbyItemController {
 
         try {
             FXMLLoader loader;
-
+            GameRepository gameRepository = new GameRepository(this.databaseConnection);
             if (this.account.getUsername().equals(this.game.getOwner().getAccount().getUsername())) {
-                GameRepository gameRepository = new GameRepository(this.databaseConnection);
-
                 if (gameRepository.checkIfGameHasStarted(this.game)) {
                     loader = new GameScreen(this.databaseConnection, this.game, this.account);
                 } else {
                     loader = new GameLobbyCreatorScreen(this.databaseConnection, this.game, this.account);
                 }
             } else {
-                if (!this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
-                    PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
-                    playerRepository.acceptInvite(this.account.getUsername(), this.game);
-                }
+                if (gameRepository.checkIfGameHasStarted(this.game)) {
+                    loader = new GameScreen(this.databaseConnection, this.game, this.account);
+                } else {
+                    if (!this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
+                        PlayerRepository playerRepository = new PlayerRepository(this.databaseConnection);
+                        playerRepository.acceptInvite(this.account.getUsername(), this.game);
+                    }
 
-                loader = new GameLobbyPlayerScreen(this.databaseConnection, this.game, this.account);
+                    loader = new GameLobbyPlayerScreen(this.databaseConnection, this.game, this.account);
+                }
             }
 
             var stage = ((Stage) this.lbName.getScene().getWindow());

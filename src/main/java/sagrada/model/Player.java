@@ -110,6 +110,7 @@ public class Player {
     }
 
     public void addFavorTokens(List<FavorToken> favorTokens) {
+        this.favorTokens.clear();
         this.favorTokens.addAll(favorTokens);
     }
 
@@ -154,7 +155,7 @@ public class Player {
     }
 
     public void skipTurn(PlayerRepository playerRepository, Game game) throws SQLException {
-        this.isCurrentPlayer = false;
+        this.setCurrentPlayer(false);
         playerRepository.nextPlayerTurn(this, game);
     }
 
@@ -256,5 +257,104 @@ public class Player {
 
     public FavorToken getNonAffectedFavorToken() {
         return this.favorTokens.stream().filter(favorToken -> favorToken.getToolCard() == null).findFirst().orElse(null);
+    }
+
+    public boolean getCurrent(PlayerRepository playerRepository, Game game) throws SQLException {
+        var player = playerRepository.getPlayerByGameAndUsername(game, this.account.getUsername());
+        return player.isCurrentPlayer();
+    }
+
+    // FIXME: refactor this garbage
+    public Integer getNextSequenceNumber(int playerAmount, Player player) {
+        int nextSequence = 0;
+
+        if (playerAmount == 2) {
+            switch (player.getSequenceNumber()) {
+                case 1:
+                    player.setSequenceNumber(4);
+                    nextSequence = 2;
+                    break;
+                case 2:
+                    player.setSequenceNumber(3);
+                    nextSequence = 3;
+                    break;
+                case 3:
+                    player.setSequenceNumber(1);
+                    nextSequence = 4;
+                    break;
+                case 4:
+                    player.setSequenceNumber(2);
+                    nextSequence = 1;
+                    break;
+            }
+        }
+
+        if (playerAmount == 3) {
+            switch (player.getSequenceNumber()) {
+                case 1:
+                    player.setSequenceNumber(6);
+                    nextSequence = 2;
+                    break;
+                case 2:
+                    player.setSequenceNumber(5);
+                    nextSequence = 3;
+                    break;
+                case 3:
+                    player.setSequenceNumber(4);
+                    nextSequence = 4;
+                    break;
+                case 4:
+                    player.setSequenceNumber(2);
+                    nextSequence = 5;
+                    break;
+                case 5:
+                    player.setSequenceNumber(1);
+                    nextSequence = 6;
+                    break;
+                case 6:
+                    player.setSequenceNumber(3);
+                    nextSequence = 1;
+                    break;
+            }
+        }
+
+        if (playerAmount == 4) {
+            switch (player.getSequenceNumber()) {
+                case 1:
+                    player.setSequenceNumber(8);
+                    nextSequence = 2;
+                    break;
+                case 2:
+                    player.setSequenceNumber(7);
+                    nextSequence = 3;
+                    break;
+                case 3:
+                    player.setSequenceNumber(6);
+                    nextSequence = 4;
+                    break;
+                case 4:
+                    player.setSequenceNumber(5);
+                    nextSequence = 5;
+                    break;
+                case 5:
+                    player.setSequenceNumber(3);
+                    nextSequence = 6;
+                    break;
+                case 6:
+                    player.setSequenceNumber(2);
+                    nextSequence = 7;
+                    break;
+                case 7:
+                    player.setSequenceNumber(1);
+                    nextSequence = 8;
+                    break;
+                case 8:
+                    player.setSequenceNumber(4);
+                    nextSequence = 1;
+                    break;
+            }
+        }
+
+        return nextSequence;
     }
 }
