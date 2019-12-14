@@ -99,16 +99,52 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
                     boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
 
+                    try {
+                        this.player.checkIfCardIsValid(new PlayerFrameRepository(connection));
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
                     if (!isOwnCard) {
                         this.reportMisplacement.setText("Ongeldig verklaren");
                         this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
 
                         this.reportMisplacement.setDisable(this.player.hasInvalidFrameField());
                     } else {
-                        this.reportMisplacement.setVisible(false);
+                        if (this.player.hasInvalidFrameField()) {
+                            this.setDiceRemovable();
+
+                            this.reportMisplacement.setText("Valide verklaren");
+                            this.reportMisplacement.setOnMouseClicked(e -> this.setBoardValid());
+                        }
+
+                        this.reportMisplacement.setVisible(this.player.hasInvalidFrameField());
                     }
                 }
             });
+        }
+    }
+
+    private void setDiceRemovable() {
+        int i = 0;
+
+        for (var square : this.windowField.getSquares()) {
+            var button = this.windowSquares.get(i);
+            button.setOnMouseClicked(c -> this.removeDie(square));
+            ++i;
+        }
+    }
+
+    private void removeDie(Square square) {
+        this.playerFrame.removeDie(this.player, square, this.connection);
+    }
+
+    private void setBoardValid() {
+        try {
+            this.player.setCardAsValid(new PlayerFrameRepository(connection));
+            this.reportMisplacement.setVisible(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
