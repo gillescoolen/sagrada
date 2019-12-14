@@ -16,10 +16,7 @@ import sagrada.util.StartGame;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -120,7 +117,24 @@ public class GameController implements Consumer<Game> {
             this.disableAllButtons();
 
             if (player.getSequenceNumber() == this.game.getPlayers().size() * 2) {
-                System.out.println("end of round.");
+                var unusedDice = this.game.getDraftPool().getDice();
+
+                final Task<Void> roundTrackTask = new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        try {
+                            var round = gameRepository.getCurrentRound(game.getId());
+                            dieRepository.placeOnRoundTrack(unusedDice, game.getId(), round);
+                            for (var die : unusedDice) {
+                                game.removeDieFromDraftPool(die);
+                            }
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                        return null;
+                    }
+                };
+                new Thread(roundTrackTask).start();
             }
 
             placedDie = false;
