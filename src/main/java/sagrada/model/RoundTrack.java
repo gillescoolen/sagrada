@@ -1,9 +1,11 @@
 package sagrada.model;
 
+import sagrada.util.Observable;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class RoundTrack {
+public class RoundTrack extends Observable<RoundTrack> {
     private int current;
     private Map<Integer, Die> track = new LinkedHashMap<>() {
         {
@@ -22,14 +24,17 @@ public class RoundTrack {
 
     public void updateTrack(int round, Die die) {
         this.track.replace(round, die);
+        this.update(this);
     }
 
     public void putTrack(int round, Die die) {
         this.track.put(round, die);
+        this.update(this);
     }
 
     public void setTrack(Map<Integer, Die> track) {
         this.track = track;
+        this.update(this);
     }
 
     public Die getDieByKey(int key) {
@@ -37,7 +42,7 @@ public class RoundTrack {
     }
 
     public Map<Integer, Die> getTrack() {
-        return Map.copyOf(this.track);
+        return new LinkedHashMap<>(this.track);
     }
 
     public int getCurrent() {
@@ -46,5 +51,6 @@ public class RoundTrack {
 
     public void setCurrent(int current) {
         this.current = current;
+        this.update(this);
     }
 }
