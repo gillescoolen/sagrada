@@ -4,10 +4,19 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
+import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.DieRepository;
+import sagrada.database.repositories.GameRepository;
+import sagrada.database.repositories.PlayerFrameRepository;
 import sagrada.model.DraftPool;
 import sagrada.model.Game;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class DraftPoolController implements Consumer<DraftPool> {
@@ -18,10 +27,27 @@ public class DraftPoolController implements Consumer<DraftPool> {
     private final Game game;
     private final GameController gameController;
 
-    public DraftPoolController(DraftPool draftPool, Game game, GameController gameController) {
+    public DraftPoolController(DraftPool draftPool, Game game, GameController gameController, DatabaseConnection connection) {
         this.draftPool = draftPool;
         this.game = game;
         this.gameController = gameController;
+
+        this.draftPool.observe(this);
+
+        var dieRepository = new DieRepository(connection);
+        var gameRepository = new GameRepository(connection);
+
+        Runnable draftPoolTimer = () -> {
+            try {
+                var draftedDice = dieRepository.getDraftPoolDice(this.game.getId(), gameRepository.getCurrentRound(this.game.getId()));
+                this.game.addDiceInDraftPool(draftedDice);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        };
+
+        ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+        ses.scheduleAtFixedRate(draftPoolTimer, 0, 1500, TimeUnit.MILLISECONDS);
     }
 
     @FXML

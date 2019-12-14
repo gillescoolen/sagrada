@@ -362,10 +362,6 @@ public class GameController implements Consumer<Game> {
     }
 
     private void initializeDieStuffAndFavorTokens(List<Player> players) throws SQLException {
-        var draftedDice = this.dieRepository.getDraftPoolDice(this.game.getId(), this.gameRepository.getCurrentRound(this.game.getId()));
-
-        this.game.addDiceInDraftPool(draftedDice);
-
         var dice = this.dieRepository.getUnusedDice(this.game.getId());
 
         var diceBag = new DiceBag(dice);
@@ -378,7 +374,7 @@ public class GameController implements Consumer<Game> {
 
     private void initializeDraftPool() throws IOException {
         var loader = new FXMLLoader(getClass().getResource("/views/game/draftPool.fxml"));
-        loader.setController(new DraftPoolController(this.game.getDraftPool(), this.game, this));
+        loader.setController(new DraftPoolController(this.game.getDraftPool(), this.game, this, this.connection));
         this.mainBox.getChildren().add(1, loader.load());
     }
 

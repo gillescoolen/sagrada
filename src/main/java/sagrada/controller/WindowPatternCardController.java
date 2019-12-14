@@ -219,8 +219,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
             button.setDisable(this.playerFrame == null || !canBeClicked || this.isEndOfGame);
 
-            if (selectedDie != null) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
-
             if (color != null) {
                 button.setStyle("-fx-background-color: " + square.getColor().getColor());
             } else {

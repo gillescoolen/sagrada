@@ -10,7 +10,6 @@
       prefWidth="1400" prefHeight="720">
 
     <VBox fx:id="mainBox" styleClass="main-vbox" HBox.hgrow="ALWAYS">
-
         <HBox styleClass="wpc-hbox" alignment="BOTTOM_RIGHT">
             <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
                 <VBox fx:id="chatWrapper"/>
