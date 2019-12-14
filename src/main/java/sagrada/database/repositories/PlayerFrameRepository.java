@@ -4,6 +4,7 @@ import sagrada.database.DatabaseConnection;
 import sagrada.model.*;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
