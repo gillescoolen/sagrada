@@ -278,8 +278,9 @@ public class Player {
     }
 
     public boolean getCurrent(PlayerRepository playerRepository) throws SQLException {
-        var player = playerRepository.findById(this.getId());
-        return player.isCurrentPlayer();
+        var isCurrent = playerRepository.getIfCurrent(this.getId());
+        this.isCurrentPlayer = isCurrent;
+        return isCurrent;
     }
 
     // FIXME: refactor this garbage
