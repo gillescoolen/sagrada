@@ -5,6 +5,7 @@ import sagrada.database.repositories.PlayerFrameRepository;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 public class PatternCard extends ObservableCard<PatternCard> {
     private int id;
@@ -68,15 +69,15 @@ public class PatternCard extends ObservableCard<PatternCard> {
         var foundSquare = this.getSquareByXAndY(square.getPosition().getX(), square.getPosition().getY());
         if (foundSquare == null) return;
 
+        foundSquare.setDie(die);
+        this.update(this);
+
         try {
             PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(connection);
             playerFrameRepository.updateSquare(player, foundSquare, die);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        foundSquare.setDie(die);
-        this.update(this);
     }
 
     public void removeDie(Player player, Square square, DatabaseConnection connection) {
@@ -92,5 +93,9 @@ public class PatternCard extends ObservableCard<PatternCard> {
 
         foundSquare.setDie(null);
         this.update(this);
+    }
+
+    public int countEmptySquares() {
+        return ((int) this.squares.stream().filter(square -> square.getDie() == null).count());
     }
 }

@@ -18,6 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class WindowPatternCardController implements Consumer<PatternCard> {
@@ -49,27 +53,26 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     }
 
     public WindowPatternCardController(DatabaseConnection connection, Player player, GameController gameController) {
-        var timer = new Timer();
         this.connection = connection;
 
         PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(connection);
+
+        Runnable playerFrameTimer = () -> {
+            try {
+                playerFrameRepository.getPlayerFrame(player);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        };
+
+        ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+        ScheduledFuture<?> scheduledFuture2 = ses.scheduleAtFixedRate(playerFrameTimer, 0, 750, TimeUnit.MILLISECONDS);
 
         this.patternCard = player.getPatternCard();
         this.playerFrame = player.getPlayerFrame();
         this.windowField = this.playerFrame;
         this.player = player;
         this.gameController = gameController;
-
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    playerFrameRepository.getPlayerFrame(player);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 0, 1500);
 
         this.playerFrame.observe(this);
     }
@@ -212,9 +215,14 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
             button.setText(square.getValue().toString());
 
-            button.setDisable(this.playerFrame == null || !canBeClicked || this.isEndOfGame);
+            if (!this.showPatternCard || !isOwnCard) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
 
-            if (selectedDie != null) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
+            if (this.playerFrame == null || !canBeClicked || this.isEndOfGame) {
+                button.setDisable(true);
+            } else {
+                var emptyCount = this.player.getPlayerFrame().countEmptySquares();
+                button.setDisable(emptyCount == 20 && (square.getPosition().getX() != 1 && square.getPosition().getX() != 5 && square.getPosition().getY() != 1 && square.getPosition().getY() != 4));
+            }
 
             if (color != null) {
                 button.setStyle("-fx-background-color: " + square.getColor().getColor());
@@ -256,8 +264,10 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     }
 
     private void placeDie(Square square, Die die) {
+        if (die == null || square.getDie() != null) return;
         this.playerFrame.placeDie(this.player, square, die, this.connection);
         this.gameController.setSelectedDie(null);
-        this.gameController.getGame().removeDieFromDraftpool(die);
+        this.gameController.getGame().removeDieFromDraftPool(die);
+        this.gameController.setPlacedDie(true);
     }
 }
