@@ -19,6 +19,7 @@ public class EndGame {
         var updatedPlayerList = new ArrayList<Player>();
         var tiePlayerList = new ArrayList<Player>();
 
+        Player bestScoringPlayer = null;
         for (var player : this.game.getPlayers()) {
             var points = 0;
 
@@ -28,34 +29,27 @@ public class EndGame {
                 points += objectiveCard.calculatePoints(player.getPlayerFrame());
             }
 
-            var privateObjectiveCardPoints = player.getPrivateObjectiveCard().calculatePoints(player.getPlayerFrame());
-            var remainingFavorTokens = player.getFavorTokens().size();
-
-            points += privateObjectiveCardPoints;
-            points += remainingFavorTokens;
+            points += player.getPrivateObjectiveCard().calculatePoints(player.getPlayerFrame());
+            points += player.getFavorTokens().size();
             points -= player.getPlayerFrame().countEmptySquares();
 
             player.setScore(points);
-            updatedPlayerList.add(player);
-        }
 
-        Player bestScoringPlayer = null;
-        var highestScore = 0;
-        for (var player : updatedPlayerList) {
             if (bestScoringPlayer == null) {
                 bestScoringPlayer = player;
-                highestScore = player.getScore();
             } else {
-                if (highestScore == player.getScore()) {
+                if (bestScoringPlayer.getScore() == player.getScore()) {
                     if (!tiePlayerList.contains(bestScoringPlayer)) {
                         tiePlayerList.add(bestScoringPlayer);
                     }
                     tiePlayerList.add(player);
-                } else if (highestScore < player.getScore()) {
+                } else if (bestScoringPlayer.getScore() < player.getScore()) {
+                    tiePlayerList.clear();
                     bestScoringPlayer = player;
-                    highestScore = player.getScore();
                 }
             }
+
+            updatedPlayerList.add(player);
         }
 
         if (!tiePlayerList.isEmpty()) {
@@ -64,6 +58,26 @@ public class EndGame {
         }
 
         this.game.addPlayers(updatedPlayerList);
+    }
+
+    private Player getWinnerWhenTie(ArrayList<Player> tiePlayerList) {
+        Player winner = this.winningPlayer(tiePlayerList, "poc_points");
+        if (winner != null) {
+            return winner;
+        }
+
+        winner = this.winningPlayer(tiePlayerList, "ft_points");
+        if (winner != null) {
+            return winner;
+        }
+
+        for (var player : tiePlayerList) {
+            if (winner == null || winner.getSequenceNumber() < player.getSequenceNumber()) {
+                winner = player;
+            }
+        }
+
+        return winner;
     }
 
     private Player winningPlayer(ArrayList<Player> playerList, String type) {
@@ -100,25 +114,5 @@ public class EndGame {
         }
 
         return null;
-    }
-
-    private Player getWinnerWhenTie(ArrayList<Player> tiePlayerList) {
-        Player winner = this.winningPlayer(tiePlayerList, "poc_points");
-        if (winner != null) {
-            return winner;
-        }
-
-        winner = this.winningPlayer(tiePlayerList, "ft_points");
-        if (winner != null) {
-            return winner;
-        }
-
-        for (var player : tiePlayerList) {
-            if (winner == null || winner.getSequenceNumber() < player.getSequenceNumber()) {
-                winner = player;
-            }
-        }
-
-        return winner;
     }
 }
