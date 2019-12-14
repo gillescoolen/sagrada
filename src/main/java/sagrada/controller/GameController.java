@@ -44,7 +44,7 @@ public class GameController implements Consumer<Game> {
     @FXML
     private Text currentTokenAmount;
     @FXML
-    private HBox roundTrackBox;
+    private VBox mainBox;
 
     private Game game;
     private StartGame startGameUtil;
@@ -136,7 +136,7 @@ public class GameController implements Consumer<Game> {
                 draftPool.addAllDice(dice);
                 draftPool.throwDice();
 
-                var round = this.gameRepository.getCurrentRound(this.game.getId());
+                var round = this.gameRepository.getNextRound(this.game.getId());
                 this.dieRepository.addGameDice(this.game.getId(), round, draftPool.getDice());
 
                 this.initializeDice();
@@ -152,12 +152,12 @@ public class GameController implements Consumer<Game> {
                     this.initializePrivateObjectiveCard(this.game.getPlayerByName(player.getAccount().getUsername()));
                     this.initializePublicObjectiveCards();
                     this.initializeToolCards();
-                    this.initializeDice();
-
+                    this.drawDice();
                     this.checkForPlayerPatternCards();
                     this.startMainGameTimer();
                     this.setCurrentTokenAmount();
                     this.initializeChat();
+                    this.initializeRoundTrack();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -222,6 +222,7 @@ public class GameController implements Consumer<Game> {
     private void checkForPlayerPatternCards() {
         var playerPatternCardsTimer = new Timer();
         GameController gameController = this;
+
         playerPatternCardsTimer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -285,7 +286,7 @@ public class GameController implements Consumer<Game> {
                     e.printStackTrace();
                 }
             }
-        }, 0, 1000);
+        }, 0, 2000);
     }
 
     private void initializeWindowOptions(Player player) throws IOException {
@@ -381,14 +382,9 @@ public class GameController implements Consumer<Game> {
     }
 
     private void initializeRoundTrack() throws IOException {
-        var roundTrack = new TreeMap<>(this.game.getRoundTrack().getTrack());
-
-        this.roundTrackBox.getChildren().clear();
-        for (var track : roundTrack.entrySet()) {
-            var loader = new FXMLLoader(getClass().getResource("/views/game/roundTrack.fxml"));
-            loader.setController(new RoundTrackController(track.getKey(), track.getValue()));
-            this.roundTrackBox.getChildren().add(loader.load());
-        }
+        var loader = new FXMLLoader(getClass().getResource("/views/game/roundTrack.fxml"));
+        loader.setController(new RoundTrackController(this.game.getRoundTrack()));
+        this.mainBox.getChildren().add(0, loader.load());
     }
 
     private void initializeChat() throws IOException {

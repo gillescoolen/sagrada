@@ -9,8 +9,7 @@
       styleClass="game-wrapper"
       prefWidth="1400" prefHeight="720">
 
-    <VBox styleClass="main-vbox" HBox.hgrow="ALWAYS">
-        <HBox fx:id="roundTrackBox" alignment="CENTER" VBox.vgrow="ALWAYS" styleClass="dice-hbox"/>
+    <VBox fx:id="mainBox" styleClass="main-vbox" HBox.hgrow="ALWAYS">
         <HBox fx:id="diceBox" alignment="CENTER" VBox.vgrow="ALWAYS" styleClass="dice-hbox"/>
         <HBox styleClass="wpc-hbox" alignment="BOTTOM_RIGHT">
             <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
@@ -19,7 +18,7 @@
                     <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150">BEURT
                         OVERSLAAN
                     </Button>
-                    <Button fx:id="btnRollDice" disable="true" styleClass="btn-controls" prefWidth="150">ROLLEN</Button>
+                    <Button fx:id="btnRollDice" styleClass="btn-controls" prefWidth="150">ROLLEN</Button>
                 </HBox>
             </VBox>
             <VBox fx:id="rowOne" styleClass="wpc-vbox" visible="false">
