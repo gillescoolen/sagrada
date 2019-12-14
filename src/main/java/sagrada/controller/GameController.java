@@ -205,6 +205,7 @@ public class GameController implements Consumer<Game> {
 
                     if (game.getDraftPool().getDice().isEmpty()) {
                         btnRollDice.setDisable(false);
+                        btnSkipTurn.setDisable(true);
                     }
                 } else {
                     btnSkipTurn.setDisable(true);
