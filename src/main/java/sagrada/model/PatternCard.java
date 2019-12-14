@@ -5,6 +5,7 @@ import sagrada.database.repositories.PlayerFrameRepository;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 public class PatternCard extends ObservableCard<PatternCard> {
     private int id;
@@ -92,5 +93,9 @@ public class PatternCard extends ObservableCard<PatternCard> {
 
         foundSquare.setDie(null);
         this.update(this);
+    }
+
+    public int countEmptySquares() {
+        return ((int) this.squares.stream().filter(Objects::isNull).count());
     }
 }
