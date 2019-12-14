@@ -154,6 +154,24 @@ public class Player {
         this.invalidFrameField = invalidFrameField;
     }
 
+    public void invalidateField(PlayerFrameRepository repository) throws SQLException {
+        repository.invalidateCard(this);
+        this.setInvalidFrameField(true);
+    }
+
+    public void setCardAsValid(PlayerFrameRepository repository) throws SQLException {
+        repository.setCardValid(this);
+        this.setInvalidFrameField(false);
+    }
+
+    public boolean checkIfCardIsValid(PlayerFrameRepository repository) throws SQLException {
+        boolean result = repository.checkIfCardIsValid(this);
+
+        this.setInvalidFrameField(result);
+
+        return result;
+    }
+
     public void skipTurn(PlayerRepository playerRepository, Game game) throws SQLException {
         this.setCurrentPlayer(false);
         playerRepository.nextPlayerTurn(this, game);

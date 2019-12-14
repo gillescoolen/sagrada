@@ -96,9 +96,55 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
                 if (this.changeView != null) {
                     this.changeView.setDisable(false);
                     this.setPatternCardInformation();
-                    this.reportMisplacement.setText("Verander veld");
+
+                    boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
+
+                    try {
+                        this.player.checkIfCardIsValid(new PlayerFrameRepository(connection));
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (!isOwnCard) {
+                        this.reportMisplacement.setText("Ongeldig verklaren");
+                        this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
+
+                        this.reportMisplacement.setDisable(this.player.hasInvalidFrameField());
+                    } else {
+                        if (this.player.hasInvalidFrameField()) {
+                            this.setDiceRemovable();
+
+                            this.reportMisplacement.setText("Valide verklaren");
+                            this.reportMisplacement.setOnMouseClicked(e -> this.setBoardValid());
+                        }
+
+                        this.reportMisplacement.setVisible(this.player.hasInvalidFrameField());
+                    }
                 }
             });
+        }
+    }
+
+    private void setDiceRemovable() {
+        int i = 0;
+
+        for (var square : this.windowField.getSquares()) {
+            var button = this.windowSquares.get(i);
+            button.setOnMouseClicked(c -> this.removeDie(square));
+            ++i;
+        }
+    }
+
+    private void removeDie(Square square) {
+        this.playerFrame.removeDie(this.player, square, this.connection);
+    }
+
+    private void setBoardValid() {
+        try {
+            this.player.setCardAsValid(new PlayerFrameRepository(connection));
+            this.reportMisplacement.setVisible(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -113,7 +159,8 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         } else {
             this.changeView.setDisable(false);
             this.name.setText(this.player.getAccount().getUsername() + String.format(" (%s tokens)", this.playerFrame.getDifficulty()));
-            this.reportMisplacement.setText("Verander veld");
+            this.reportMisplacement.setText("Ongeldig verklaren");
+            this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
         }
 
         if (this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername())) {
@@ -129,6 +176,16 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         this.changeView.setText("Draai");
         this.initializeWindow();
         this.fillWindow();
+    }
+
+    private void invalidateCard() {
+        this.reportMisplacement.setDisable(true);
+
+        try {
+            this.player.invalidateField(new PlayerFrameRepository(this.connection));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void choosePatternCard() {
@@ -154,7 +211,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             var color = square.getColor();
 
             button.setText(square.getValue().toString());
-
 
             button.setDisable(this.playerFrame == null || !canBeClicked || this.isEndOfGame);
 
@@ -195,7 +251,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     }
 
     private void setPatternCardInformation() {
-        String text = this.showPatternCard ? "Patroon kaart" : "Speler frame";
+        String text = this.showPatternCard ? "patroon kaart" : "speler frame";
         this.name.setText(this.player.getAccount().getUsername() + "'s " + text);
     }
 

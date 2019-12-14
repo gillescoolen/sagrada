@@ -80,6 +80,21 @@ public class PatternCard extends ObservableCard<PatternCard> {
         this.update(this);
     }
 
+    public void removeDie(Player player, Square square, DatabaseConnection connection) {
+        var foundSquare = this.getSquareByXAndY(square.getPosition().getX(), square.getPosition().getY());
+        if (foundSquare == null) return;
+
+        try {
+            PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(connection);
+            playerFrameRepository.removeSquare(player, foundSquare);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        foundSquare.setDie(null);
+        this.update(this);
+    }
+
     public int countEmptySquares() {
         return ((int) this.squares.stream().filter(Objects::isNull).count());
     }
