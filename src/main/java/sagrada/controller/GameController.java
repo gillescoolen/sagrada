@@ -19,7 +19,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.TreeMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -99,13 +98,6 @@ public class GameController implements Consumer<Game> {
     @Override
     public void accept(Game game) {
         this.game = game;
-        Platform.runLater(() -> {
-            try {
-                this.drawDice();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     private void disableAllButtons() {
@@ -146,8 +138,6 @@ public class GameController implements Consumer<Game> {
 
                 var round = this.gameRepository.getCurrentRound(this.game.getId());
                 this.dieRepository.addGameDice(this.game.getId(), round, dice);
-
-                this.drawDice();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -160,8 +150,8 @@ public class GameController implements Consumer<Game> {
                     this.initializePrivateObjectiveCard(this.game.getPlayerByName(player.getAccount().getUsername()));
                     this.initializePublicObjectiveCards();
                     this.initializeToolCards();
-                    this.drawDice();
                     this.initializeRoundTrack();
+                    this.initializeDraftPool();
                     this.checkForPlayerPatternCards();
                     this.startMainGameTimer();
                     this.setCurrentTokenAmount();
@@ -180,13 +170,6 @@ public class GameController implements Consumer<Game> {
 
         try {
             initializeDieStuffAndFavorTokens(game.getPlayers());
-            Platform.runLater(() -> {
-                try {
-                    drawDice();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -393,19 +376,10 @@ public class GameController implements Consumer<Game> {
         }
     }
 
-    private void drawDice() throws IOException {
-        var diceCount = this.game.getDiceCount();
-        var draftedDice = this.game.getDraftPool().getDice();
-
-        this.diceBox.getChildren().clear();
-        for (int i = 0; i < diceCount; ++i) {
-            var loader = new FXMLLoader(getClass().getResource("/views/game/die.fxml"));
-            if (i < draftedDice.size()) {
-                var die = draftedDice.get(i);
-                loader.setController(new DieController(die, this));
-            }
-            this.diceBox.getChildren().add(loader.load());
-        }
+    private void initializeDraftPool() throws IOException {
+        var loader = new FXMLLoader(getClass().getResource("/views/game/draftPool.fxml"));
+        loader.setController(new DraftPoolController(this.game.getDraftPool(), this.game, this));
+        this.mainBox.getChildren().add(1, loader.load());
     }
 
     private void initializeRoundTrack() throws IOException {
