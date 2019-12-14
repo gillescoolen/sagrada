@@ -17,7 +17,6 @@ public class RoundTrackController implements Consumer<RoundTrack> {
 
     public RoundTrackController(RoundTrack roundTrack) {
         this.roundTrack = roundTrack;
-
         this.roundTrack.observe(this);
     }
 
@@ -33,7 +32,7 @@ public class RoundTrackController implements Consumer<RoundTrack> {
     }
 
     private void fillRoundTrackContainer() {
-        if (this.roundTrackContainer != null) {
+        if (this.roundTrackContainer != null && this.roundTrack != null) {
             Platform.runLater(() -> {
                 this.roundTrackContainer.getChildren().clear();
             });
