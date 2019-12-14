@@ -4,7 +4,7 @@ import sagrada.database.DatabaseConnection;
 
 import java.sql.SQLException;
 
-public abstract class ToolCard extends ObservableCard<ToolCard>  {
+public abstract class ToolCard extends ObservableCard<ToolCard> {
     private final int id;
     private final String description;
     private int cost = 1;
@@ -23,6 +23,10 @@ public abstract class ToolCard extends ObservableCard<ToolCard>  {
 
     public int getCost() {
         return this.cost;
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
     }
 
     public String getDescription() {
