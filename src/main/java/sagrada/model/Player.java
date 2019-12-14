@@ -279,6 +279,7 @@ public class Player {
 
     public boolean getCurrent(PlayerRepository playerRepository) throws SQLException {
         var isCurrent = playerRepository.getIfCurrent(this.getId());
+        this.isCurrentPlayer = isCurrent;
         return isCurrent;
     }
 
