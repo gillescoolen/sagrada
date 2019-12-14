@@ -44,7 +44,7 @@ public final class DieRepository extends Repository<Die> {
     }
 
     public List<Die> getDraftPoolDice(int gameId, int round) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT g.diecolor, g.dienumber, g.value FROM playerframefield p RIGHT OUTER JOIN gamedie g ON g.idgame = p.idgame AND g.dienumber = p.dienumber AND g.diecolor = p.diecolor WHERE g.idgame = ? AND g.round = ? AND p.dienumber IS NULL AND p.diecolor IS NUll;");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT g.diecolor, g.dienumber, g.value FROM playerframefield p RIGHT OUTER JOIN gamedie g ON g.idgame = p.idgame AND g.dienumber = p.dienumber AND g.diecolor = p.diecolor WHERE g.idgame = ? AND g.round = ? AND g.roundtrack IS NULL AND p.dienumber IS NULL AND p.diecolor IS NUll;");
 
         preparedStatement.setInt(1, gameId);
         preparedStatement.setInt(2, round);
@@ -129,6 +129,29 @@ public final class DieRepository extends Repository<Die> {
         resultSet.close();
 
         return die;
+    }
+
+    public void placeOnRoundTrack(List<Die> dieList, int gameId, int round) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE gamedie SET roundtrack = ? WHERE idgame = ? AND dienumber = ? AND diecolor = ?");
+
+        int count = 0;
+
+        for (Die die : dieList) {
+            preparedStatement.setInt(1, round);
+            preparedStatement.setInt(2, gameId);
+            preparedStatement.setInt(3, die.getNumber());
+            preparedStatement.setString(4, die.getColor().getDutchColorName());
+
+            preparedStatement.addBatch();
+
+            count++;
+
+            if (count % BATCH_SIZE == 0 || count == dieList.size()) {
+                preparedStatement.executeBatch();
+            }
+        }
+
+        preparedStatement.close();
     }
 
     @Override

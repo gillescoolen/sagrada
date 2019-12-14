@@ -110,6 +110,33 @@ public class GameController implements Consumer<Game> {
     protected void initialize() {
         this.btnSkipTurn.setOnMouseClicked(e -> {
             this.disableAllButtons();
+
+            if (player.getSequenceNumber() == this.game.getPlayers().size() * 2) {
+                var unusedDice = this.game.getDraftPool().getDice();
+
+                final Task<Void> roundTrackTask = new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        try {
+                            var round = gameRepository.getCurrentRound(game.getId());
+                            dieRepository.placeOnRoundTrack(unusedDice, game.getId(), round);
+                            for (var die : unusedDice) {
+                                game.removeDieFromDraftPool(die);
+                            }
+
+                            if (round >= 10) {
+                                // TODO: Go to end screen
+                                System.out.println(":D");
+                            }
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                        return null;
+                    }
+                };
+                new Thread(roundTrackTask).start();
+            }
+
             placedDie = false;
             final Task<Void> task = new Task<>() {
                 @Override
@@ -136,7 +163,7 @@ public class GameController implements Consumer<Game> {
                 this.game.addDiceInDraftPool(dice);
                 this.game.throwDice();
 
-                var round = this.gameRepository.getCurrentRound(this.game.getId());
+                var round = this.gameRepository.getNextRound(this.game.getId());
                 this.dieRepository.addGameDice(this.game.getId(), round, dice);
             } catch (Exception ex) {
                 ex.printStackTrace();
