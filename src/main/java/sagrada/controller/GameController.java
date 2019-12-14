@@ -165,7 +165,7 @@ public class GameController implements Consumer<Game> {
                     this.startMainGameTimer();
                     this.setCurrentTokenAmount();
                     this.initializeChat();
-                    //this.initializeRoundTrack();
+                    this.initializeRoundTrack();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -222,11 +222,11 @@ public class GameController implements Consumer<Game> {
         }
 
         setCurrentTokenAmount();
-//        try {
-//            initializeRoundTrack();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            initializeRoundTrack();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     };
 
     Runnable playerFrame = () -> {
