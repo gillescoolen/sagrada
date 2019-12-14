@@ -118,6 +118,11 @@ public class GameController implements Consumer<Game> {
     protected void initialize() {
         this.btnSkipTurn.setOnMouseClicked(e -> {
             this.disableAllButtons();
+
+            if (player.getSequenceNumber() == this.game.getPlayers().size() * 2) {
+                System.out.println("end of round.");
+            }
+
             placedDie = false;
             final Task<Void> task = new Task<>() {
                 @Override
