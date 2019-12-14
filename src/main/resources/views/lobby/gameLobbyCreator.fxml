@@ -18,7 +18,7 @@
                 <Label styleClass="title" text="Nodig speler uit"/>
                 <HBox styleClass="invite-box">
                     <TextField fx:id="tfPlayerInvite" promptText="Naam van de speler"/>
-                    <Button fx:id="btnInvite" mnemonicParsing="false" prefHeight="26.0" prefWidth="91.0" text="Invite"/>
+                    <Button fx:id="btnInvite" mnemonicParsing="false" prefHeight="26.0" prefWidth="91.0" text="Uitnodigen"/>
                 </HBox>
                 <Separator prefWidth="200.0"/>
                 <Label text="Uitgenodigde spelers"/>
