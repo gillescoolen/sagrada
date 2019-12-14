@@ -158,7 +158,7 @@ public class GameController implements Consumer<Game> {
                 this.game.addDiceInDraftPool(dice);
                 this.game.throwDice();
 
-                var round = this.gameRepository.getCurrentRound(this.game.getId());
+                var round = this.gameRepository.getNextRound(this.game.getId());
                 this.dieRepository.addGameDice(this.game.getId(), round, dice);
             } catch (Exception ex) {
                 ex.printStackTrace();
