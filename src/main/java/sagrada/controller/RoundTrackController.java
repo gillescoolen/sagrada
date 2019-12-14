@@ -17,7 +17,8 @@ public class RoundTrackController implements Consumer<RoundTrack> {
 
     public RoundTrackController(RoundTrack roundTrack) {
         this.roundTrack = roundTrack;
-        roundTrack.observe(this);
+
+        this.roundTrack.observe(this);
     }
 
     @FXML
