@@ -143,7 +143,7 @@ public class GameController implements Consumer<Game> {
                 var round = this.gameRepository.getCurrentRound(this.game.getId());
                 this.dieRepository.addGameDice(this.game.getId(), round, draftPool.getDice());
 
-                this.initializeDice();
+                this.drawDice();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -156,7 +156,7 @@ public class GameController implements Consumer<Game> {
                     this.initializePrivateObjectiveCard(this.game.getPlayerByName(player.getAccount().getUsername()));
                     this.initializePublicObjectiveCards();
                     this.initializeToolCards();
-                    this.initializeDice();
+                    this.drawDice();
 
                     this.checkForPlayerPatternCards();
                     this.startMainGameTimer();
@@ -404,7 +404,7 @@ public class GameController implements Consumer<Game> {
         this.game.setRoundTrack(roundTrackRepository.getRoundTrack(game.getId()));
     }
 
-    private void initializeDice() throws IOException {
+    private void drawDice() throws IOException {
         var diceCount = this.game.getDiceCount();
         var draftedDice = this.game.getDraftPool().getDice();
 
