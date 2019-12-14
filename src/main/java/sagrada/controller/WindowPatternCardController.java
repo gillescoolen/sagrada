@@ -224,8 +224,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
                 button.setDisable(emptyCount == 20 && (square.getPosition().getX() != 1 && square.getPosition().getX() != 5 && square.getPosition().getY() != 1 && square.getPosition().getY() != 4));
             }
 
-            if (selectedDie != null) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
-
             if (color != null) {
                 button.setStyle("-fx-background-color: " + square.getColor().getColor());
             } else {
