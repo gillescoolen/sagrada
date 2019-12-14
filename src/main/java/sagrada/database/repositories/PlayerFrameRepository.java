@@ -117,10 +117,12 @@ public final class PlayerFrameRepository extends Repository<PatternCard> {
         ResultSet resultSet = preparedStatement.executeQuery();
         resultSet.next();
 
+        boolean invalidFrameField = resultSet.getBoolean("invalidframefield");
+
         preparedStatement.close();
         resultSet.close();
 
-        return resultSet.getBoolean("invalidframefield");
+        return invalidFrameField;
     }
 
     @Override
