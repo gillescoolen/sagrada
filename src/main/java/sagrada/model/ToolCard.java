@@ -10,6 +10,8 @@ public abstract class ToolCard extends ObservableCard<ToolCard> {
     private int cost = 1;
     protected final DatabaseConnection connection;
 
+    private boolean canUse = false;
+
     public ToolCard(int id, String name, String description, DatabaseConnection databaseConnection) {
         super(name);
         this.id = id;
@@ -31,6 +33,16 @@ public abstract class ToolCard extends ObservableCard<ToolCard> {
 
     public String getDescription() {
         return this.description;
+    }
+
+    public void setCanUse(boolean canUse) {
+        this.canUse = canUse;
+
+        this.update(this);
+    }
+
+    public boolean canUse() {
+        return canUse;
     }
 
     public abstract void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException;

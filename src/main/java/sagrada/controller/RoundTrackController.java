@@ -17,6 +17,7 @@ public class RoundTrackController implements Consumer<RoundTrack> {
 
     public RoundTrackController(RoundTrack roundTrack) {
         this.roundTrack = roundTrack;
+
         this.roundTrack.observe(this);
     }
 

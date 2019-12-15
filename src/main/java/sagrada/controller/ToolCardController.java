@@ -1,7 +1,7 @@
 package sagrada.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import sagrada.model.ToolCard;
 import sagrada.model.card.activators.ToolCardActivator;
@@ -17,7 +17,7 @@ public class ToolCardController implements Consumer<ToolCard> {
     @FXML
     private Text points;
     @FXML
-    private VBox wrapper;
+    private AnchorPane wrapper;
 
     private final ToolCard toolCard;
     private final ToolCardActivator toolCardActivator;
@@ -25,6 +25,7 @@ public class ToolCardController implements Consumer<ToolCard> {
     public ToolCardController(ToolCard toolCard, ToolCardActivator toolCardActivator) {
         this.toolCard = toolCard;
         this.toolCardActivator = toolCardActivator;
+
         this.toolCard.observe(this);
     }
 
@@ -33,19 +34,30 @@ public class ToolCardController implements Consumer<ToolCard> {
         this.name.setText(this.toolCard.getName());
         this.description.setText(this.toolCard.getDescription());
         this.points.setText(Integer.toString(this.toolCard.getCost()));
-        this.wrapper.setOnMouseClicked(event -> {
-            try {
-                this.toolCardActivator.activate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     @Override
     public void accept(ToolCard card) {
         if (card != null) {
             this.points.setText(Integer.toString(card.getCost()));
+
+            if (toolCard.canUse()) {
+                this.wrapper.getStyleClass().remove("tool-card-wrapper-disabled");
+
+                this.wrapper.setOnMouseClicked(event -> this.useToolCard());
+            } else {
+                this.wrapper.getStyleClass().add("tool-card-wrapper-disabled");
+
+                this.wrapper.setOnMouseClicked(null);
+            }
+        }
+    }
+
+    private void useToolCard() {
+        try {
+            this.toolCardActivator.activate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

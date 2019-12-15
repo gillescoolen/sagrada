@@ -209,6 +209,10 @@ public class GameController implements Consumer<Game> {
             }
             player.setCurrentPlayer(player.getCurrent(playerRepository));
 
+            for (var toolCard : this.game.getToolCards()) {
+                toolCard.setCanUse(player.isCurrentPlayer());
+            }
+
             Platform.runLater(() -> {
                 if (player != null && player.isCurrentPlayer()) {
                     btnSkipTurn.setDisable(false);
