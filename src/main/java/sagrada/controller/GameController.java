@@ -257,8 +257,7 @@ public class GameController implements Consumer<Game> {
             boolean finished = this.playerRepository.checkForFinished(this.player.getId());
             if (finished) {
                 this.stopAllTimers();
-
-                var stage = ((Stage) this.btnRollDice.getScene().getWindow());
+                var stage = ((Stage) this.mainGamePage.getScene().getWindow());
                 var scene = new Scene(new PostGameScreen(this.game, this).load());
                 stage.setScene(scene);
             }
@@ -286,7 +285,7 @@ public class GameController implements Consumer<Game> {
         this.dieSchedule.cancel(true);
         this.mainGameSchedule.cancel(true);
         this.roundTrackSchedule.cancel(true);
-        this.gameFinishedSchedule.cancel(true);
+        this.gameFinishedSchedule.cancel(false);
         this.ses.shutdown();
     }
 
