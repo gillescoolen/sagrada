@@ -318,10 +318,8 @@ public class GameController implements Consumer<Game> {
 
                                 if (rowOne.getChildren().size() < 2) {
                                     rowOne.getChildren().add(loader.load());
-                                    rowOne.setVisible(true);
                                 } else if (rowTwo.getChildren().size() < 2) {
                                     rowTwo.getChildren().add(loader.load());
-                                    rowTwo.setVisible(true);
                                 }
                             }
 
@@ -346,34 +344,26 @@ public class GameController implements Consumer<Game> {
             var players = this.playerRepository.getAllGamePlayers(this.game);
             this.game.addPlayers(players);
             player = this.game.getPlayerByName(player.getAccount().getUsername());
+
+            // Show available options when our player hasn't chosen a card yet.
+            if (!this.playerRepository.isPatternCardChosen(game)) {
+                for (var patternCard : player.getCardOptions()) {
+                    var controller = new WindowPatternCardController(this.connection, patternCard, this.player, this);
+                    var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
+
+                    loader.setController(controller);
+
+                    if (i <= 2) {
+                        this.rowOne.getChildren().add(loader.load());
+                    } else {
+                        this.rowTwo.getChildren().add(loader.load());
+                    }
+
+                    ++i;
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-
-        // Show available options when our player hasn't chosen a card yet.
-        if (player.getCardOptions().size() > 0) {
-            for (var patternCard : player.getCardOptions()) {
-                var controller = new WindowPatternCardController(this.connection, patternCard, this.player, this);
-                var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
-
-                loader.setController(controller);
-
-                if (i <= 2) {
-                    this.rowOne.getChildren().add(loader.load());
-                    this.rowOne.setVisible(true);
-                } else {
-                    this.rowTwo.getChildren().add(loader.load());
-                    this.rowTwo.setVisible(true);
-                }
-
-                ++i;
-            }
-        } else {
-            // Load our clients player pattern card when rejoining a game.
-            var controller = new WindowPatternCardController(this.connection, player.getPatternCard(), this.player, this);
-            var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
-            loader.setController(controller);
-            this.rowOne.getChildren().add(loader.load());
         }
     }
 

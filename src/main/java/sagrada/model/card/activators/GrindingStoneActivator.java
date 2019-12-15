@@ -8,6 +8,7 @@ import sagrada.model.Player;
 import sagrada.model.ToolCard;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,7 @@ public final class GrindingStoneActivator extends ToolCardActivator {
 
     private Die question() {
         List<Die> dieList = this.controller.getGame().getDraftPool().getDice();
+
         ChoiceDialog<Die> dialog = new ChoiceDialog<>(dieList.get(0), dieList);
         dialog.setTitle("Schuurblok");
         dialog.setHeaderText("Dobbelsteen keuze");
@@ -38,6 +40,6 @@ public final class GrindingStoneActivator extends ToolCardActivator {
             return this.question();
         }
 
-        return result.orElse(null);
+        return result.get();
     }
 }

@@ -179,10 +179,6 @@ public class GameLobbyCreatorController {
             alert.setContentText("Kon de speler niet uitnodigen! \nConnectie of speler niet gevonden.");
 
             alert.showAndWait();
-
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
