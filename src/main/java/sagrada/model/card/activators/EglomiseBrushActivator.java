@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class EglomiseBurshActivator extends ToolCardActivator {
+public class EglomiseBrushActivator extends ToolCardActivator {
     private Player player;
 
-    public EglomiseBurshActivator(GameController gameController, ToolCard toolCard) {
+    public EglomiseBrushActivator(GameController gameController, ToolCard toolCard) {
         super(gameController, toolCard);
     }
 
