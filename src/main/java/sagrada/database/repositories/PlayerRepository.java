@@ -236,6 +236,46 @@ public final class PlayerRepository extends Repository<Player> {
 
     }
 
+    public void setAllFinished(Collection<Player> players) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE player SET `playstatus_playstatus` = ? WHERE idplayer = ?;");
+
+        var count = 0;
+
+        for (var player : players) {
+            preparedStatement.setString(1, player.getPlayStatus().getPlayState());
+            preparedStatement.setInt(2, player.getId());
+
+            preparedStatement.addBatch();
+
+            count++;
+
+            if (count % BATCH_SIZE == 0 || count == players.size()) {
+                preparedStatement.executeBatch();
+            }
+        }
+
+        preparedStatement.close();
+    }
+
+    public boolean checkForFinished(int playerId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE idplayer = ? AND playstatus_playstatus = ?;");
+        preparedStatement.setInt(1, playerId);
+        preparedStatement.setString(2, PlayStatus.DONE_PLAYING.getPlayState());
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        boolean finished = false;
+
+        if (resultSet.next()) {
+            finished = true;
+        }
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return finished;
+    }
+
     @Override
     public void delete(Player model) throws SQLException {
 

@@ -45,6 +45,10 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     private final List<Button> windowSquares = new ArrayList<>();
     private final GameController gameController;
 
+    private ScheduledExecutorService ses;
+    private ScheduledFuture<?> playerFrameSchedule;
+    private ScheduledFuture<?> finishedSchedule;
+
     public WindowPatternCardController(DatabaseConnection connection, PatternCard patternCard, Player player, GameController gameController) {
         this.windowField = patternCard;
         this.connection = connection;
@@ -56,6 +60,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         this.connection = connection;
 
         PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(connection);
+        PlayerRepository playerRepository = new PlayerRepository(connection);
 
         Runnable playerFrameTimer = () -> {
             try {
@@ -65,8 +70,22 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             }
         };
 
-        ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
-        ScheduledFuture<?> scheduledFuture2 = ses.scheduleAtFixedRate(playerFrameTimer, 0, 750, TimeUnit.MILLISECONDS);
+        Runnable finishedTimer = () -> {
+            try {
+                boolean finished = playerRepository.checkForFinished(this.player.getId());
+                if (finished) {
+                    this.playerFrameSchedule.cancel(true);
+                    this.finishedSchedule.cancel(false);
+                    this.ses.shutdown();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        };
+
+        this.ses = Executors.newScheduledThreadPool(2);
+        this.playerFrameSchedule = this.ses.scheduleAtFixedRate(playerFrameTimer, 0, 750, TimeUnit.MILLISECONDS);
+        this.finishedSchedule = this.ses.scheduleAtFixedRate(finishedTimer, 0, 1, TimeUnit.SECONDS);
 
         this.patternCard = player.getPatternCard();
         this.playerFrame = player.getPlayerFrame();
@@ -157,7 +176,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             this.changeView.setDisable(true);
             this.name.setText(this.windowField.getName() + String.format(" (%s tokens)", this.windowField.getDifficulty()));
             this.reportMisplacement.setText("Kies");
-
             this.reportMisplacement.setOnMouseClicked(e -> this.choosePatternCard());
         } else {
             this.changeView.setDisable(false);
@@ -172,7 +190,8 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         }
 
         if (this.isEndOfGame) {
-            this.window.getChildren().remove(this.reportMisplacement);
+            this.reportMisplacement.setDisable(true);
+            this.reportMisplacement.setVisible(false);
         }
 
         this.changeView.setOnAction((e) -> this.changeView());

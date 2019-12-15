@@ -4,10 +4,13 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import sagrada.component.PostGameScreen;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.*;
 import sagrada.model.*;
@@ -27,27 +30,13 @@ import java.util.function.Consumer;
 
 public class GameController implements Consumer<Game> {
     @FXML
-    private VBox rowOne;
+    private VBox rowOne, rowTwo, chatWrapper, mainBox;
     @FXML
-    private VBox rowTwo;
+    private HBox publicObjectiveCardBox, privateObjectiveCardBox, toolCardBox, diceBox, mainGamePage;
     @FXML
-    private HBox diceBox;
-    @FXML
-    private HBox toolCardBox;
-    @FXML
-    private HBox publicObjectiveCardBox;
-    @FXML
-    private HBox privateObjectiveCardBox;
-    @FXML
-    private VBox chatWrapper;
-    @FXML
-    private Button btnSkipTurn;
-    @FXML
-    private Button btnRollDice;
+    private Button btnSkipTurn, btnRollDice;
     @FXML
     private Text currentTokenAmount;
-    @FXML
-    private VBox mainBox;
 
     private Game game;
     private StartGame startGameUtil;
@@ -63,6 +52,12 @@ public class GameController implements Consumer<Game> {
     private Die selectedDie;
     private boolean placedDie = false;
     private boolean usedToolCard = false;
+
+    private ScheduledExecutorService ses;
+    private ScheduledFuture<?> dieSchedule;
+    private ScheduledFuture<?> mainGameSchedule;
+    private ScheduledFuture<?> roundTrackSchedule;
+    private ScheduledFuture<?> gameFinishedSchedule;
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
         game.observe(this);
@@ -114,28 +109,28 @@ public class GameController implements Consumer<Game> {
 
             if (player.getSequenceNumber() == this.game.getPlayers().size() * 2) {
                 var unusedDice = this.game.getDraftPool().getDice();
+                int round;
 
-                final Task<Void> roundTrackTask = new Task<Void>() {
-                    @Override
-                    protected Void call() throws Exception {
-                        try {
-                            var round = gameRepository.getCurrentRound(game.getId());
-                            dieRepository.placeOnRoundTrack(unusedDice, game.getId(), round);
-                            for (var die : unusedDice) {
-                                game.removeDieFromDraftPool(die);
-                            }
-
-                            if (round >= 10) {
-                                // TODO: Go to end screen
-                                System.out.println(":D");
-                            }
-                        } catch (SQLException ex) {
-                            ex.printStackTrace();
-                        }
-                        return null;
+                try {
+                    round = this.gameRepository.getCurrentRound(game.getId());
+                    this.dieRepository.placeOnRoundTrack(unusedDice, game.getId(), round);
+                    for (var die : unusedDice) {
+                        game.removeDieFromDraftPool(die);
                     }
-                };
-                new Thread(roundTrackTask).start();
+
+                    if (round >= 10) {
+                        this.stopAllTimers();
+
+                        this.game.getPlayers().forEach(player -> player.setPlayStatus(PlayStatus.DONE_PLAYING));
+                        this.playerRepository.setAllFinished(game.getPlayers());
+
+                        var stage = ((Stage) btnRollDice.getScene().getWindow());
+                        var scene = new Scene(new PostGameScreen(this.game, this).load());
+                        stage.setScene(scene);
+                    }
+                } catch (IOException | SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
 
             placedDie = false;
@@ -205,7 +200,7 @@ public class GameController implements Consumer<Game> {
         }
     };
 
-    Runnable other = () -> {
+    Runnable mainGame = () -> {
         try {
             if (!gameReady) {
                 return;
@@ -252,15 +247,49 @@ public class GameController implements Consumer<Game> {
         }
     };
 
+    Runnable gameFinished = () -> {
+        try {
+            boolean finished = this.playerRepository.checkForFinished(this.player.getId());
+
+            if (finished) {
+                this.stopAllTimers();
+                Platform.runLater(() -> {
+                    var stage = ((Stage) this.mainGamePage.getScene().getWindow());
+                    Scene scene = null;
+                    try {
+                        scene = new Scene(new PostGameScreen(this.game, this).load());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    stage.setScene(scene);
+                });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    };
+
     /**
      * This is the main event loop for a game.
      */
     private void startMainGameTimer() {
-        ScheduledExecutorService ses = Executors.newScheduledThreadPool(4);
+        this.ses = Executors.newScheduledThreadPool(4);
 
-        ScheduledFuture<?> scheduledFuture = ses.scheduleAtFixedRate(dieStuff, 0, 1, TimeUnit.SECONDS);
-        ScheduledFuture<?> scheduledFuture1 = ses.scheduleAtFixedRate(other, 0, 1, TimeUnit.SECONDS);
-        ScheduledFuture<?> scheduledFuture3 = ses.scheduleAtFixedRate(roundTrack, 0, 1, TimeUnit.SECONDS);
+        this.dieSchedule = this.ses.scheduleAtFixedRate(dieStuff, 0, 1, TimeUnit.SECONDS);
+        this.mainGameSchedule = this.ses.scheduleAtFixedRate(mainGame, 0, 1, TimeUnit.SECONDS);
+        this.roundTrackSchedule = this.ses.scheduleAtFixedRate(roundTrack, 0, 1, TimeUnit.SECONDS);
+        this.gameFinishedSchedule = this.ses.scheduleAtFixedRate(gameFinished, 0, 1, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Stop all threads of the game.
+     */
+    public void stopAllTimers() {
+        this.dieSchedule.cancel(true);
+        this.mainGameSchedule.cancel(true);
+        this.roundTrackSchedule.cancel(true);
+        this.gameFinishedSchedule.cancel(false);
+        this.ses.shutdown();
     }
 
     /**
