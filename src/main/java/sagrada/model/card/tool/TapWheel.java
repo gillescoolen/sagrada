@@ -18,7 +18,7 @@ public final class TapWheel extends ToolCard {
     }
 
     @Override
-    public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
+    public boolean use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
         @SuppressWarnings("unchecked")
         List<Pair<Square, Square>> movePair = (List<Pair<Square, Square>>) message;
 
@@ -35,5 +35,7 @@ public final class TapWheel extends ToolCard {
         favorToken.setToolCard(this);
 
         favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+
+        return true;
     }
 }

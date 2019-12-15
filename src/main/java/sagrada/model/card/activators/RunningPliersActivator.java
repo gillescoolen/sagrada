@@ -17,13 +17,15 @@ public final class RunningPliersActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() throws SQLException {
+    public boolean activate() throws SQLException {
         Die die = this.question();
 
         Player player = this.controller.getPlayer();
         Game game = this.controller.getGame();
 
         this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, die);
+
+        return true;
     }
 
     private Die question() {

@@ -19,7 +19,7 @@ public final class FluxRemover extends ToolCard {
     }
 
     @Override
-    public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
+    public boolean use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
         Object[] messages = (Object[]) message;
         Die die = (Die) messages[0];
         Integer newValue = (Integer) messages[1];
@@ -44,5 +44,7 @@ public final class FluxRemover extends ToolCard {
         favorToken.setToolCard(this);
 
         favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+
+        return true;
     }
 }

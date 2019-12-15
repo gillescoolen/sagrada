@@ -13,7 +13,7 @@ public final class FluxRemoverActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() throws SQLException {
+    public boolean activate() throws SQLException {
         Player player = this.controller.getPlayer();
         Game game = this.controller.getGame();
         Die die = this.askDieFromDraft();
@@ -25,6 +25,8 @@ public final class FluxRemoverActivator extends ToolCardActivator {
         messages[1] = newValue;
 
         this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, messages);
+
+        return true;
     }
 
     private Die askDieFromDraft() {

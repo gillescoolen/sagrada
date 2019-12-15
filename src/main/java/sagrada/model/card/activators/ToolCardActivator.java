@@ -14,5 +14,5 @@ public abstract class ToolCardActivator {
         this.toolCard = toolCard;
     }
 
-    public abstract void activate() throws SQLException;
+    public abstract boolean activate() throws SQLException;
 }

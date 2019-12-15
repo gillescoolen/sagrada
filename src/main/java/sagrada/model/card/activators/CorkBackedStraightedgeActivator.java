@@ -19,7 +19,7 @@ public class CorkBackedStraightedgeActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() throws SQLException {
+    public boolean activate() throws SQLException {
         Player player = this.controller.getPlayer();
         Game game = this.controller.getGame();
         Pair<Die, Square> move;
@@ -30,12 +30,14 @@ public class CorkBackedStraightedgeActivator extends ToolCardActivator {
         Optional<Pair<Die, Square>> result = dialog.showAndWait();
 
         if (result.isEmpty()) {
-            return;
+            return false;
         } else {
             move = result.get();
         }
 
         this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, move);
+
+        return true;
     }
 
     private Dialog<Pair<Die, Square>> question(List<Square> availableSquares) {

@@ -19,12 +19,14 @@ public final class LensCutterActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() throws SQLException {
+    public boolean activate() throws SQLException {
         Object[] message = this.question();
 
         Player player = this.controller.getPlayer();
         Game game = this.controller.getGame();
         this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, message);
+
+        return true;
     }
 
     private Object[] question() {

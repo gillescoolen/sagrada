@@ -20,7 +20,7 @@ public class EglomiseBrushActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() throws SQLException {
+    public boolean activate() throws SQLException {
         this.player = this.controller.getPlayer();
         Game game = this.controller.getGame();
 
@@ -32,6 +32,8 @@ public class EglomiseBrushActivator extends ToolCardActivator {
         message[1] = newSquare;
 
         this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPlayerFrame(), game.getRoundTrack(), this.player, game, message);
+
+        return true;
     }
 
     private Square askWhichDiceShouldBeMoved() {
