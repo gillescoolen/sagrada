@@ -55,14 +55,13 @@ public final class PlayerRepository extends Repository<Player> {
             var randomColor = privateObjectiveColors.get(random.nextInt(privateObjectiveColors.size()));
             privateObjectiveColors.remove(randomColor);
 
-            PreparedStatement playerUpdatePreparedStatement = this.connection.getConnection().prepareStatement("UPDATE player SET private_objectivecard_color = ?, seqnr = ?, isCurrentPlayer = ?, score = ?, invalidframefield = ? WHERE idplayer = ?");
+            PreparedStatement playerUpdatePreparedStatement = this.connection.getConnection().prepareStatement("UPDATE player SET private_objectivecard_color = ?, seqnr = ?, isCurrentPlayer = ?, score = null, invalidframefield = ? WHERE idplayer = ?");
 
             playerUpdatePreparedStatement.setString(1, randomColor.getDutchColorName());
             playerUpdatePreparedStatement.setInt(2, sequenceNumber);
             playerUpdatePreparedStatement.setInt(3, sequenceNumber == 1 ? 1 : 0);
             playerUpdatePreparedStatement.setInt(4, 0);
-            playerUpdatePreparedStatement.setInt(5, 0);
-            playerUpdatePreparedStatement.setInt(6, playerId);
+            playerUpdatePreparedStatement.setInt(5, playerId);
 
             playerUpdatePreparedStatement.executeUpdate();
             playerUpdatePreparedStatement.close();
