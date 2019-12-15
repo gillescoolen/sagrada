@@ -133,7 +133,7 @@ public class GameController implements Consumer<Game> {
                         game.removeDieFromDraftPool(die);
                     }
 
-                    if (round >= 2) {
+                    if (round >= 10) {
                         this.stopAllTimers();
 
                         game.getPlayers().forEach(player -> player.setPlayStatus(PlayStatus.DONE_PLAYING));
@@ -257,11 +257,18 @@ public class GameController implements Consumer<Game> {
             boolean finished = this.playerRepository.checkForFinished(this.player.getId());
             if (finished) {
                 this.stopAllTimers();
-                var stage = ((Stage) this.mainGamePage.getScene().getWindow());
-                var scene = new Scene(new PostGameScreen(this.game, this).load());
-                stage.setScene(scene);
+                Platform.runLater(() -> {
+                    var stage = ((Stage) this.mainGamePage.getScene().getWindow());
+                    Scene scene = null;
+                    try {
+                        scene = new Scene(new PostGameScreen(this.game, this).load());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    stage.setScene(scene);
+                });
             }
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     };
