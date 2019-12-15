@@ -41,6 +41,7 @@ public class DraftPoolController implements Consumer<DraftPool> {
             try {
                 var draftedDice = dieRepository.getDraftPoolDice(this.game.getId(), gameRepository.getCurrentRound(this.game.getId()));
                 this.game.addDiceInDraftPool(draftedDice);
+                this.drawDice();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
