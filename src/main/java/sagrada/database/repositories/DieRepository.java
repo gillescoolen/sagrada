@@ -180,6 +180,28 @@ public final class DieRepository extends Repository<Die> {
         preparedStatement.close();
     }
 
+    public void replaceDieOnRoundTrack(Die oldDie, Die newDie, Game game, int round) throws SQLException {
+        PreparedStatement oldDieStatement = this.connection.getConnection().prepareStatement("UPDATE gamedie SET roundtrack = null WHERE idgame = ? AND dienumber = ? AND diecolor = ?");
+
+        oldDieStatement.setInt(1, game.getId());
+        oldDieStatement.setInt(2, oldDie.getNumber());
+        oldDieStatement.setString(3, oldDie.getColor().getDutchColorName());
+
+        oldDieStatement.executeUpdate();
+        oldDieStatement.close();
+
+        PreparedStatement newDieStatement = this.connection.getConnection().prepareStatement("UPDATE gamedie SET roundtrack = ? WHERE idgame = ? AND dienumber = ? AND diecolor = ?");
+
+        newDieStatement.setInt(1, round);
+        newDieStatement.setInt(2, game.getId());
+        newDieStatement.setInt(3, newDie.getNumber());
+        newDieStatement.setString(4, newDie.getColor().getDutchColorName());
+
+        newDieStatement.executeUpdate();
+        newDieStatement.close();
+    }
+
+
     @Override
     public void update(Die model) throws SQLException {
 

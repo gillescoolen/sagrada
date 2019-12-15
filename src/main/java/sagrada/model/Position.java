@@ -1,5 +1,7 @@
 package sagrada.model;
 
+import java.util.Objects;
+
 public class Position {
     private int x = 1;
     private int y = 1;
@@ -16,7 +18,7 @@ public class Position {
     }
 
     private void setY(int y) {
-        if (y < 1) throw new RuntimeException("Y cannot be smaller than 1");;
+        if (y < 1) throw new RuntimeException("Y cannot be smaller than 1");
 
         this.y = Math.min(y, 4);
     }
@@ -32,5 +34,15 @@ public class Position {
     @Override
     public String toString() {
         return "X: " + this.x + " Y: " + this.y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Position position = (Position) o;
+        return this.x == position.x && this.y == position.y;
     }
 }
