@@ -30,7 +30,7 @@ public final class LensCutterActivator extends ToolCardActivator {
     private Object[] question() {
         List<Die> dieList = this.controller.getGame().getDraftPool().getDice();
         ChoiceDialog<Die> dieDialog = new ChoiceDialog<>(dieList.get(0), dieList);
-        dieDialog.setTitle("Rondsnijder");
+        dieDialog.setTitle("Rondsnijder 1/2");
         dieDialog.setHeaderText("Dobbelsteen wissel met RoundTrack");
         dieDialog.setContentText("Kies dobbelsteen:");
 
@@ -43,7 +43,7 @@ public final class LensCutterActivator extends ToolCardActivator {
 
         List<Integer> availableTracks = IntStream.rangeClosed(1, this.controller.getGame().getRoundTrack().getCurrent()).boxed().collect(Collectors.toList());
         ChoiceDialog<Integer> roundDialog = new ChoiceDialog<>(availableTracks.get(0), availableTracks);
-        roundDialog.setTitle("Rondsnijder");
+        roundDialog.setTitle("Rondsnijder 2/2");
         roundDialog.setHeaderText("Dobbelsteen wissel met RoundTrack");
         roundDialog.setContentText("Kies ronde dobbelsteen:");
 

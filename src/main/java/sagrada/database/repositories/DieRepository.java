@@ -70,13 +70,25 @@ public final class DieRepository extends Repository<Die> {
         return draftPoolDice;
     }
 
-    public void updateGameDie(Game game, Die die) throws SQLException {
+    public void updateGameDie(int gameId, Die die) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE gamedie SET value = ? WHERE idgame = ? AND dienumber = ? AND diecolor = ?;");
 
         preparedStatement.setInt(1, die.getValue());
-        preparedStatement.setInt(2, game.getId());
+        preparedStatement.setInt(2, gameId);
         preparedStatement.setInt(3, die.getNumber());
         preparedStatement.setString(4, die.getColor().getDutchColorName());
+
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
+    }
+
+    public void removeGameDie(int gameId, Die die) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("DELETE FROM gamedie WHERE idgame = ? AND dienumber = ? AND diecolor = ?;");
+
+        preparedStatement.setInt(1, gameId);
+        preparedStatement.setInt(2, die.getNumber());
+        preparedStatement.setString(3, die.getColor().getDutchColorName());
 
         preparedStatement.executeUpdate();
 
@@ -167,6 +179,28 @@ public final class DieRepository extends Repository<Die> {
 
         preparedStatement.close();
     }
+
+    public void replaceDieOnRoundTrack(Die oldDie, Die newDie, Game game, int round) throws SQLException {
+        PreparedStatement oldDieStatement = this.connection.getConnection().prepareStatement("UPDATE gamedie SET roundtrack = null WHERE idgame = ? AND dienumber = ? AND diecolor = ?");
+
+        oldDieStatement.setInt(1, game.getId());
+        oldDieStatement.setInt(2, oldDie.getNumber());
+        oldDieStatement.setString(3, oldDie.getColor().getDutchColorName());
+
+        oldDieStatement.executeUpdate();
+        oldDieStatement.close();
+
+        PreparedStatement newDieStatement = this.connection.getConnection().prepareStatement("UPDATE gamedie SET roundtrack = ? WHERE idgame = ? AND dienumber = ? AND diecolor = ?");
+
+        newDieStatement.setInt(1, round);
+        newDieStatement.setInt(2, game.getId());
+        newDieStatement.setInt(3, newDie.getNumber());
+        newDieStatement.setString(4, newDie.getColor().getDutchColorName());
+
+        newDieStatement.executeUpdate();
+        newDieStatement.close();
+    }
+
 
     @Override
     public void update(Die model) throws SQLException {

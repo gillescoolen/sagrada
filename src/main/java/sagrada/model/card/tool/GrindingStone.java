@@ -34,7 +34,7 @@ public final class GrindingStone extends ToolCard {
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(newDie);
 
-        dieRepository.updateGameDie(game, newDie);
+        dieRepository.updateGameDie(game.getId(), newDie);
 
         FavorToken favorToken = player.getNonAffectedFavorToken();
         favorToken.setToolCard(this);

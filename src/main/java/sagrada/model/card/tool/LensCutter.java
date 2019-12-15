@@ -1,7 +1,9 @@
 package sagrada.model.card.tool;
 
 import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.DieRepository;
 import sagrada.database.repositories.FavorTokenRepository;
+import sagrada.database.repositories.RoundTrackRepository;
 import sagrada.database.repositories.ToolCardRepository;
 import sagrada.model.*;
 
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 public final class LensCutter extends ToolCard {
     private ToolCardRepository toolCardRepository = new ToolCardRepository(this.connection);
     private FavorTokenRepository favorTokenRepository = new FavorTokenRepository(this.connection);
+    private DieRepository dieRepository = new DieRepository(this.connection);
 
     public LensCutter(int id, String name, String description, DatabaseConnection connection) {
         super(id, name, description, connection);
@@ -28,16 +31,13 @@ public final class LensCutter extends ToolCard {
         roundTrack.updateTrack(round, draftDie);
         game.updateDraftPool(draftDie, roundTrackDie);
 
-        this.incrementCost();
+        dieRepository.replaceDieOnRoundTrack(roundTrackDie, draftDie, game, round);
 
-        ArrayList<Die> dice = new ArrayList<>();
-        dice.add(roundTrackDie);
-        dice.add(draftDie);
+        this.incrementCost();
 
         FavorToken favorToken = player.getNonAffectedFavorToken();
         favorToken.setToolCard(this);
 
         favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false);
-        toolCardRepository.addAffectedToolCard(this, dice, game.getId());
     }
 }
