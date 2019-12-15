@@ -1,5 +1,6 @@
 package sagrada.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
@@ -47,12 +48,18 @@ public class PostGameController {
                 if (players.size() > 0) {
                     this.game.addPlayers(players);
 
-                    this.loadPlayers();
+                    Platform.runLater(() -> {
+                        try {
+                            this.loadPlayers();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
 
                     this.ses.shutdown();
                 }
 
-            } catch (SQLException | IOException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         };
