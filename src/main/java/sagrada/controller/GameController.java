@@ -127,6 +127,10 @@ public class GameController implements Consumer<Game> {
                             if (round >= 10) {
                                 // TODO: Go to end screen
                                 System.out.println(":D");
+                                game.getPlayers().forEach(player -> player.setPlayStatus(PlayStatus.DONE_PLAYING));
+                                playerRepository.setAllFinished(game.getPlayers());
+
+                                
                             }
                         } catch (SQLException ex) {
                             ex.printStackTrace();
