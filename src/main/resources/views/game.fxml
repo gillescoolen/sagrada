@@ -20,9 +20,9 @@
                     <Button fx:id="btnRollDice" styleClass="btn-controls" prefWidth="150">ROLLEN</Button>
                 </HBox>
             </VBox>
-            <VBox fx:id="rowOne" styleClass="wpc-vbox" visible="false">
+            <VBox fx:id="rowOne" styleClass="wpc-vbox">
             </VBox>
-            <VBox fx:id="rowTwo" styleClass="wpc-vbox" visible="false">
+            <VBox fx:id="rowTwo" styleClass="wpc-vbox">
             </VBox>
         </HBox>
     </VBox>
@@ -31,7 +31,7 @@
     <VBox styleClass="game-vbox" alignment="CENTER_RIGHT">
         <!-- Tool cards -->
         <HBox VBox.vgrow="ALWAYS" spacing="275" alignment="CENTER">
-            <Text fx:id="currentTokenAmount" styleClass="title-player-tokens">Je hebt 0 tokens.</Text>
+            <Text fx:id="currentTokenAmount"/>
             <Text styleClass="title-tool-cards">Hulp Kaarten</Text>
         </HBox>
         <HBox fx:id="toolCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
