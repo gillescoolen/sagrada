@@ -20,9 +20,9 @@
                     <Button fx:id="btnRollDice" styleClass="btn-controls" prefWidth="150">ROLLEN</Button>
                 </HBox>
             </VBox>
-            <VBox fx:id="rowOne" styleClass="wpc-vbox" visible="false">
+            <VBox fx:id="rowOne" styleClass="wpc-vbox">
             </VBox>
-            <VBox fx:id="rowTwo" styleClass="wpc-vbox" visible="false">
+            <VBox fx:id="rowTwo" styleClass="wpc-vbox">
             </VBox>
         </HBox>
     </VBox>
