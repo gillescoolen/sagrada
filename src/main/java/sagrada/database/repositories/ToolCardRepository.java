@@ -153,7 +153,7 @@ public final class ToolCardRepository extends Repository<ToolCard> {
     }
 
     public boolean toolCardIsUsed(int gameId, int toolCardId) throws SQLException {
-        PreparedStatement statement = this.connection.getConnection().prepareStatement("SELECT if(count(*) > 0,true,false) as used FROM gamefavortoken JOIN gametoolcard ON gametoolcard.idgame = gametoolcard.idgame AND gamefavortoken.gametoolcard = gametoolcard.gametoolcard WHERE gamefavortoken.idgame = ? AND gametoolcard.idtoolcard = ?;");
+        PreparedStatement statement = this.connection.getConnection().prepareStatement("SELECT if(count(*) > 0,true,false) as used FROM gamefavortoken JOIN gametoolcard ON gamefavortoken.idgame = gametoolcard.idgame AND gamefavortoken.gametoolcard = gametoolcard.gametoolcard WHERE gamefavortoken.idgame = ? AND gametoolcard.idtoolcard = ?;");
 
         statement.setInt(1, gameId);
         statement.setInt(2, toolCardId);

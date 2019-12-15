@@ -1,6 +1,7 @@
 package sagrada.model;
 
 import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.ToolCardRepository;
 
 import java.sql.SQLException;
 
@@ -53,5 +54,10 @@ public abstract class ToolCard extends ObservableCard<ToolCard> {
         }
 
         this.update(this);
+    }
+
+    public boolean isUsed(Game game) throws SQLException {
+        var repository = new ToolCardRepository(this.connection);
+        return repository.toolCardIsUsed(game.getId(), this.id);
     }
 }

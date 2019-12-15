@@ -211,6 +211,10 @@ public class GameController implements Consumer<Game> {
 
             for (var toolCard : this.game.getToolCards()) {
                 toolCard.setCanUse(player.isCurrentPlayer());
+
+                if (toolCard.isUsed(this.game)) {
+                    toolCard.setCost(2);
+                }
             }
 
             Platform.runLater(() -> {
