@@ -164,4 +164,25 @@ public final class FavorTokenRepository extends Repository<FavorToken> {
 
         preparedStatement.close();
     }
+
+    public int getPlayerFavorTokensTotal(int gameId, int playerId) throws SQLException {
+        PreparedStatement statement = this.connection.getConnection()
+                .prepareStatement("SELECT COUNT(*) AS total FROM gamefavortoken WHERE idgame = ? AND idplayer = ? AND gametoolcard IS NULL;");
+
+        statement.setInt(1, gameId);
+        statement.setInt(2, playerId);
+
+        ResultSet resultSet = statement.executeQuery();
+
+        if (!resultSet.next()) {
+            return 0;
+        }
+
+        final int total = resultSet.getInt("total");
+
+        statement.close();
+        resultSet.close();
+
+        return total;
+    }
 }
