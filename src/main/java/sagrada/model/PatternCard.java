@@ -1,6 +1,7 @@
 package sagrada.model;
 
 import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.DieRepository;
 import sagrada.database.repositories.PlayerFrameRepository;
 
 import java.sql.SQLException;
@@ -63,6 +64,13 @@ public class PatternCard extends ObservableCard<PatternCard> {
     public void replaceSquare(Square oldSquare, Square newSquare) {
         this.squares.set(this.squares.indexOf(oldSquare), newSquare);
         this.update(this);
+    }
+
+    public void moveDie(Player player, Square oldSquare, Square newSquare, DatabaseConnection connection) {
+        var dieToMove = oldSquare.getDie();
+
+        this.placeDie(player, newSquare, dieToMove, connection);
+        this.removeDie(player, oldSquare, connection);
     }
 
     public void placeDie(Player player, Square square, Die die, DatabaseConnection connection) {
