@@ -30,7 +30,7 @@ public class EndGame {
             }
 
             points += player.getPrivateObjectiveCard().calculatePoints(player.getPlayerFrame());
-            points += player.getFavorTokens().size();
+            points += player.getFavorTokens().stream().filter(token -> token.getToolCard() == null).count();
             points -= player.getPlayerFrame().countEmptySquares();
 
             player.setScore(points);
