@@ -51,8 +51,8 @@ public final class GrozingPliersActivator extends ToolCardActivator {
         alert.setTitle("Driepuntstang 2/2");
         alert.setContentText("Choose your option.");
 
-        ButtonType buttonIncrease = new ButtonType("Increase value by 1");
-        ButtonType buttonDecrease = new ButtonType("Decrease value by 1");
+        ButtonType buttonIncrease = new ButtonType("Waarde met 1 verhogen");
+        ButtonType buttonDecrease = new ButtonType("Waarde met 1 verlagen");
         alert.getButtonTypes().setAll(buttonIncrease, buttonDecrease);
 
         Optional<ButtonType> result = alert.showAndWait();
@@ -73,9 +73,9 @@ public final class GrozingPliersActivator extends ToolCardActivator {
 
         if (!dieValueIsValid) {
             Alert alert2 = new Alert(Alert.AlertType.ERROR);
-            alert2.setTitle("Error Dialog");
-            alert2.setHeaderText("Your value choice was invalid");
-            alert2.setContentText("Try again");
+            alert2.setTitle("Error Dialoog");
+            alert2.setHeaderText("Uw keuze was verkeerd.");
+            alert2.setContentText("Probeer opnieuw");
 
             alert2.showAndWait();
 
