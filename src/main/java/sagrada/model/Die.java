@@ -48,7 +48,7 @@ public class Die {
 
     @Override
     public String toString() {
-        return this.color + " " + this.value;
+        return this.color.getDutchColorName() + " " + this.value;
     }
 
     @Override
