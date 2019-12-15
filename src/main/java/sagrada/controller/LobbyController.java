@@ -21,9 +21,7 @@ import java.util.TimerTask;
 
 public class LobbyController {
     @FXML
-    private VBox vbLobbyGames;
-    @FXML
-    private VBox vbLobbyInvites;
+    private VBox vbLobbyGames, vbLobbyInvites;
     @FXML
     private Button btnCreateGame;
 
@@ -58,10 +56,8 @@ public class LobbyController {
         try {
             var gameRepository = new GameRepository(this.databaseConnection);
             var games = gameRepository.getAll();
-            Platform.runLater(() -> {
-                var loader = this.getClass().getResource("/views/lobby/lobbyGame.fxml");
-                this.fillLobbyList(games, this.vbLobbyGames, loader);
-            });
+            var loader = this.getClass().getResource("/views/lobby/lobbyGame.fxml");
+            this.fillLobbyList(games, this.vbLobbyGames, loader);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -71,28 +67,29 @@ public class LobbyController {
         try {
             var gameRepository = new GameRepository(this.databaseConnection);
             var games = gameRepository.getInvitedGames(this.user);
-            Platform.runLater(() -> {
-                var loader = this.getClass().getResource("/views/lobby/lobbyInvite.fxml");
-                this.fillLobbyList(games, this.vbLobbyInvites, loader);
-            });
+            var loader = this.getClass().getResource("/views/lobby/lobbyInvite.fxml");
+            this.fillLobbyList(games, this.vbLobbyInvites, loader);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     private void fillLobbyList(List<Game> games, VBox items, URL view) {
-        items.getChildren().clear();
+        Platform.runLater(() -> items.getChildren().clear());
 
-        try {
-            for (var game : games) {
-                if (game.getOwner() != null) {
-                    var loader = new FXMLLoader(view);
-                    loader.setController(new LobbyItemController(game, this.user, this.databaseConnection, this));
-                    items.getChildren().add(loader.load());
-                }
+        for (var game : games) {
+            if (game.getOwner() != null) {
+                var loader = new FXMLLoader(view);
+                loader.setController(new LobbyItemController(game, this.user, this.databaseConnection, this));
+
+                Platform.runLater(() -> {
+                    try {
+                        items.getChildren().add(loader.load());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
