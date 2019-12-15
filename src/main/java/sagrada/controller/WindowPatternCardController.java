@@ -91,6 +91,12 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         this.playerFrame = patternCard;
 
         if (!this.isEndOfGame) {
+            try {
+                this.player.checkIfCardIsValid(new PlayerFrameRepository(connection));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
             Platform.runLater(() -> {
                 if (this.windowSquares.size() > 0) {
                     this.fillWindow();
@@ -101,12 +107,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
                     this.setPatternCardInformation();
 
                     boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
-
-                    try {
-                        this.player.checkIfCardIsValid(new PlayerFrameRepository(connection));
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
 
                     if (!isOwnCard) {
                         this.reportMisplacement.setText("Ongeldig verklaren");
