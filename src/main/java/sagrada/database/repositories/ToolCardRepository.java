@@ -127,12 +127,20 @@ public final class ToolCardRepository extends Repository<ToolCard> {
                 break;
             }
 
-            toolCards.add(CardFactory.getToolCard(
-                    cardResultSet.getInt("idtoolcard"),
+            int idToolCard = cardResultSet.getInt("idtoolcard");
+
+            ToolCard toolCard = CardFactory.getToolCard(
+                    idToolCard,
                     cardResultSet.getString("name"),
                     cardResultSet.getString("description"),
                     this.connection
-            ));
+            );
+
+            if (this.toolCardIsUsed(gameId, idToolCard)) {
+                toolCard.setCost(2);
+            }
+
+            toolCards.add(toolCard);
 
             cardPreparedStatement.close();
             cardResultSet.close();
@@ -142,6 +150,22 @@ public final class ToolCardRepository extends Repository<ToolCard> {
         resultSet.close();
 
         return toolCards;
+    }
+
+    public boolean toolCardIsUsed(int gameId, int toolCardId) throws SQLException {
+        PreparedStatement statement = this.connection.getConnection().prepareStatement("SELECT if(count(*) > 0,true,false) as used FROM gamefavortoken JOIN gametoolcard ON gamefavortoken.idgame = gametoolcard.idgame AND gamefavortoken.gametoolcard = gametoolcard.gametoolcard WHERE gamefavortoken.idgame = ? AND gametoolcard.idtoolcard = ?;");
+
+        statement.setInt(1, gameId);
+        statement.setInt(2, toolCardId);
+
+        var result = statement.executeQuery();
+        result.next();
+        boolean bool = result.getBoolean(1);
+
+        result.close();
+        statement.close();
+
+        return bool;
     }
 
     public void addMultiple(Collection<ToolCard> toolCards, int gameId) throws SQLException {
@@ -205,6 +229,26 @@ public final class ToolCardRepository extends Repository<ToolCard> {
         resultSet.close();
 
         return this.findById(id);
+    }
+
+    public int getGameToolCardIdByToolCardId(int toolCardId, int gameId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection()
+                .prepareStatement("SELECT gametoolcard FROM gametoolcard WHERE idtoolcard = ? AND idgame = ?;");
+        preparedStatement.setInt(1, toolCardId);
+        preparedStatement.setInt(2, gameId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (!resultSet.next()) {
+            return 0;
+        }
+
+        final int id = resultSet.getInt("gametoolcard");
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return id;
     }
 
     public void addAffectedToolCard(ToolCard toolCard, List<Die> dice, int gameId) throws SQLException {

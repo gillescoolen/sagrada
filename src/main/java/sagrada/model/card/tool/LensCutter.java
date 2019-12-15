@@ -3,12 +3,10 @@ package sagrada.model.card.tool;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.DieRepository;
 import sagrada.database.repositories.FavorTokenRepository;
-import sagrada.database.repositories.RoundTrackRepository;
 import sagrada.database.repositories.ToolCardRepository;
 import sagrada.model.*;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public final class LensCutter extends ToolCard {
     private ToolCardRepository toolCardRepository = new ToolCardRepository(this.connection);
@@ -38,6 +36,6 @@ public final class LensCutter extends ToolCard {
         FavorToken favorToken = player.getNonAffectedFavorToken();
         favorToken.setToolCard(this);
 
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false);
+        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
     }
 }

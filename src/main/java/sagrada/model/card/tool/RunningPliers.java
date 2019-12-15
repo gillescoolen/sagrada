@@ -30,6 +30,6 @@ public final class RunningPliers extends ToolCard {
 
         // TODO: UI??
 
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), true);
+        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), true, game.getId());
     }
 }

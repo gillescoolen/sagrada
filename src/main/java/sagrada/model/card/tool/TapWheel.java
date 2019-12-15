@@ -7,7 +7,6 @@ import sagrada.database.repositories.ToolCardRepository;
 import sagrada.model.*;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public final class TapWheel extends ToolCard {
@@ -21,7 +20,7 @@ public final class TapWheel extends ToolCard {
     @Override
     public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
         @SuppressWarnings("unchecked")
-        List<Pair<Square, Square>> movePair = (List<Pair<Square, Square>>)message;
+        List<Pair<Square, Square>> movePair = (List<Pair<Square, Square>>) message;
 
         for (var pair : movePair) {
             Square newSquare = pair.getKey();
@@ -35,6 +34,6 @@ public final class TapWheel extends ToolCard {
         FavorToken favorToken = player.getNonAffectedFavorToken();
         favorToken.setToolCard(this);
 
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false);
+        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
     }
 }
