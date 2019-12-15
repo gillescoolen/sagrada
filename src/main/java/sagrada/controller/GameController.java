@@ -49,7 +49,6 @@ public class GameController implements Consumer<Game> {
     private RoundTrackRepository roundTrackRepository;
 
     private boolean gameReady = false;
-    private Die selectedDie;
     private boolean placedDie = false;
     private boolean usedToolCard = false;
 
@@ -469,11 +468,11 @@ public class GameController implements Consumer<Game> {
     }
 
     public void setSelectedDie(Die selectedDie) {
-        this.selectedDie = selectedDie;
+        this.game.setSelectedDie(selectedDie);
     }
 
     public Die getSelectedDie() {
-        return this.selectedDie;
+        return this.game.getSelectedDie();
     }
 
     public boolean isPlacedDie() {

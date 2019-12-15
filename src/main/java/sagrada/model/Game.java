@@ -8,6 +8,7 @@ import java.util.List;
 
 public class Game extends Observable<Game> {
     private int id;
+    private Die selectedDie;
     private Player playerTurn;
     private LocalDateTime createdOn;
     private final RoundTrack roundTrack;
@@ -18,6 +19,7 @@ public class Game extends Observable<Game> {
     private final List<PublicObjectiveCard> objectiveCards = new ArrayList<>(3);
 
     private final List<FavorToken> favorTokens = new ArrayList<>(24);
+
 
     public Game() {
         this.draftPool = new DraftPool();
@@ -181,5 +183,14 @@ public class Game extends Observable<Game> {
     // FIXME: rename function, init functions are bad practice
     public void init() {
         // TODO: implement
+    }
+
+    public Die getSelectedDie() {
+        return selectedDie;
+    }
+
+    public void setSelectedDie(Die selectedDie) {
+        this.selectedDie = selectedDie;
+        this.update(this);
     }
 }
