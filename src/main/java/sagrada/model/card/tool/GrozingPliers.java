@@ -27,7 +27,6 @@ public final class GrozingPliers extends ToolCard {
         Die newDie = new Die(die.getNumber(), die.getColor());
         newDie.setValue(newDieValue);
 
-
         game.updateDraftPool(die, newDie);
 
         this.incrementCost();
@@ -35,7 +34,7 @@ public final class GrozingPliers extends ToolCard {
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(newDie);
 
-        dieRepository.updateGameDie(game, newDie);
+        dieRepository.updateGameDie(game.getId(), newDie);
 
         FavorToken favorToken = player.getNonAffectedFavorToken();
         favorToken.setToolCard(this);

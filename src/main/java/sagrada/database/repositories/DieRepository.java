@@ -70,13 +70,25 @@ public final class DieRepository extends Repository<Die> {
         return draftPoolDice;
     }
 
-    public void updateGameDie(Game game, Die die) throws SQLException {
+    public void updateGameDie(int gameId, Die die) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE gamedie SET value = ? WHERE idgame = ? AND dienumber = ? AND diecolor = ?;");
 
         preparedStatement.setInt(1, die.getValue());
-        preparedStatement.setInt(2, game.getId());
+        preparedStatement.setInt(2, gameId);
         preparedStatement.setInt(3, die.getNumber());
         preparedStatement.setString(4, die.getColor().getDutchColorName());
+
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
+    }
+
+    public void removeGameDie(int gameId, Die die) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("DELETE FROM gamedie WHERE idgame = ? AND dienumber = ? AND diecolor = ?;");
+
+        preparedStatement.setInt(1, gameId);
+        preparedStatement.setInt(2, die.getNumber());
+        preparedStatement.setString(3, die.getColor().getDutchColorName());
 
         preparedStatement.executeUpdate();
 
