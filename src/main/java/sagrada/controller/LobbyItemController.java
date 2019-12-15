@@ -45,8 +45,8 @@ public class LobbyItemController {
 
     @FXML
     protected void initialize() {
-       this.fillItem();
-       this.bindButtons();
+        this.fillItem();
+        this.bindButtons();
     }
 
     private void fillItem() {
@@ -58,31 +58,43 @@ public class LobbyItemController {
         this.lbSpotsLeft.setText(spots + " plek(ken) over!");
 
         try {
-            if (gameRepository.checkIfGameHasStarted(this.game) && !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
-                this.lbSpotsLeft.setText("Spel is begonnen");
+            if (containsFinished(this.game.getPlayers())) {
+                this.lbSpotsLeft.setText("Spel is afgerond");
 
                 this.lobbyItem.setDisable(true);
                 this.lobbyItem.getStyleClass().clear();
-                this.lobbyItem.getStyleClass().add("item-full");
-
-                if (this.btnDecline != null) this.btnDecline.setDisable(true);
-            } else if (gameRepository.checkIfGameHasStarted(this.game) && this.containsName(this.game.getPlayers(), this.account.getUsername())) {
-                this.lbSpotsLeft.setText("Spel is begonnen");
-
-                this.lobbyItem.getStyleClass().clear();
-                this.lobbyItem.getStyleClass().add("item-started");
-
-                if (this.btnDecline != null) this.btnDecline.setDisable(true);
+                this.lobbyItem.getStyleClass().add("item-finished");
             } else {
-                if (this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
-                    this.lobbyItem.getStyleClass().clear();
-                    this.lobbyItem.getStyleClass().add("item-accepted");
+                if (gameRepository.checkIfGameHasStarted(this.game) && !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
+                    this.lbSpotsLeft.setText("Spel is begonnen");
 
-                    if (this.btnDecline != null) this.btnDecline.setDisable(true);
-                } else if (spots == 0 || !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
                     this.lobbyItem.setDisable(true);
                     this.lobbyItem.getStyleClass().clear();
                     this.lobbyItem.getStyleClass().add("item-full");
+
+                    if (this.btnDecline != null) this.btnDecline.setDisable(true);
+                } else if (gameRepository.checkIfGameHasStarted(this.game) && this.containsName(this.game.getPlayers(), this.account.getUsername())) {
+                    this.lbSpotsLeft.setText("Spel is begonnen");
+
+                    this.lobbyItem.getStyleClass().clear();
+                    this.lobbyItem.getStyleClass().add("item-started");
+
+                    if (this.btnDecline != null) this.btnDecline.setDisable(true);
+                } else {
+                    if (spots == 0 || !this.containsName(this.game.getPlayers(), this.account.getUsername())) {
+                        this.lobbyItem.setDisable(true);
+                        this.lobbyItem.getStyleClass().clear();
+                        this.lobbyItem.getStyleClass().add("item-full");
+                    } else if (this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
+                        this.lobbyItem.getStyleClass().clear();
+                        this.lobbyItem.getStyleClass().add("item-accepted");
+
+                        if (this.btnDecline != null) this.btnDecline.setDisable(true);
+                    } else if (!this.containsNameAndAccepted(this.game.getPlayers(), this.account.getUsername())) {
+                        this.lobbyItem.setDisable(false);
+                        this.lobbyItem.getStyleClass().clear();
+                        this.lobbyItem.getStyleClass().add("item");
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -147,11 +159,15 @@ public class LobbyItemController {
     }
 
     private boolean containsNameAndAccepted(final List<Player> players, final String name) {
-        return players.stream().anyMatch(p -> p.getAccount().getUsername().equals(name) && p.getPlayStatus() == PlayStatus.ACCEPTED);
+        return players.stream().anyMatch(p -> p.getAccount().getUsername().equals(name) && (p.getPlayStatus() == PlayStatus.ACCEPTED || p.getPlayStatus() == PlayStatus.CHALLENGER));
+    }
+
+    private boolean containsFinished(final List<Player> players) {
+        return players.stream().anyMatch(p -> (p.getPlayStatus() == PlayStatus.DONE_PLAYING));
     }
 
     private int getSpots(List<Player> players) {
-        return MAX_PLAYERS - (int)players.stream()
+        return MAX_PLAYERS - (int) players.stream()
                 .filter(p -> p.getPlayStatus() == PlayStatus.ACCEPTED || p.getPlayStatus() == PlayStatus.CHALLENGER)
                 .count();
     }
