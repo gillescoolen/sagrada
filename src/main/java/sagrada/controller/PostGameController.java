@@ -46,9 +46,10 @@ public class PostGameController {
 
                 if (players.size() > 0) {
                     this.game.addPlayers(players);
-                    this.ses.shutdown();
 
                     this.loadPlayers();
+
+                    this.ses.shutdown();
                 }
 
             } catch (SQLException | IOException e) {
@@ -76,6 +77,7 @@ public class PostGameController {
     }
 
     private void loadPlayers() throws IOException {
+        this.leaderBoard.getChildren().clear();
         for (var player : this.game.getPlayers()) {
             var loader = new FXMLLoader(getClass().getResource("/views/game/postPlayer.fxml"));
             loader.setController(new PostPlayerController(player, this.gameController));
