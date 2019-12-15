@@ -17,7 +17,9 @@ import sagrada.model.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LobbyItemController {
     @FXML
@@ -50,7 +52,7 @@ public class LobbyItemController {
     }
 
     private void fillItem() {
-        this.lbName.setText(this.game.getOwner().getAccount().getUsername() + "'s Spel");
+        if (this.game.getOwner() != null) this.lbName.setText(this.game.getOwner().getAccount().getUsername() + "'s Spel");
 
         GameRepository gameRepository = new GameRepository(this.databaseConnection);
 
@@ -59,6 +61,12 @@ public class LobbyItemController {
 
         try {
             if (containsFinished(this.game.getPlayers())) {
+
+                var list = this.game.getPlayers().stream()
+                        .sorted(Comparator.comparingInt(Player::getScore))
+                        .collect(Collectors.toList());
+
+                this.lbName.setText(list.get(1).getAccount().getUsername() + "'s gewonnen spel");
                 this.lbSpotsLeft.setText("Spel is afgerond");
 
                 this.lobbyItem.setDisable(true);

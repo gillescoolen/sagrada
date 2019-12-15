@@ -40,7 +40,7 @@ public class LobbyController {
         this.getGamesTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                 getGames();
+                getGames();
             }
         }, 0, 5000);
         this.getInvitesTimer.schedule(new TimerTask() {
@@ -77,18 +77,16 @@ public class LobbyController {
         Platform.runLater(() -> items.getChildren().clear());
 
         for (var game : games) {
-            if (game.getOwner() != null) {
-                var loader = new FXMLLoader(view);
-                loader.setController(new LobbyItemController(game, this.user, this.databaseConnection, this));
+            var loader = new FXMLLoader(view);
+            loader.setController(new LobbyItemController(game, this.user, this.databaseConnection, this));
 
-                Platform.runLater(() -> {
-                    try {
-                        items.getChildren().add(loader.load());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
+            Platform.runLater(() -> {
+                try {
+                    items.getChildren().add(loader.load());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
         }
     }
 
@@ -115,10 +113,10 @@ public class LobbyController {
         }
     }
 
-   public void stopTimers() {
+    public void stopTimers() {
         this.getGamesTimer.cancel();
         this.getGamesTimer.purge();
         this.getInvitesTimer.cancel();
         this.getInvitesTimer.purge();
-   }
+    }
 }

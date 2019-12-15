@@ -79,6 +79,7 @@ public final class GameRepository extends Repository<Game> {
         playerPreparedStatement.setString(3, PlayStatus.CHALLENGER.getPlayState());
         playerPreparedStatement.setString(4, PlayStatus.INVITED.getPlayState());
         playerPreparedStatement.setString(5, PlayStatus.DONE_PLAYING.getPlayState());
+
         ResultSet playerResultSet = playerPreparedStatement.executeQuery();
 
         while (playerResultSet.next()) {
