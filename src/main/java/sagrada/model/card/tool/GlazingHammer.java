@@ -1,6 +1,7 @@
 package sagrada.model.card.tool;
 
 import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.DieRepository;
 import sagrada.database.repositories.FavorTokenRepository;
 import sagrada.model.*;
 
@@ -9,6 +10,7 @@ import java.util.List;
 
 public final class GlazingHammer extends ToolCard {
     private FavorTokenRepository favorTokenRepository = new FavorTokenRepository(this.connection);
+    private DieRepository dieRepository = new DieRepository(this.connection);
 
     public GlazingHammer(int id, String name, String description, DatabaseConnection connection) {
         super(id, name, description, connection);
@@ -16,7 +18,21 @@ public final class GlazingHammer extends ToolCard {
 
     @Override
     public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
+        if (game.getSelectedDie() != null || player.getIfSecondTurn(game.getPlayers().size())) {
+            return;
+        }
+
         draftPool.throwDice();
+
+        var pool = draftPool.getDice();
+
+        pool.forEach(die -> {
+            try {
+                dieRepository.updateGameDie(game.getId(), die);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
 
         this.incrementCost();
 
