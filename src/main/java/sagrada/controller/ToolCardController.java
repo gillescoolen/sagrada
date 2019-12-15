@@ -21,10 +21,12 @@ public class ToolCardController implements Consumer<ToolCard> {
 
     private final ToolCard toolCard;
     private final ToolCardActivator toolCardActivator;
+    private final GameController gameController;
 
-    public ToolCardController(ToolCard toolCard, ToolCardActivator toolCardActivator) {
+    public ToolCardController(GameController gameController, ToolCard toolCard, ToolCardActivator toolCardActivator) {
         this.toolCard = toolCard;
         this.toolCardActivator = toolCardActivator;
+        this.gameController = gameController;
 
         this.toolCard.observe(this);
     }
@@ -41,7 +43,7 @@ public class ToolCardController implements Consumer<ToolCard> {
         if (card != null) {
             this.points.setText(Integer.toString(card.getCost()));
 
-            if (toolCard.canUse()) {
+            if (toolCard.canUse() && !this.gameController.isToolCardUsed()) {
                 this.wrapper.getStyleClass().remove("tool-card-wrapper-disabled");
 
                 this.wrapper.setOnMouseClicked(event -> this.useToolCard());
@@ -56,6 +58,7 @@ public class ToolCardController implements Consumer<ToolCard> {
     private void useToolCard() {
         try {
             this.toolCardActivator.activate();
+            this.gameController.setUsedToolCard(true);
         } catch (SQLException e) {
             e.printStackTrace();
         }
