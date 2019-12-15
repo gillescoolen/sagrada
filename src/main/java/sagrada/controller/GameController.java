@@ -15,6 +15,7 @@ import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.*;
 import sagrada.model.*;
 import sagrada.model.card.activators.ToolCardActivatorFactory;
+import sagrada.util.EndGame;
 import sagrada.util.StartGame;
 
 import java.io.IOException;
@@ -120,11 +121,14 @@ public class GameController implements Consumer<Game> {
                     if (round >= 10) {
                         this.stopAllTimers();
 
+                        var endGame = new EndGame(this.game, this.connection);
+                        endGame.calculatePoints();
+
                         this.game.getPlayers().forEach(player -> player.setPlayStatus(PlayStatus.DONE_PLAYING));
                         this.playerRepository.setAllFinished(game.getPlayers());
 
                         var stage = ((Stage) btnRollDice.getScene().getWindow());
-                        var scene = new Scene(new PostGameScreen(this.game, this).load());
+                        var scene = new Scene(new PostGameScreen(this.game, this, this.connection).load());
                         stage.setScene(scene);
                     }
                 } catch (IOException | SQLException ex) {
@@ -256,7 +260,7 @@ public class GameController implements Consumer<Game> {
                     var stage = ((Stage) this.mainGamePage.getScene().getWindow());
                     Scene scene = null;
                     try {
-                        scene = new Scene(new PostGameScreen(this.game, this).load());
+                        scene = new Scene(new PostGameScreen(this.game, this, this.connection).load());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
