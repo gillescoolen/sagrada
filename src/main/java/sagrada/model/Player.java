@@ -376,4 +376,12 @@ public class Player {
 
         return nextSequence;
     }
+
+    public boolean getIfSecondTurn(int playerAmount) {
+        if (this.getSequenceNumber() > playerAmount) {
+            return true;
+        }
+
+        return false;
+    }
 }
