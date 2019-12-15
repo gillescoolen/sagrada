@@ -4,10 +4,12 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.*;
 import sagrada.model.*;
@@ -26,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class GameController implements Consumer<Game> {
+    @FXML
+    private HBox mainGamePage;
     @FXML
     private VBox rowOne;
     @FXML
@@ -113,7 +117,7 @@ public class GameController implements Consumer<Game> {
 
             if (player.getSequenceNumber() == this.game.getPlayers().size() * 2) {
                 var unusedDice = this.game.getDraftPool().getDice();
-
+                var thisGameController = this;
                 final Task<Void> roundTrackTask = new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
@@ -124,13 +128,16 @@ public class GameController implements Consumer<Game> {
                                 game.removeDieFromDraftPool(die);
                             }
 
-                            if (round >= 10) {
-                                // TODO: Go to end screen
+                            if (round >= 2) {
                                 System.out.println(":D");
                                 game.getPlayers().forEach(player -> player.setPlayStatus(PlayStatus.DONE_PLAYING));
                                 playerRepository.setAllFinished(game.getPlayers());
 
-                                
+                                var loader = new FXMLLoader(getClass().getResource("/views/postGame.fxml"));
+                                loader.setController(new PostGameController(game, thisGameController));
+                                var stage = ((Stage) mainGamePage.getScene().getWindow());
+                                var scene = new Scene(loader.load());
+                                stage.setScene(scene);
                             }
                         } catch (SQLException ex) {
                             ex.printStackTrace();
