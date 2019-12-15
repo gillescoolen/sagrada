@@ -1,5 +1,7 @@
 package sagrada.model;
 
+import java.util.Objects;
+
 /**
  * This is *patterncardfield* in the database.
  */
@@ -52,5 +54,15 @@ public class Square {
         } else {
             return "";
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || this.getClass() != o.getClass()) return false;
+
+        Square square = (Square) o;
+        return Objects.equals(this.position, square.position) && this.color == square.color && Objects.equals(this.value, square.value) && Objects.equals(this.die, square.die);
     }
 }

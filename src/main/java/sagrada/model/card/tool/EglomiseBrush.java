@@ -22,20 +22,23 @@ public final class EglomiseBrush extends ToolCard {
         Square oldSquare = (Square) values[0];
         Square newSquare = (Square) values[1];
 
-        newSquare.setDie(oldSquare.getDie());
+        Square squareToPlace = new Square();
+        squareToPlace.setDie(oldSquare.getDie());
+
         oldSquare.setDie(null);
+//        patternCard.replaceSquare(newSquare, squareToPlace);
+        patternCard.placeDie(player, newSquare, squareToPlace.getDie(), this.connection);
 
-        patternCard.replaceSquare(oldSquare, newSquare);
-
-        this.incrementCost();
-
-        ArrayList<Die> dice = new ArrayList<>();
-        dice.add(newSquare.getDie());
-
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
-
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false);
-        toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+//        patternCard.removeDie(player, oldSquare, this.connection);
+//        this.incrementCost();
+//
+//        ArrayList<Die> dice = new ArrayList<>();
+//        dice.add(newSquare.getDie());
+//
+//    FavorToken favorToken = player.getNonAffectedFavorToken();
+//        favorToken.setToolCard(this);
+//
+//        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false);
+//        toolCardRepository.addAffectedToolCard(this, dice, game.getId());
     }
 }
