@@ -43,11 +43,13 @@ public class ToolCardController implements Consumer<ToolCard> {
         if (card != null) {
             this.toolCard = card;
             this.points.setText(Integer.toString(card.getCost()));
-            System.out.println(toolCard.canUse() + " - " + this.gameController.isToolCardUsed());
+
             if (this.toolCard.canUse() && !this.gameController.isToolCardUsed()) {
+                this.wrapper.getStyleClass().clear();
                 this.wrapper.getStyleClass().add("tool-card-wrapper");
                 this.wrapper.setOnMouseClicked(event -> this.useToolCard());
             } else {
+                this.wrapper.getStyleClass().clear();
                 this.wrapper.getStyleClass().add("tool-card-wrapper-disabled");
                 this.wrapper.setOnMouseClicked(null);
             }
