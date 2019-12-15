@@ -7,7 +7,6 @@ import javafx.scene.layout.HBox;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.DieRepository;
 import sagrada.database.repositories.GameRepository;
-import sagrada.database.repositories.PlayerFrameRepository;
 import sagrada.model.DraftPool;
 import sagrada.model.Game;
 
@@ -15,7 +14,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
