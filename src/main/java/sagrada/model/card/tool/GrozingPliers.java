@@ -1,6 +1,7 @@
 package sagrada.model.card.tool;
 
 import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.DieRepository;
 import sagrada.database.repositories.FavorTokenRepository;
 import sagrada.database.repositories.ToolCardRepository;
 import sagrada.model.*;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 public final class GrozingPliers extends ToolCard {
     private ToolCardRepository toolCardRepository = new ToolCardRepository(this.connection);
     private FavorTokenRepository favorTokenRepository = new FavorTokenRepository(this.connection);
+    private DieRepository dieRepository = new DieRepository(this.connection);
 
     public GrozingPliers(int id, String name, String description, DatabaseConnection connection) {
         super(id, name, description, connection);
@@ -22,14 +24,18 @@ public final class GrozingPliers extends ToolCard {
         Die die = (Die) messages[0];
         Integer newDieValue = (Integer) messages[1];
 
-        die.setValue(newDieValue);
+        Die newDie = new Die(die.getNumber(), die.getColor());
+        newDie.setValue(newDieValue);
 
-        game.updateDraftPool(die, die);
+
+        game.updateDraftPool(die, newDie);
 
         this.incrementCost();
 
         ArrayList<Die> dice = new ArrayList<>();
-        dice.add(die);
+        dice.add(newDie);
+
+        dieRepository.updateGameDie(game, newDie);
 
         FavorToken favorToken = player.getNonAffectedFavorToken();
         favorToken.setToolCard(this);

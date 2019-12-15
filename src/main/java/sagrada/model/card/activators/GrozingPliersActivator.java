@@ -20,7 +20,7 @@ public final class GrozingPliersActivator extends ToolCardActivator {
         Game game = this.controller.getGame();
         Die oldDie = this.askWhichDieToBeChanged();
 
-        Integer newDieValue = this.askIncreaseOrDecreaseDieValue(oldDie);
+        int newDieValue = this.askIncreaseOrDecreaseDieValue(oldDie);
 
         Object[] message = new Object[2];
         message[0] = oldDie;
@@ -48,8 +48,7 @@ public final class GrozingPliersActivator extends ToolCardActivator {
 
     private int askIncreaseOrDecreaseDieValue(Die die) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog with Custom Actions");
-        alert.setHeaderText("Look, a Confirmation Dialog with Custom Actions");
+        alert.setTitle("Driepuntstang 2/2");
         alert.setContentText("Choose your option.");
 
         ButtonType buttonIncrease = new ButtonType("Increase value by 1");

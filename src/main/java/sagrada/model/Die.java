@@ -1,5 +1,6 @@
 package sagrada.model;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class Die {
@@ -43,5 +44,20 @@ public class Die {
     public void roll() {
         Random random = new Random();
         this.setValue(random.nextInt(6) + 1);
+    }
+
+    @Override
+    public String toString() {
+        return this.color.getDutchColorName() + " " + this.value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || this.getClass() != o.getClass()) return false;
+
+        Die die = (Die) o;
+        return Objects.equals(number, die.number) && color == die.color && Objects.equals(value, die.value);
     }
 }
