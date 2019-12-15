@@ -21,6 +21,7 @@ public final class CorkBackedStraightedge extends ToolCard {
 
     @Override
     public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
+        @SuppressWarnings("unchecked")
         var move = (Pair<Die, Square>) message;
         var die = move.getKey();
         var square = move.getValue();
