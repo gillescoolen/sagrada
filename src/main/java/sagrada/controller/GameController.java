@@ -120,7 +120,7 @@ public class GameController implements Consumer<Game> {
                 var thisGameController = this;
                 final Task<Void> roundTrackTask = new Task<Void>() {
                     @Override
-                    protected Void call() throws Exception {
+                    protected Void call() {
                         try {
                             var round = gameRepository.getCurrentRound(game.getId());
                             dieRepository.placeOnRoundTrack(unusedDice, game.getId(), round);
@@ -139,7 +139,7 @@ public class GameController implements Consumer<Game> {
                                 var scene = new Scene(loader.load());
                                 stage.setScene(scene);
                             }
-                        } catch (SQLException ex) {
+                        } catch (SQLException | IOException ex) {
                             ex.printStackTrace();
                         }
                         return null;
