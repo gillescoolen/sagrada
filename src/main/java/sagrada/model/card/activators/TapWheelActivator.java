@@ -67,7 +67,7 @@ public final class TapWheelActivator extends ToolCardActivator {
 
     private void showMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error Dialog");
+        alert.setTitle("Error dialoog");
         alert.setContentText(message);
 
         alert.showAndWait();
