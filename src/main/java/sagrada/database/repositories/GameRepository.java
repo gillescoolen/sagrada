@@ -7,9 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public final class GameRepository extends Repository<Game> {
     public GameRepository(DatabaseConnection connection) {
@@ -97,6 +95,7 @@ public final class GameRepository extends Repository<Game> {
             player.setId(playerResultSet.getInt("idplayer"));
             player.setPlayStatus(playerPlayStatus);
             player.setCurrentPlayer(playerResultSet.getInt("isCurrentPlayer") > 0);
+            player.setScore(playerResultSet.getInt("score"));
             player.setAccount(playerAccount);
 
             game.addPlayer(player);
@@ -164,7 +163,6 @@ public final class GameRepository extends Repository<Game> {
     @Override
     public Game findById(int id) throws SQLException {
         Game game = new Game();
-        PlayerRepository playerRepository = new PlayerRepository(this.connection);
 
         PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM game WHERE idgame = ?");
         preparedStatement.setInt(1, id);
@@ -172,10 +170,7 @@ public final class GameRepository extends Repository<Game> {
         ResultSet resultSet = preparedStatement.executeQuery();
 
         while (resultSet.next()) {
-            game.setId(resultSet.getInt("idgame"));
-            int _id = resultSet.getInt("turn_idplayer");
-            game.setPlayerTurn(_id == 0 ? null : playerRepository.findById(_id));
-            game.setCreatedOn((resultSet.getTimestamp("created_on").toLocalDateTime()));
+            game = this.getGame(resultSet);
         }
 
         resultSet.close();
@@ -247,4 +242,25 @@ public final class GameRepository extends Repository<Game> {
 
         nextPlayerGameStatement.close();
     }
+
+    public List<Player> getAllDonePlayers(Game game) throws SQLException {
+        var players = new ArrayList<Player>();
+
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN (?)");
+        playerPreparedStatement.setInt(1, game.getId());
+        playerPreparedStatement.setString(2, PlayStatus.DONE_PLAYING.getPlayState());
+        ResultSet playerResultSet = playerPreparedStatement.executeQuery();
+
+        PlayerRepository playerRepository = new PlayerRepository(this.connection);
+
+        while (playerResultSet.next()) {
+            players.add(playerRepository.createPlayer(playerResultSet));
+        }
+
+        playerPreparedStatement.close();
+        playerResultSet.close();
+
+        return players;
+    }
 }
+

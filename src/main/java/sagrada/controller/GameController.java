@@ -128,7 +128,7 @@ public class GameController implements Consumer<Game> {
                         this.playerRepository.setAllFinished(game.getPlayers());
 
                         var stage = ((Stage) btnRollDice.getScene().getWindow());
-                        var scene = new Scene(new PostGameScreen(this.game, this).load());
+                        var scene = new Scene(new PostGameScreen(this.game, this, this.connection).load());
                         stage.setScene(scene);
                     }
                 } catch (IOException | SQLException ex) {
@@ -260,7 +260,7 @@ public class GameController implements Consumer<Game> {
                     var stage = ((Stage) this.mainGamePage.getScene().getWindow());
                     Scene scene = null;
                     try {
-                        scene = new Scene(new PostGameScreen(this.game, this).load());
+                        scene = new Scene(new PostGameScreen(this.game, this, this.connection).load());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
