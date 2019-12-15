@@ -10,6 +10,6 @@
     <ListView minHeight="460.0" maxWidth="300.0" fx:id="lvMessageBox" />
     <HBox>
         <TextField fx:id="messageField" prefHeight="20.0" prefWidth="200.0" styleClass="input"/>
-        <Button fx:id="sendButton" prefHeight="20.0" prefWidth="100.0" styleClass="send-button" text="Send"/>
+        <Button fx:id="sendButton" prefHeight="20.0" prefWidth="100.0" styleClass="send-button" text="Verstuur"/>
     </HBox>
 </VBox>
