@@ -157,7 +157,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             this.changeView.setDisable(true);
             this.name.setText(this.windowField.getName() + String.format(" (%s tokens)", this.windowField.getDifficulty()));
             this.reportMisplacement.setText("Kies");
-
             this.reportMisplacement.setOnMouseClicked(e -> this.choosePatternCard());
         } else {
             this.changeView.setDisable(false);
@@ -172,7 +171,8 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         }
 
         if (this.isEndOfGame) {
-            this.window.getChildren().remove(this.reportMisplacement);
+            this.reportMisplacement.setDisable(true);
+            this.reportMisplacement.setVisible(false);
         }
 
         this.changeView.setOnAction((e) -> this.changeView());
