@@ -117,35 +117,29 @@ public class GameController implements Consumer<Game> {
 
             if (player.getSequenceNumber() == this.game.getPlayers().size() * 2) {
                 var unusedDice = this.game.getDraftPool().getDice();
-                var thisGameController = this;
-                final Task<Void> roundTrackTask = new Task<Void>() {
-                    @Override
-                    protected Void call() {
-                        try {
-                            var round = gameRepository.getCurrentRound(game.getId());
-                            dieRepository.placeOnRoundTrack(unusedDice, game.getId(), round);
-                            for (var die : unusedDice) {
-                                game.removeDieFromDraftPool(die);
-                            }
+                int round = 0;
 
-                            if (round >= 2) {
-                                System.out.println(":D");
-                                game.getPlayers().forEach(player -> player.setPlayStatus(PlayStatus.DONE_PLAYING));
-                                playerRepository.setAllFinished(game.getPlayers());
-
-                                var loader = new FXMLLoader(getClass().getResource("/views/postGame.fxml"));
-                                loader.setController(new PostGameController(game, thisGameController));
-                                var stage = ((Stage) mainGamePage.getScene().getWindow());
-                                var scene = new Scene(loader.load());
-                                stage.setScene(scene);
-                            }
-                        } catch (SQLException | IOException ex) {
-                            ex.printStackTrace();
-                        }
-                        return null;
+                try {
+                    round = gameRepository.getCurrentRound(game.getId());
+                    dieRepository.placeOnRoundTrack(unusedDice, game.getId(), round);
+                    for (var die : unusedDice) {
+                        game.removeDieFromDraftPool(die);
                     }
-                };
-                new Thread(roundTrackTask).start();
+
+                    if (round >= 2) {
+                        System.out.println(":D");
+                        game.getPlayers().forEach(player -> player.setPlayStatus(PlayStatus.DONE_PLAYING));
+                        playerRepository.setAllFinished(game.getPlayers());
+
+                        var loader = new FXMLLoader(getClass().getResource("/views/postGame.fxml"));
+                        loader.setController(new PostGameController(game, this));
+                        var stage = ((Stage) btnRollDice.getScene().getWindow());
+                        var scene = new Scene(loader.load());
+                        stage.setScene(scene);
+                    }
+                } catch (IOException | SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
 
             placedDie = false;

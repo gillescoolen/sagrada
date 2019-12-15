@@ -13,29 +13,17 @@
     <Text styleClass="title" text="Samenvatting"/>
 
     <!-- LEADERBOARD -->
-    <HBox fx:id="leaderBoard" alignment="TOP_CENTER" styleClass="leader-vbox" maxHeight="100">
-        <fx:include source="game/postPlayer.fxml"/>
-        <fx:include source="game/postPlayer.fxml"/>
-        <fx:include source="game/postPlayer.fxml"/>
-    </HBox>
+    <HBox fx:id="leaderBoard" alignment="TOP_CENTER" styleClass="leader-vbox" maxHeight="100"/>
 
     <!-- CARDS -->
     <HBox styleClass="cards-vbox">
         <VBox styleClass="card-holder-vbox" alignment="CENTER" HBox.hgrow="ALWAYS">
             <Text styleClass="small-title" text="Hulp kaarten"/>
-            <HBox fx:id="toolCardBox" alignment="CENTER" styleClass="cards-hbox-holder">
-                <fx:include source="game/toolCard.fxml"/>
-                <fx:include source="game/toolCard.fxml"/>
-                <fx:include source="game/toolCard.fxml"/>
-            </HBox>
+            <HBox fx:id="toolCardBox" alignment="CENTER" styleClass="cards-hbox-holder"/>
         </VBox>
         <VBox styleClass="card-holder-vbox" alignment="CENTER" HBox.hgrow="ALWAYS">
             <Text styleClass="small-title" text="Publieke Doel kaarten"/>
-            <HBox fx:id="objectiveCardBox" alignment="CENTER" styleClass="cards-hbox-holder">
-                <fx:include source="game/publicObjectiveCard.fxml"/>
-                <fx:include source="game/publicObjectiveCard.fxml"/>
-                <fx:include source="game/publicObjectiveCard.fxml"/>
-            </HBox>
+            <HBox fx:id="objectiveCardBox" alignment="CENTER" styleClass="cards-hbox-holder"/>
         </VBox>
     </HBox>
 </VBox>
