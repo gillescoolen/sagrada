@@ -19,7 +19,7 @@ public final class GlazingHammer extends ToolCard {
     @Override
     public boolean use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
         if (game.getSelectedDie() != null || player.getIfSecondTurn(game.getPlayers().size())) {
-            return;
+            return false;
         }
 
         draftPool.throwDice();
