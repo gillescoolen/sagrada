@@ -252,28 +252,41 @@ public final class ToolCardRepository extends Repository<ToolCard> {
     }
 
     public void addAffectedToolCard(ToolCard toolCard, List<Die> dice, int gameId) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(
-                "INSERT INTO gametoolcard_affected_gamedie VALUES (?,?,?,?)"
+        PreparedStatement preparedDeleteStatement = this.connection.getConnection().prepareStatement(
+                "DELETE FROM gametoolcard_affected_gamedie WHERE gametoolcard_gametoolcard = ? AND gamedie_idgame = ? AND gamedie_dienumber = ? AND gamedie_diecolor = ?;"
+        );
+
+        PreparedStatement preparedInsertStatement = this.connection.getConnection().prepareStatement(
+                "INSERT INTO gametoolcard_affected_gamedie VALUES (?,?,?,?);"
         );
 
         var count = 0;
 
         for (var die : dice) {
-            preparedStatement.setInt(1, toolCard.getId());
-            preparedStatement.setInt(2, gameId);
-            preparedStatement.setInt(3, die.getNumber());
-            preparedStatement.setString(4, die.getColor().getDutchColorName());
+            preparedDeleteStatement.setInt(1, toolCard.getId());
+            preparedDeleteStatement.setInt(2, gameId);
+            preparedDeleteStatement.setInt(3, die.getNumber());
+            preparedDeleteStatement.setString(4, die.getColor().getDutchColorName());
 
-            preparedStatement.addBatch();
+            preparedDeleteStatement.addBatch();
+
+            preparedInsertStatement.setInt(1, toolCard.getId());
+            preparedInsertStatement.setInt(2, gameId);
+            preparedInsertStatement.setInt(3, die.getNumber());
+            preparedInsertStatement.setString(4, die.getColor().getDutchColorName());
+
+            preparedInsertStatement.addBatch();
 
             ++count;
 
             if (count % BATCH_SIZE == 0 || count == dice.size()) {
-                preparedStatement.executeBatch();
+                preparedDeleteStatement.executeBatch();
+                preparedInsertStatement.executeBatch();
             }
         }
 
-        preparedStatement.close();
+        preparedDeleteStatement.close();
+        preparedInsertStatement.close();
     }
 
     public boolean isGameDieAffected(int gameId, Die die) throws SQLException {

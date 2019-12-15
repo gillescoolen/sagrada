@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-public class RunningPliersActivator extends ToolCardActivator {
+public final class RunningPliersActivator extends ToolCardActivator {
     RunningPliersActivator(GameController gameController, ToolCard toolCard) {
         super(gameController, toolCard);
     }
