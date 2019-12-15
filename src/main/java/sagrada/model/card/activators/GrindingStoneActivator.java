@@ -28,25 +28,18 @@ public final class GrindingStoneActivator extends ToolCardActivator {
 
     private Die question() {
         List<Die> dieList = this.controller.getGame().getDraftPool().getDice();
-        List<String> dieNameList = new ArrayList<>();
 
-        dieList.forEach(die -> {
-            dieNameList.add(die.toString());
-        });
-
-        ChoiceDialog<String> dialog = new ChoiceDialog<>(dieNameList.get(0), dieNameList);
+        ChoiceDialog<Die> dialog = new ChoiceDialog<>(dieList.get(0), dieList);
         dialog.setTitle("Schuurblok");
         dialog.setHeaderText("Dobbelsteen keuze");
         dialog.setContentText("Kies dobbelsteen:");
 
-        Optional<String> result = dialog.showAndWait();
+        Optional<Die> result = dialog.showAndWait();
 
         if (result.isEmpty()) {
             return this.question();
         }
 
-        var selectedDie = dieList.stream().filter(die -> die.toString().equals(result.get())).findFirst().orElse(null);
-
-        return selectedDie;
+        return result.get();
     }
 }
