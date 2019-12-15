@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sagrada.component.PostGameScreen;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.*;
 import sagrada.model.*;
@@ -66,6 +67,12 @@ public class GameController implements Consumer<Game> {
     private boolean gameReady = false;
     private Die selectedDie;
     private boolean placedDie = false;
+
+    private ScheduledExecutorService ses;
+    private ScheduledFuture<?> dieSchedule;
+    private ScheduledFuture<?> mainGameSchedule;
+    private ScheduledFuture<?> roundTrackSchedule;
+    private ScheduledFuture<?> gameFinishedSchedule;
 
     public GameController(DatabaseConnection connection, Game game, Account account) {
         game.observe(this);
@@ -127,14 +134,13 @@ public class GameController implements Consumer<Game> {
                     }
 
                     if (round >= 2) {
-                        System.out.println(":D");
+                        this.stopAllTimers();
+
                         game.getPlayers().forEach(player -> player.setPlayStatus(PlayStatus.DONE_PLAYING));
                         playerRepository.setAllFinished(game.getPlayers());
 
-                        var loader = new FXMLLoader(getClass().getResource("/views/postGame.fxml"));
-                        loader.setController(new PostGameController(game, this));
                         var stage = ((Stage) btnRollDice.getScene().getWindow());
-                        var scene = new Scene(loader.load());
+                        var scene = new Scene(new PostGameScreen(this.game, this).load());
                         stage.setScene(scene);
                     }
                 } catch (IOException | SQLException ex) {
@@ -207,7 +213,7 @@ public class GameController implements Consumer<Game> {
         }
     };
 
-    Runnable other = () -> {
+    Runnable mainGame = () -> {
         try {
             if (!gameReady) {
                 return;
@@ -246,15 +252,42 @@ public class GameController implements Consumer<Game> {
         }
     };
 
+    Runnable gameFinished = () -> {
+        try {
+            boolean finished = this.playerRepository.checkForFinished(this.player.getId());
+            if (finished) {
+                this.stopAllTimers();
+
+                var stage = ((Stage) this.btnRollDice.getScene().getWindow());
+                var scene = new Scene(new PostGameScreen(this.game, this).load());
+                stage.setScene(scene);
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    };
+
     /**
      * This is the main event loop for a game.
      */
     private void startMainGameTimer() {
-        ScheduledExecutorService ses = Executors.newScheduledThreadPool(4);
+        this.ses = Executors.newScheduledThreadPool(4);
 
-        ScheduledFuture<?> scheduledFuture = ses.scheduleAtFixedRate(dieStuff, 0, 1, TimeUnit.SECONDS);
-        ScheduledFuture<?> scheduledFuture1 = ses.scheduleAtFixedRate(other, 0, 1, TimeUnit.SECONDS);
-        ScheduledFuture<?> scheduledFuture3 = ses.scheduleAtFixedRate(roundTrack, 0, 1, TimeUnit.SECONDS);
+        this.dieSchedule = this.ses.scheduleAtFixedRate(dieStuff, 0, 1, TimeUnit.SECONDS);
+        this.mainGameSchedule = this.ses.scheduleAtFixedRate(mainGame, 0, 1, TimeUnit.SECONDS);
+        this.roundTrackSchedule = this.ses.scheduleAtFixedRate(roundTrack, 0, 1, TimeUnit.SECONDS);
+        this.gameFinishedSchedule = this.ses.scheduleAtFixedRate(gameFinished, 0, 1, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Stop all threads of the game.
+     */
+    public void stopAllTimers() {
+        this.dieSchedule.cancel(true);
+        this.mainGameSchedule.cancel(true);
+        this.roundTrackSchedule.cancel(true);
+        this.gameFinishedSchedule.cancel(true);
+        this.ses.shutdown();
     }
 
     /**

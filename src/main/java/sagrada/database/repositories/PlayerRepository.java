@@ -257,6 +257,25 @@ public final class PlayerRepository extends Repository<Player> {
         preparedStatement.close();
     }
 
+    public boolean checkForFinished(int playerId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE idplayer = ? AND playstatus_playstatus = ?;");
+        preparedStatement.setInt(1, playerId);
+        preparedStatement.setString(2, PlayStatus.DONE_PLAYING.getPlayState());
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        boolean finished = false;
+
+        if (resultSet.next()) {
+            finished = true;
+        }
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return finished;
+    }
+
     @Override
     public void delete(Player model) throws SQLException {
 
