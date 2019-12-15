@@ -19,7 +19,7 @@ public class ToolCardController implements Consumer<ToolCard> {
     @FXML
     private AnchorPane wrapper;
 
-    private final ToolCard toolCard;
+    private ToolCard toolCard;
     private final ToolCardActivator toolCardActivator;
     private final GameController gameController;
 
@@ -41,15 +41,14 @@ public class ToolCardController implements Consumer<ToolCard> {
     @Override
     public void accept(ToolCard card) {
         if (card != null) {
+            this.toolCard = card;
             this.points.setText(Integer.toString(card.getCost()));
-
-            if (toolCard.canUse() && !this.gameController.isToolCardUsed()) {
-                this.wrapper.getStyleClass().remove("tool-card-wrapper-disabled");
-
+            System.out.println(toolCard.canUse() + " - " + this.gameController.isToolCardUsed());
+            if (this.toolCard.canUse() && !this.gameController.isToolCardUsed()) {
+                this.wrapper.getStyleClass().add("tool-card-wrapper");
                 this.wrapper.setOnMouseClicked(event -> this.useToolCard());
             } else {
                 this.wrapper.getStyleClass().add("tool-card-wrapper-disabled");
-
                 this.wrapper.setOnMouseClicked(null);
             }
         }
