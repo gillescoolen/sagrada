@@ -21,7 +21,7 @@ public final class ColorDiagonals extends PublicObjectiveCard {
             var squareList = this.getSquareList(patternCard, square);
 
             for (var possibleSquare : squareList) {
-                if (possibleSquare.getDie() != null && square.getDie() != null) {
+                if (possibleSquare != null && possibleSquare.getDie() != null && square.getDie() != null) {
                     if (possibleSquare.getDie().getColor().equals(square.getDie().getColor())) {
                         ++points;
                     }
