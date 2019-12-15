@@ -51,6 +51,7 @@ public class GameController implements Consumer<Game> {
     private boolean gameReady = false;
     private Die selectedDie;
     private boolean placedDie = false;
+    private boolean usedToolCard = false;
 
     private ScheduledExecutorService ses;
     private ScheduledFuture<?> dieSchedule;
@@ -133,6 +134,8 @@ public class GameController implements Consumer<Game> {
             }
 
             placedDie = false;
+            this.usedToolCard = false;
+
             final Task<Void> task = new Task<>() {
                 @Override
                 protected Void call() {
@@ -203,6 +206,14 @@ public class GameController implements Consumer<Game> {
                 return;
             }
             player.setCurrentPlayer(player.getCurrent(playerRepository));
+
+            for (var toolCard : this.game.getToolCards()) {
+                toolCard.setCanUse(player.isCurrentPlayer());
+
+                if (toolCard.isUsed(this.game)) {
+                    toolCard.setCost(2);
+                }
+            }
 
             Platform.runLater(() -> {
                 if (player != null && player.isCurrentPlayer()) {
@@ -402,7 +413,7 @@ public class GameController implements Consumer<Game> {
     private void initializeToolCards() throws IOException {
         for (var toolCard : this.game.getToolCards()) {
             var loader = new FXMLLoader(getClass().getResource("/views/game/toolCard.fxml"));
-            loader.setController(new ToolCardController(toolCard, ToolCardActivatorFactory.getToolCardActivator(this, toolCard)));
+            loader.setController(new ToolCardController(this, this.favorTokenRepository, toolCard, ToolCardActivatorFactory.getToolCardActivator(this, toolCard)));
             this.toolCardBox.getChildren().add(loader.load());
         }
     }
@@ -471,5 +482,13 @@ public class GameController implements Consumer<Game> {
 
     public void setPlacedDie(boolean placedDie) {
         this.placedDie = placedDie;
+    }
+
+    public void setUsedToolCard(boolean usedToolCard) {
+        this.usedToolCard = usedToolCard;
+    }
+
+    public boolean isToolCardUsed() {
+        return this.usedToolCard;
     }
 }
