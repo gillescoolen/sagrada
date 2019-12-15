@@ -3,6 +3,7 @@ package sagrada.database.repositories;
 import sagrada.database.DatabaseConnection;
 import sagrada.model.Color;
 import sagrada.model.Die;
+import sagrada.model.Game;
 import sagrada.model.PatternCard;
 
 import java.sql.PreparedStatement;
@@ -67,6 +68,19 @@ public final class DieRepository extends Repository<Die> {
         resultSet.close();
 
         return draftPoolDice;
+    }
+
+    public void updateGameDie(Game game, Die die) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE gamedie SET value = ? WHERE idgame = ? AND dienumber = ? AND diecolor = ?;");
+
+        preparedStatement.setInt(1, die.getValue());
+        preparedStatement.setInt(2, game.getId());
+        preparedStatement.setInt(3, die.getNumber());
+        preparedStatement.setString(4, die.getColor().getDutchColorName());
+
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
     }
 
     public void addGameDice(int gameId, int round, Collection<Die> dice) throws SQLException {
