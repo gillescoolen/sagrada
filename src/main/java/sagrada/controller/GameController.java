@@ -384,7 +384,7 @@ public class GameController implements Consumer<Game> {
     private void initializeToolCards() throws IOException {
         for (var toolCard : this.game.getToolCards()) {
             var loader = new FXMLLoader(getClass().getResource("/views/game/toolCard.fxml"));
-            loader.setController(new ToolCardController(this, toolCard, ToolCardActivatorFactory.getToolCardActivator(this, toolCard)));
+            loader.setController(new ToolCardController(this, this.favorTokenRepository, toolCard, ToolCardActivatorFactory.getToolCardActivator(this, toolCard)));
             this.toolCardBox.getChildren().add(loader.load());
         }
     }

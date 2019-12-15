@@ -3,6 +3,7 @@ package sagrada.controller;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import sagrada.database.repositories.FavorTokenRepository;
 import sagrada.model.ToolCard;
 import sagrada.model.card.activators.ToolCardActivator;
 
@@ -22,11 +23,13 @@ public class ToolCardController implements Consumer<ToolCard> {
     private ToolCard toolCard;
     private final ToolCardActivator toolCardActivator;
     private final GameController gameController;
+    private final FavorTokenRepository repository;
 
-    public ToolCardController(GameController gameController, ToolCard toolCard, ToolCardActivator toolCardActivator) {
+    public ToolCardController(GameController gameController, FavorTokenRepository repository, ToolCard toolCard, ToolCardActivator toolCardActivator) {
         this.toolCard = toolCard;
         this.toolCardActivator = toolCardActivator;
         this.gameController = gameController;
+        this.repository = repository;
 
         this.toolCard.observe(this);
     }
@@ -42,9 +45,9 @@ public class ToolCardController implements Consumer<ToolCard> {
     public void accept(ToolCard card) {
         if (card != null) {
             this.toolCard = card;
-            this.points.setText(Integer.toString(card.getCost()));
+            this.points.setText(Integer.toString(this.toolCard.getCost()));
 
-            if (this.toolCard.canUse() && !this.gameController.isToolCardUsed()) {
+            if (this.toolCard.canUse() && !this.gameController.isToolCardUsed() && sufficientTokens()) {
                 this.wrapper.getStyleClass().clear();
                 this.wrapper.getStyleClass().add("tool-card-wrapper");
                 this.wrapper.setOnMouseClicked(event -> this.useToolCard());
@@ -54,6 +57,18 @@ public class ToolCardController implements Consumer<ToolCard> {
                 this.wrapper.setOnMouseClicked(null);
             }
         }
+    }
+
+    private boolean sufficientTokens() {
+        int totalPoints = 0;
+
+        try {
+            totalPoints = this.repository.getPlayerFavorTokensTotal(this.gameController.getGame().getId(), this.gameController.getPlayer().getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return totalPoints >= this.toolCard.getCost();
     }
 
     private void useToolCard() {
