@@ -6,6 +6,8 @@ import javafx.scene.layout.HBox;
 import sagrada.model.Game;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class PostGameController {
     @FXML
@@ -28,6 +30,12 @@ public class PostGameController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Runnable getNewGame = () -> {
+            // TODO: check for new game object and execute above functions
+        };
+
+        Executors.newScheduledThreadPool(4).scheduleAtFixedRate(getNewGame, 0, 1, TimeUnit.SECONDS);
     }
 
     private void loadToolCards() throws IOException {
