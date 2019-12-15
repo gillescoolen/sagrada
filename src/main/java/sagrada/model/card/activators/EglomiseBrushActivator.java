@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class EglomiseBurshActivator extends ToolCardActivator {
+public class EglomiseBrushActivator extends ToolCardActivator {
     private Player player;
 
-    public EglomiseBurshActivator(GameController gameController, ToolCard toolCard) {
+    public EglomiseBrushActivator(GameController gameController, ToolCard toolCard) {
         super(gameController, toolCard);
     }
 
@@ -24,15 +24,14 @@ public class EglomiseBurshActivator extends ToolCardActivator {
         this.player = this.controller.getPlayer();
         Game game = this.controller.getGame();
 
-
         Square square = this.askWhichDiceShouldBeMoved();
-        Square newSquare = this.askNewPosition();
+        Square newSquare = this.askNewPosition(square);
 
         Object[] message = new Object[2];
         message[0] = square;
         message[1] = newSquare;
 
-        this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPlayerFrame(), game.getRoundTrack(), player, game, message);
+        this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPlayerFrame(), game.getRoundTrack(), this.player, game, message);
     }
 
     private Square askWhichDiceShouldBeMoved() {
@@ -54,7 +53,7 @@ public class EglomiseBurshActivator extends ToolCardActivator {
         return result.orElse(null);
     }
 
-    private Square askNewPosition() {
+    private Square askNewPosition(final Square chosenSquare) {
         List<Square> emptyPositions = this.player.getPlayerFrame().getSquares().stream()
                 .filter(square -> square.getDie() == null)
                 .collect(Collectors.toList());
@@ -67,7 +66,7 @@ public class EglomiseBurshActivator extends ToolCardActivator {
         Optional<Square> result = dialog.showAndWait();
 
         if (result.isEmpty()) {
-            return this.askNewPosition();
+            return this.askNewPosition(chosenSquare);
         }
 
         return result.orElse(null);
