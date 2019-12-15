@@ -30,29 +30,13 @@ import java.util.function.Consumer;
 
 public class GameController implements Consumer<Game> {
     @FXML
-    private HBox mainGamePage;
+    private VBox rowOne, rowTwo, chatWrapper, mainBox;
     @FXML
-    private VBox rowOne;
+    private HBox publicObjectiveCardBox, privateObjectiveCardBox, toolCardBox, diceBox, mainGamePage;
     @FXML
-    private VBox rowTwo;
-    @FXML
-    private HBox diceBox;
-    @FXML
-    private HBox toolCardBox;
-    @FXML
-    private HBox publicObjectiveCardBox;
-    @FXML
-    private HBox privateObjectiveCardBox;
-    @FXML
-    private VBox chatWrapper;
-    @FXML
-    private Button btnSkipTurn;
-    @FXML
-    private Button btnRollDice;
+    private Button btnSkipTurn, btnRollDice;
     @FXML
     private Text currentTokenAmount;
-    @FXML
-    private VBox mainBox;
 
     private Game game;
     private StartGame startGameUtil;
@@ -124,11 +108,11 @@ public class GameController implements Consumer<Game> {
 
             if (player.getSequenceNumber() == this.game.getPlayers().size() * 2) {
                 var unusedDice = this.game.getDraftPool().getDice();
-                int round = 0;
+                int round;
 
                 try {
-                    round = gameRepository.getCurrentRound(game.getId());
-                    dieRepository.placeOnRoundTrack(unusedDice, game.getId(), round);
+                    round = this.gameRepository.getCurrentRound(game.getId());
+                    this.dieRepository.placeOnRoundTrack(unusedDice, game.getId(), round);
                     for (var die : unusedDice) {
                         game.removeDieFromDraftPool(die);
                     }
@@ -136,8 +120,8 @@ public class GameController implements Consumer<Game> {
                     if (round >= 10) {
                         this.stopAllTimers();
 
-                        game.getPlayers().forEach(player -> player.setPlayStatus(PlayStatus.DONE_PLAYING));
-                        playerRepository.setAllFinished(game.getPlayers());
+                        this.game.getPlayers().forEach(player -> player.setPlayStatus(PlayStatus.DONE_PLAYING));
+                        this.playerRepository.setAllFinished(game.getPlayers());
 
                         var stage = ((Stage) btnRollDice.getScene().getWindow());
                         var scene = new Scene(new PostGameScreen(this.game, this).load());
@@ -255,6 +239,7 @@ public class GameController implements Consumer<Game> {
     Runnable gameFinished = () -> {
         try {
             boolean finished = this.playerRepository.checkForFinished(this.player.getId());
+
             if (finished) {
                 this.stopAllTimers();
                 Platform.runLater(() -> {
