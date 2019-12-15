@@ -1,0 +1,13 @@
+package sagrada.component;
+
+import javafx.fxml.FXMLLoader;
+import sagrada.controller.GameController;
+import sagrada.controller.PostGameController;
+import sagrada.model.Game;
+
+public class PostGameScreen extends FXMLLoader {
+    public PostGameScreen(Game game, GameController gameController) {
+        this.setLocation(getClass().getResource("/views/postGame.fxml"));
+        this.setController(new PostGameController(game, gameController));
+    }
+}
