@@ -44,11 +44,11 @@ public class DraftPoolController implements Consumer<DraftPool> {
                 this.game.addDiceInDraftPool(draftedDice);
                 this.drawDice();
             } catch (SQLException e) {
-                e.printStackTrace();
+
             }
         };
 
-        this.ses = Executors.newScheduledThreadPool(1);
+        this.ses = Executors.newScheduledThreadPool(2);
         this.draftpoolSchedule = this.ses.scheduleAtFixedRate(draftPoolTimer, 0, 1500, TimeUnit.MILLISECONDS);
     }
 
@@ -85,7 +85,7 @@ public class DraftPoolController implements Consumer<DraftPool> {
                         }
                         if (this.draftPoolBox != null) this.draftPoolBox.getChildren().add(loader.load());
                     } catch (IOException e) {
-                        e.printStackTrace();
+
                     }
                 });
             }

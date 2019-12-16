@@ -125,22 +125,24 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
                     this.changeView.setDisable(false);
                     this.setPatternCardInformation();
 
-                    boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
+                    if (this.gameController != null && this.gameController.getPlayer() != null) {
+                        boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
 
-                    if (!isOwnCard) {
-                        this.reportMisplacement.setText("Ongeldig verklaren");
-                        this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
+                        if (!isOwnCard) {
+                            this.reportMisplacement.setText("Ongeldig verklaren");
+                            this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
 
-                        this.reportMisplacement.setDisable(this.player.hasInvalidFrameField());
-                    } else {
-                        if (this.player.hasInvalidFrameField()) {
-                            this.setDiceRemovable();
+                            this.reportMisplacement.setDisable(this.player.hasInvalidFrameField());
+                        } else {
+                            if (this.player.hasInvalidFrameField()) {
+                                this.setDiceRemovable();
 
-                            this.reportMisplacement.setText("Valide verklaren");
-                            this.reportMisplacement.setOnMouseClicked(e -> this.setBoardValid());
+                                this.reportMisplacement.setText("Valide verklaren");
+                                this.reportMisplacement.setOnMouseClicked(e -> this.setBoardValid());
+                            }
+
+                            this.reportMisplacement.setVisible(this.player.hasInvalidFrameField());
                         }
-
-                        this.reportMisplacement.setVisible(this.player.hasInvalidFrameField());
                     }
                 }
             });
