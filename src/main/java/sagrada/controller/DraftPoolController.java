@@ -24,6 +24,7 @@ public class DraftPoolController implements Consumer<DraftPool> {
     private DraftPool draftPool;
     private final Game game;
     private final GameController gameController;
+    private ScheduledExecutorService ses;
 
     public DraftPoolController(DraftPool draftPool, Game game, GameController gameController, DatabaseConnection connection) {
         this.draftPool = draftPool;
@@ -76,6 +77,9 @@ public class DraftPoolController implements Consumer<DraftPool> {
 
                 Platform.runLater(() -> {
                     try {
+                        if (this.draftPool == null) {
+                            this.ses.shutdown();
+                        }
                         this.draftPoolBox.getChildren().add(loader.load());
                     } catch (IOException e) {
                         e.printStackTrace();
