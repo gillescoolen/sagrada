@@ -184,10 +184,13 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
         }
 
-        if (this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername())) {
-            this.window.getStyleClass().clear();
-            this.window.getStyleClass().add("window-own");
+        if (!this.isEndOfGame) {
+            if (this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername())) {
+                this.window.getStyleClass().clear();
+                this.window.getStyleClass().add("window-own");
+            }
         }
+
 
         if (this.isEndOfGame) {
             this.reportMisplacement.setDisable(true);

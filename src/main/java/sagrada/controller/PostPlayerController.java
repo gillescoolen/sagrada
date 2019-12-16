@@ -1,5 +1,6 @@
 package sagrada.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
@@ -37,6 +38,12 @@ public class PostPlayerController {
     private void initializePatternCard() throws IOException {
         var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
         loader.setController(new WindowPatternCardController(this.player, this.gameController));
-        this.windowPatternCardBox.getChildren().add(loader.load());
+        Platform.runLater(() -> {
+            try {
+                this.windowPatternCardBox.getChildren().add(loader.load());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
