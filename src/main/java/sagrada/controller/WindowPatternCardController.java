@@ -232,7 +232,23 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             var button = this.windowSquares.get(i);
             var color = square.getColor();
 
-            button.setText(square.getValue().toString());
+
+            Integer value = square.getValue();
+
+            if (value == 0) {
+                button.setText("");
+            } else {
+                button.setText(value.toString());
+            }
+
+            if ( color == null || color == sagrada.model.Color.YELLOW) {
+                button.setTextFill(javafx.scene.paint.Color.BLACK);
+            } else {
+                button.setTextFill(javafx.scene.paint.Color.WHITE);
+            }
+
+
+            button.setDisable(this.playerFrame == null || this.showPatternCard);
 
             if (!this.showPatternCard || !isOwnCard) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
 
