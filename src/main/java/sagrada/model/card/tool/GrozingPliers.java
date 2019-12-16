@@ -3,14 +3,12 @@ package sagrada.model.card.tool;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.DieRepository;
 import sagrada.database.repositories.FavorTokenRepository;
-import sagrada.database.repositories.ToolCardRepository;
 import sagrada.model.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public final class GrozingPliers extends ToolCard {
-    private ToolCardRepository toolCardRepository = new ToolCardRepository(this.connection);
     private FavorTokenRepository favorTokenRepository = new FavorTokenRepository(this.connection);
     private DieRepository dieRepository = new DieRepository(this.connection);
 
@@ -52,7 +50,6 @@ public final class GrozingPliers extends ToolCard {
             this.favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
         }
 
-        this.toolCardRepository.addAffectedToolCard(this, dice, game.getId());
         this.incrementCost();
 
         return true;
