@@ -120,7 +120,7 @@ public class GameController implements Consumer<Game> {
                         game.removeDieFromDraftPool(die);
                     }
 
-                    if (round >= 10) {
+                    if (round >= 1) {
                         this.stopAllTimers();
 
                         var endGame = new EndGame(this.game, this.connection);
