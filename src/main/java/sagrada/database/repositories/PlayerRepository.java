@@ -449,7 +449,7 @@ public final class PlayerRepository extends Repository<Player> {
 
         // This is a shitty fix to make sure the isCurrentPlayer can be set correctly.
         try {
-            Thread.sleep(200);
+            Thread.sleep(800);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

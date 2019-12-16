@@ -28,9 +28,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     @FXML
     private VBox window;
     @FXML
-    private Button changeView;
-    @FXML
-    private Button reportMisplacement;
+    private Button changeView, reportMisplacement;
     @FXML
     private Text name;
 
@@ -40,7 +38,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     private PatternCard playerFrame;
     private DatabaseConnection connection;
     private boolean showPatternCard = false;
-    private boolean isEndOfGame = false;
+    private boolean isEndOfGame = true;
 
     private final List<Button> windowSquares = new ArrayList<>();
     private final GameController gameController;
@@ -54,10 +52,12 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         this.connection = connection;
         this.player = player;
         this.gameController = gameController;
+        this.isEndOfGame = false;
     }
 
-    public WindowPatternCardController(DatabaseConnection connection, Player player, GameController gameController) {
+    public WindowPatternCardController(DatabaseConnection connection, Player player, GameController gameController, boolean isEndOfGame) {
         this.connection = connection;
+        this.isEndOfGame = isEndOfGame;
 
         PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(connection);
         PlayerRepository playerRepository = new PlayerRepository(connection);
@@ -94,15 +94,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         this.gameController = gameController;
 
         this.playerFrame.observe(this);
-    }
-
-    public WindowPatternCardController(Player player, GameController gameController) {
-        this.patternCard = player.getPatternCard();
-        this.playerFrame = player.getPlayerFrame();
-        this.windowField = this.playerFrame;
-        this.player = player;
-        this.isEndOfGame = true;
-        this.gameController = gameController;
     }
 
     @Override
@@ -174,29 +165,26 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
     @FXML
     protected void initialize() {
-        if (this.playerFrame == null) {
-            this.changeView.setDisable(true);
-            this.name.setText(this.windowField.getName() + String.format(" (%s tokens)", this.windowField.getDifficulty()));
-            this.reportMisplacement.setText("Kies");
-            this.reportMisplacement.setOnMouseClicked(e -> this.choosePatternCard());
+        if (this.isEndOfGame) {
+            this.reportMisplacement.setDisable(true);
+            this.reportMisplacement.setVisible(false);
         } else {
-            this.changeView.setDisable(false);
-            this.name.setText(this.player.getAccount().getUsername() + String.format(" (%s tokens)", this.playerFrame.getDifficulty()));
-            this.reportMisplacement.setText("Ongeldig verklaren");
-            this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
-        }
+            if (this.playerFrame == null) {
+                this.changeView.setDisable(true);
+                this.name.setText(this.windowField.getName() + String.format(" (%s tokens)", this.windowField.getDifficulty()));
+                this.reportMisplacement.setText("Kies");
+                this.reportMisplacement.setOnMouseClicked(e -> this.choosePatternCard());
+            } else {
+                this.changeView.setDisable(false);
+                this.name.setText(this.player.getAccount().getUsername() + String.format(" (%s tokens)", this.playerFrame.getDifficulty()));
+                this.reportMisplacement.setText("Ongeldig verklaren");
+                this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
+            }
 
-        if (!this.isEndOfGame) {
             if (this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername())) {
                 this.window.getStyleClass().clear();
                 this.window.getStyleClass().add("window-own");
             }
-        }
-
-
-        if (this.isEndOfGame) {
-            this.reportMisplacement.setDisable(true);
-            this.reportMisplacement.setVisible(false);
         }
 
         this.changeView.setOnAction((e) -> this.changeView());
@@ -230,45 +218,47 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         var i = 0;
         var selectedDie = this.gameController.getSelectedDie();
 
-        boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
+        boolean isOwnCard = (this.gameController.getPlayer() != null && this.gameController.getPlayer().getAccount() != null && this.gameController.getPlayer().getAccount() != null) && this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
         boolean canBeClicked = (isOwnCard && player.isCurrentPlayer());
 
-        for (var square : this.windowField.getSquares()) {
-            var button = this.windowSquares.get(i);
-            var color = square.getColor();
+        if (this.windowField != null) {
+            for (var square : this.windowField.getSquares()) {
+                var button = this.windowSquares.get(i);
+                var color = square.getColor();
 
-            Integer value = square.getValue();
+                Integer value = square.getValue();
 
-            if (value == 0) {
-                button.setText("");
-            } else {
-                button.setText(value.toString());
+                if (value == 0) {
+                    button.setText("");
+                } else {
+                    button.setText(value.toString());
+                }
+
+                if (color == null || color == sagrada.model.Color.YELLOW) {
+                    button.setTextFill(javafx.scene.paint.Color.BLACK);
+                } else {
+                    button.setTextFill(javafx.scene.paint.Color.WHITE);
+                }
+
+                button.setDisable(this.playerFrame == null || this.showPatternCard);
+
+                if (!this.showPatternCard || !isOwnCard) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
+
+                if (this.playerFrame == null || !canBeClicked || this.isEndOfGame) {
+                    button.setDisable(true);
+                } else {
+                    var emptyCount = this.player.getPlayerFrame().countEmptySquares();
+                    button.setDisable(emptyCount == 20 && (square.getPosition().getX() != 1 && square.getPosition().getX() != 5 && square.getPosition().getY() != 1 && square.getPosition().getY() != 4));
+                }
+
+                if (color != null) {
+                    button.setStyle("-fx-background-color: " + square.getColor().getColor());
+                } else {
+                    button.setStyle("");
+                }
+
+                ++i;
             }
-
-            if (color == null || color == sagrada.model.Color.YELLOW) {
-                button.setTextFill(javafx.scene.paint.Color.BLACK);
-            } else {
-                button.setTextFill(javafx.scene.paint.Color.WHITE);
-            }
-
-            button.setDisable(this.playerFrame == null || this.showPatternCard);
-
-            if (!this.showPatternCard || !isOwnCard) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
-
-            if (this.playerFrame == null || !canBeClicked || this.isEndOfGame) {
-                button.setDisable(true);
-            } else {
-                var emptyCount = this.player.getPlayerFrame().countEmptySquares();
-                button.setDisable(emptyCount == 20 && (square.getPosition().getX() != 1 && square.getPosition().getX() != 5 && square.getPosition().getY() != 1 && square.getPosition().getY() != 4));
-            }
-
-            if (color != null) {
-                button.setStyle("-fx-background-color: " + square.getColor().getColor());
-            } else {
-                button.setStyle("");
-            }
-
-            ++i;
         }
     }
 

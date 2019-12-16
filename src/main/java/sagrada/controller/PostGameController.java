@@ -15,21 +15,26 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class PostGameController {
     @FXML
     private HBox objectiveCardBox, toolCardBox, leaderBoard, windowPatternCardBox;
 
+    private ScheduledFuture<?> checkForScoreTimer;
+
     private final Game game;
     private final GameController gameController;
     private final GameRepository gameRepository;
     private final ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+    private final DatabaseConnection connection;
 
     public PostGameController(Game game, GameController gameController, DatabaseConnection connection) {
         this.game = game;
         this.gameController = gameController;
         this.gameRepository = new GameRepository(connection);
+        this.connection = connection;
     }
 
     @FXML
@@ -46,7 +51,7 @@ public class PostGameController {
             try {
                 List<Player> players = this.gameRepository.getAllDonePlayers(this.game);
 
-                if (players.size() > 0) {
+                if (players.size() >= this.game.getPlayers().size()) {
                     this.game.addPlayers(players);
 
                     Platform.runLater(() -> {
@@ -56,6 +61,9 @@ public class PostGameController {
                             e.printStackTrace();
                         }
                     });
+
+                    this.checkForScoreTimer.cancel(true);
+                    this.ses.shutdown();
                 }
 
             } catch (SQLException e) {
@@ -63,7 +71,7 @@ public class PostGameController {
             }
         };
 
-        this.ses.scheduleAtFixedRate(checkForScore, 0, 1, TimeUnit.SECONDS);
+        this.checkForScoreTimer = this.ses.scheduleAtFixedRate(checkForScore, 0, 1, TimeUnit.SECONDS);
     }
 
     private void loadToolCards() throws IOException {
@@ -83,11 +91,14 @@ public class PostGameController {
     }
 
     private void loadPlayers() throws IOException {
-        this.leaderBoard.getChildren().clear();
-        for (var player : this.game.getPlayers()) {
-            var loader = new FXMLLoader(getClass().getResource("/views/game/postPlayer.fxml"));
-            loader.setController(new PostPlayerController(player, this.gameController));
-            this.leaderBoard.getChildren().add(loader.load());
+        if (this.leaderBoard.getChildren().size() != this.game.getPlayers().size()) {
+            this.leaderBoard.getChildren().clear();
+
+            for (var player : this.game.getPlayers()) {
+                var loader = new FXMLLoader(getClass().getResource("/views/game/postPlayer.fxml"));
+                loader.setController(new PostPlayerController(player, this.gameController, this.connection));
+                this.leaderBoard.getChildren().add(loader.load());
+            }
         }
     }
 }
