@@ -4,6 +4,9 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import sagrada.model.Player;
 
@@ -14,6 +17,8 @@ public class PostPlayerController {
     private Text playerName, score;
     @FXML
     private HBox windowPatternCardBox;
+    @FXML
+    private Rectangle privateObjectiveColor;
 
     private final Player player;
     private final GameController gameController;
@@ -30,6 +35,7 @@ public class PostPlayerController {
 
         try {
             this.initializePatternCard();
+            this.loadPrivateObjectiveCard();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -45,5 +51,9 @@ public class PostPlayerController {
                 e.printStackTrace();
             }
         });
+    }
+
+    private void loadPrivateObjectiveCard() {
+        this.privateObjectiveColor.setFill(Color.valueOf(player.getPrivateObjectiveCard().getColor().getColor()));
     }
 }
