@@ -44,5 +44,6 @@
         <!-- Private Objective card -->
         <Text styleClass="title-tool-cards">Prive Doel Kaart</Text>
         <HBox fx:id="privateObjectiveCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
+        <Text fx:id="currentPlayerIndicator"/>
     </VBox>
 </HBox>

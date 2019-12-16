@@ -38,6 +38,8 @@ public class GameController implements Consumer<Game> {
     private Button btnSkipTurn, btnRollDice;
     @FXML
     private Text currentTokenAmount;
+    @FXML
+    private Text currentPlayerIndicator;
 
     private Game game;
     private StartGame startGameUtil;
@@ -248,6 +250,7 @@ public class GameController implements Consumer<Game> {
         }
 
         setCurrentTokenAmount();
+        setCurrentPlayerIndicator();
 
         try {
             this.game.setRoundTrack(this.roundTrackRepository.getRoundTrack(game.getId()));
@@ -467,6 +470,16 @@ public class GameController implements Consumer<Game> {
         }
 
         this.currentTokenAmount.setText(message);
+    }
+
+    private void setCurrentPlayerIndicator() {
+        try {
+            var username = this.playerRepository.getCurrentPlayer(this.game);
+            var message = (username == null) ? "" : String.format("%s is aan de beurt.", username);
+            this.currentPlayerIndicator.setText(message);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public Game getGame() {

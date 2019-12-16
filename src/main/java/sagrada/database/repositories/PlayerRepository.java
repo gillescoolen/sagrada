@@ -473,6 +473,28 @@ public final class PlayerRepository extends Repository<Player> {
         return isCurrent;
     }
 
+    public String getCurrentPlayer(Game game) throws SQLException {
+        PreparedStatement statement = this.connection.getConnection().prepareStatement("SELECT username FROM player WHERE spel_idspel = ? AND isCurrentPlayer = ? AND playstatus_playstatus IN (?,?);");
+
+        statement.setInt(1, game.getId());
+        statement.setInt(2, 1);
+        statement.setString(3, PlayStatus.ACCEPTED.getPlayState());
+        statement.setString(4, PlayStatus.CHALLENGER.getPlayState());
+
+        ResultSet resultSet = statement.executeQuery();
+
+        if (!resultSet.next()) {
+            return null;
+        }
+
+        var username = resultSet.getString("username");
+
+        statement.close();
+        resultSet.close();
+
+        return username;
+    }
+
     public Player getPlayerByGameAndUsername(Game game, String username) throws SQLException {
         PreparedStatement playerIdStatement = this.connection.getConnection().prepareStatement("SELECT idplayer FROM player WHERE spel_idspel = ? AND username = ? AND playstatus_playstatus IN (?,?);");
 
