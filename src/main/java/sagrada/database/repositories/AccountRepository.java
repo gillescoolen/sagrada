@@ -2,11 +2,14 @@ package sagrada.database.repositories;
 
 import sagrada.database.DatabaseConnection;
 import sagrada.model.Account;
+import sagrada.model.PatternCard;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public final class AccountRepository extends Repository<Account> {
 
@@ -35,6 +38,23 @@ public final class AccountRepository extends Repository<Account> {
         preparedStatement.close();
 
         return new Account(usernameAccount, password);
+    }
+
+    public List<String> getAllAccounts() throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT username FROM account");
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        List<String> accounts = new ArrayList<>();
+
+        while (resultSet.next()) {
+            var accountName = resultSet.getString("username");
+            accounts.add(accountName);
+        }
+
+        resultSet.close();
+        preparedStatement.close();
+
+        return accounts;
     }
 
     public Account getUserByUsernameAndPassword(String username, String password) throws SQLException {
