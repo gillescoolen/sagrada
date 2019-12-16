@@ -85,7 +85,7 @@ public class DraftPoolController implements Consumer<DraftPool> {
                         }
                         if (this.draftPoolBox != null) this.draftPoolBox.getChildren().add(loader.load());
                     } catch (IOException e) {
-
+                        e.printStackTrace();
                     }
                 });
             }

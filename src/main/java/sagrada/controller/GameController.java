@@ -352,7 +352,7 @@ public class GameController implements Consumer<Game> {
                             rowTwo.getChildren().clear();
 
                             for (var player : players) {
-                                var controller = new WindowPatternCardController(connection, player, gameController);
+                                var controller = new WindowPatternCardController(connection, player, gameController, false);
                                 var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
 
                                 loader.setController(controller);
