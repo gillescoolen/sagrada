@@ -514,4 +514,15 @@ public final class PlayerRepository extends Repository<Player> {
 
         return nextPlayer;
     }
+
+    public void setPlayerScorePoints(int score, int playerId) throws SQLException {
+        PreparedStatement statement = this.connection.getConnection()
+                .prepareStatement("UPDATE player SET score = ? WHERE idplayer = ?");
+
+        statement.setInt(1, score);
+        statement.setInt(2, playerId);
+
+        statement.executeUpdate();
+        statement.close();
+    }
 }
