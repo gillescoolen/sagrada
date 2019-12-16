@@ -20,15 +20,23 @@ public final class LensCutterActivator extends ToolCardActivator {
 
     @Override
     public boolean activate() throws SQLException {
-        Object[] message = this.question();
-
         Player player = this.controller.getPlayer();
         Game game = this.controller.getGame();
+
+        if (game.getRoundTrack().getTrack().size() == 0) return false;
+
+        Object[] message = this.question();
+
+        if (message == null) return false;
+
         return this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, message);
     }
 
     private Object[] question() {
         List<Die> dieList = this.controller.getGame().getDraftPool().getDice();
+
+        if (dieList.size() == 0) return null;
+
         ChoiceDialog<Die> dieDialog = new ChoiceDialog<>(dieList.get(0), dieList);
         dieDialog.setTitle("Rondsnijder 1/2");
         dieDialog.setHeaderText("Dobbelsteen wissel met RoundTrack");

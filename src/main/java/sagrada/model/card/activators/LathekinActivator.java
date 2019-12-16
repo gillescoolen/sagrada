@@ -29,11 +29,16 @@ public final class LathekinActivator extends ToolCardActivator {
 
         List<Pair<Square, Square>> dieToMovePair = this.askWhichDiceToMove();
 
+        if (dieToMovePair == null) return false;
+
         return this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPatternCard(), game.getRoundTrack(), player, game, dieToMovePair);
     }
 
     private List<Pair<Square, Square>> askWhichDiceToMove() {
         List<Square> dice = this.player.getPlayerFrame().getSquares().stream().filter(square -> square.getDie() != null).collect(Collectors.toList());
+
+        if (dice.size() < 2) return null;
+
         List<Square> availableSquares = this.player.getPlayerFrame().getSquares().stream().filter(square -> square.getDie() == null).collect(Collectors.toList());
 
         List<Pair<Square, Square>> squares = new ArrayList<>(SQUARES_TO_MOVE);
