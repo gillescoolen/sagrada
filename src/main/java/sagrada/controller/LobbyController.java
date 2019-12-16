@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.AccountRepository;
 import sagrada.database.repositories.GameRepository;
 import sagrada.database.repositories.PlayerRepository;
 import sagrada.model.*;
@@ -20,7 +21,7 @@ import java.util.TimerTask;
 
 public class LobbyController {
     @FXML
-    private VBox vbLobbyGames, vbLobbyInvites;
+    private VBox vbLobbyGames, vbLobbyInvites, vbLobbyPlayers;
     @FXML
     private Button btnCreateGame, btnPreviousPage, btnNextPage, btnReverseOrder;
 
@@ -32,6 +33,7 @@ public class LobbyController {
     private final DatabaseConnection databaseConnection;
     private final Timer getGamesTimer = new Timer();
     private final Timer getInvitesTimer = new Timer();
+    private final Timer getPlayersTimer = new Timer();
 
     public LobbyController(DatabaseConnection databaseConnection, Account account) {
         this.databaseConnection = databaseConnection;
@@ -58,6 +60,12 @@ public class LobbyController {
                  getInvites();
             }
         }, 0, 2000);
+        this.getPlayersTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                getAccounts();
+            }
+        }, 0, 60000);
     }
 
     private void getGames() {
@@ -80,6 +88,33 @@ public class LobbyController {
             var loader = this.getClass().getResource("/views/lobby/lobbyInvite.fxml");
             this.fillLobbyList(games, this.vbLobbyInvites, loader);
         } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getAccounts() {
+        try {
+            var accountRepository = new AccountRepository(this.databaseConnection);
+            var accounts = accountRepository.getAllAccounts();
+            Platform.runLater(() -> {
+                var loader = this.getClass().getResource("/views/lobby/lobbyAccount.fxml");
+                this.fillPlayerList(accounts, this.vbLobbyPlayers, loader);
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void fillPlayerList(List<String> usernames, VBox items, URL view) {
+        items.getChildren().clear();
+
+        try {
+            for (var username : usernames) {
+                var loader = new FXMLLoader(view);
+                loader.setController(new AccountItemController(username, this.databaseConnection));
+                items.getChildren().add(loader.load());
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -129,7 +164,9 @@ public class LobbyController {
         this.getGamesTimer.purge();
         this.getInvitesTimer.cancel();
         this.getInvitesTimer.purge();
-    }
+        this.getPlayersTimer.cancel();
+        this.getPlayersTimer.purge();
+   }
 
     private void nextPage() {
         this.page += 1;

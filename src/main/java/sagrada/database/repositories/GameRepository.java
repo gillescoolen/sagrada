@@ -1,8 +1,10 @@
 package sagrada.database.repositories;
 
+import javafx.util.Pair;
 import sagrada.database.DatabaseConnection;
 import sagrada.model.*;
 
+import javax.swing.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

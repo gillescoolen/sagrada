@@ -1,5 +1,6 @@
 package sagrada.database.repositories;
 
+import javafx.util.Pair;
 import sagrada.database.DatabaseConnection;
 import sagrada.model.*;
 
@@ -117,6 +118,23 @@ public final class PlayerRepository extends Repository<Player> {
         playerResultSet.close();
 
         return players;
+    }
+
+    public List<Pair<String, Integer>> getFinishedGamePlayers(int id) throws SQLException {
+        var scores = new ArrayList<Pair<String, Integer>>();
+
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT username, score FROM player WHERE spel_idspel = ?");
+        playerPreparedStatement.setInt(1, id);
+        ResultSet resultSet = playerPreparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            scores.add(new Pair<>(resultSet.getString("username"), resultSet.getInt("score")));
+        }
+
+        playerPreparedStatement.close();
+        resultSet.close();
+
+        return scores;
     }
 
     @Override
