@@ -7,6 +7,7 @@ import javafx.scene.layout.HBox;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.GameRepository;
 import sagrada.model.Game;
+import sagrada.model.PlayStatus;
 import sagrada.model.Player;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PostGameController {
     @FXML
-    private HBox objectiveCardBox, toolCardBox, leaderBoard;
+    private HBox objectiveCardBox, toolCardBox, leaderBoard, windowPatternCardBox;
 
     private final Game game;
     private final GameController gameController;
