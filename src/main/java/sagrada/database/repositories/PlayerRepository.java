@@ -15,7 +15,7 @@ public final class PlayerRepository extends Repository<Player> {
     }
 
     public boolean isPatternCardChosen(Game game) throws SQLException {
-        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT COUNT(patterncard_idpatterncard) AS amountOfChosenCards FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN (?, ?)");
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT COUNT(patterncard_idpatterncard) AS amountOfChosenCards FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN (?, ?);");
 
         playerPreparedStatement.setInt(1, game.getId());
         playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
@@ -27,7 +27,12 @@ public final class PlayerRepository extends Repository<Player> {
             return false;
         }
 
-        return resultSet.getInt("amountOfChosenCards") == game.getPlayers().size();
+        boolean x = resultSet.getInt("amountOfChosenCards") == game.getPlayers().size();
+
+        resultSet.close();
+        playerPreparedStatement.close();
+
+        return x;
     }
 
     public List<Player> prepareAllGamePlayers(Game game) throws SQLException {
@@ -36,7 +41,7 @@ public final class PlayerRepository extends Repository<Player> {
         var privateObjectiveColors = new ArrayList<>(Arrays.asList(Color.values()));
         var sequenceNumber = 1;
 
-        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN (?, ?)");
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN (?, ?);");
         playerPreparedStatement.setInt(1, game.getId());
         playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
         playerPreparedStatement.setString(3, PlayStatus.CHALLENGER.getPlayState());
@@ -50,16 +55,16 @@ public final class PlayerRepository extends Repository<Player> {
             var randomColor = privateObjectiveColors.get(random.nextInt(privateObjectiveColors.size()));
             privateObjectiveColors.remove(randomColor);
 
-            PreparedStatement playerUpdatePreparedStatement = this.connection.getConnection().prepareStatement("UPDATE player SET private_objectivecard_color = ?, seqnr = ?, isCurrentPlayer = ?, score = ?, invalidframefield = ? WHERE idplayer = ?");
+            PreparedStatement playerUpdatePreparedStatement = this.connection.getConnection().prepareStatement("UPDATE player SET private_objectivecard_color = ?, seqnr = ?, isCurrentPlayer = ?, score = null, invalidframefield = ? WHERE idplayer = ?;");
 
             playerUpdatePreparedStatement.setString(1, randomColor.getDutchColorName());
             playerUpdatePreparedStatement.setInt(2, sequenceNumber);
             playerUpdatePreparedStatement.setInt(3, sequenceNumber == 1 ? 1 : 0);
             playerUpdatePreparedStatement.setInt(4, 0);
-            playerUpdatePreparedStatement.setInt(5, 0);
-            playerUpdatePreparedStatement.setInt(6, playerId);
+            playerUpdatePreparedStatement.setInt(5, playerId);
 
             playerUpdatePreparedStatement.executeUpdate();
+            playerUpdatePreparedStatement.close();
 
             PreparedStatement playerFrameRepository = this.connection.getConnection().prepareStatement(
                     "INSERT INTO playerframefield (player_idplayer, position_x, position_y, idgame) VALUES(?, ?, ?, ?);"
@@ -77,6 +82,7 @@ public final class PlayerRepository extends Repository<Player> {
             }
 
             playerFrameRepository.executeBatch();
+            playerFrameRepository.close();
 
             for (int insertAmount = 0; insertAmount < 4; ++insertAmount) {
                 var randomPatternCard = patternCards.get(random.nextInt(patternCards.size()));
@@ -84,7 +90,6 @@ public final class PlayerRepository extends Repository<Player> {
                 patternCards.remove(randomPatternCard);
             }
 
-            playerUpdatePreparedStatement.close();
             players.add(this.createPlayer(playerResultSet));
             ++sequenceNumber;
         }
@@ -98,7 +103,7 @@ public final class PlayerRepository extends Repository<Player> {
     public List<Player> getAllGamePlayers(Game game) throws SQLException {
         var players = new ArrayList<Player>();
 
-        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN (?, ?)");
+        PreparedStatement playerPreparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN (?, ?);");
         playerPreparedStatement.setInt(1, game.getId());
         playerPreparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
         playerPreparedStatement.setString(3, PlayStatus.CHALLENGER.getPlayState());
@@ -118,7 +123,7 @@ public final class PlayerRepository extends Repository<Player> {
     public Player findById(int id) throws SQLException {
         Player player = null;
 
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE idplayer = ?");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE idplayer = ?;");
         preparedStatement.setInt(1, id);
 
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -134,7 +139,7 @@ public final class PlayerRepository extends Repository<Player> {
     }
 
     public Player getGamePlayer(String name, Game game) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND username = ?");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND username = ?;");
         preparedStatement.setInt(1, game.getId());
         preparedStatement.setString(2, name);
 
@@ -154,7 +159,7 @@ public final class PlayerRepository extends Repository<Player> {
 
     public List<Player> getInvitedPlayers(Game game) throws SQLException {
         List<Player> players = new ArrayList<>();
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus = ?");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus = ?;");
         preparedStatement.setInt(1, game.getId());
         preparedStatement.setString(2, PlayStatus.INVITED.getPlayState());
 
@@ -173,7 +178,7 @@ public final class PlayerRepository extends Repository<Player> {
 
     public List<Player> getAcceptedPlayers(Game game) throws SQLException {
         List<Player> players = new ArrayList<>();
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player where spel_idspel = ? AND playstatus_playstatus = ?");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player where spel_idspel = ? AND playstatus_playstatus = ?;");
         preparedStatement.setInt(1, game.getId());
         preparedStatement.setString(2, PlayStatus.ACCEPTED.getPlayState());
 
@@ -188,6 +193,27 @@ public final class PlayerRepository extends Repository<Player> {
         resultSet.close();
 
         return players;
+    }
+
+    public boolean isInviteAllowed(Account invited, Account challenger) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT COUNT(*) AS count FROM player p WHERE p.username = ? AND p.playstatus_playstatus = ? AND p.spel_idspel IN (SELECT spel_idspel FROM player c WHERE c.username = ? AND c.playstatus_playstatus = ?);");
+        preparedStatement.setString(1, invited.getUsername());
+        preparedStatement.setString(2, PlayStatus.INVITED.getPlayState());
+        preparedStatement.setString(3, challenger.getUsername());
+        preparedStatement.setString(4, PlayStatus.CHALLENGER.getPlayState());
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (!resultSet.next()) {
+            return true;
+        }
+
+        final int count = resultSet.getInt("count");
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return count == 0;
     }
 
     public void update(int id) throws SQLException {
@@ -228,6 +254,46 @@ public final class PlayerRepository extends Repository<Player> {
     @Override
     public void updateMultiple(Collection<Player> models) throws SQLException {
 
+    }
+
+    public void setAllFinished(Collection<Player> players) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE player SET `playstatus_playstatus` = ? WHERE idplayer = ?;");
+
+        var count = 0;
+
+        for (var player : players) {
+            preparedStatement.setString(1, player.getPlayStatus().getPlayState());
+            preparedStatement.setInt(2, player.getId());
+
+            preparedStatement.addBatch();
+
+            count++;
+
+            if (count % BATCH_SIZE == 0 || count == players.size()) {
+                preparedStatement.executeBatch();
+            }
+        }
+
+        preparedStatement.close();
+    }
+
+    public boolean checkForFinished(int playerId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE idplayer = ? AND playstatus_playstatus = ?;");
+        preparedStatement.setInt(1, playerId);
+        preparedStatement.setString(2, PlayStatus.DONE_PLAYING.getPlayState());
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        boolean finished = false;
+
+        if (resultSet.next()) {
+            finished = true;
+        }
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return finished;
     }
 
     @Override
@@ -294,11 +360,7 @@ public final class PlayerRepository extends Repository<Player> {
         int seqnr = resultSet.getInt("seqnr");
         player.setSequenceNumber(seqnr == 0 ? null : seqnr);
 
-        for (Color color : Color.values()) {
-            if (color.getDutchColorName().equals(resultSet.getString("private_objectivecard_color"))) {
-                player.setPrivateObjectiveCard(new PrivateObjectiveCard(color));
-            }
-        }
+        player.setPrivateObjectiveCard(new PrivateObjectiveCard(Color.fromString(resultSet.getString("private_objectivecard_color"))));
 
         player.setCurrentPlayer(resultSet.getBoolean("isCurrentPlayer"));
 
@@ -323,6 +385,18 @@ public final class PlayerRepository extends Repository<Player> {
         return player;
     }
 
+    public Player createSimplePlayer(ResultSet resultSet) throws SQLException {
+        Player player = new Player();
+
+        player.setId(resultSet.getInt("idplayer"));
+        int seqnr = resultSet.getInt("seqnr");
+        player.setSequenceNumber(seqnr == 0 ? null : seqnr);
+
+        player.setCurrentPlayer(resultSet.getBoolean("isCurrentPlayer"));
+
+        return player;
+    }
+
     public void bindPatternCardToPlayer(Player player) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection()
                 .prepareStatement("UPDATE player SET patterncard_idpatterncard = ? WHERE idplayer = ?;");
@@ -337,19 +411,21 @@ public final class PlayerRepository extends Repository<Player> {
 
     public List<Player> getPlayersByGame(Game game) throws SQLException {
         var newPlayers = new ArrayList<Player>();
-        PreparedStatement playerStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player where spel_idspel = ?");
+        PreparedStatement playerStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player WHERE spel_idspel = ? AND playstatus_playstatus IN(?,?)");
         playerStatement.setInt(1, game.getId());
+        playerStatement.setString(2, PlayStatus.CHALLENGER.getPlayState());
+        playerStatement.setString(3, PlayStatus.ACCEPTED.getPlayState());
 
         ResultSet resultSet = playerStatement.executeQuery();
 
         // Add player data to list
         while (resultSet.next()) {
-            Player p = createPlayer(resultSet);
+            Player p = createSimplePlayer(resultSet);
             newPlayers.add(p);
         }
 
-        playerStatement.close();
         resultSet.close();
+        playerStatement.close();
 
         return newPlayers;
     }
@@ -357,8 +433,6 @@ public final class PlayerRepository extends Repository<Player> {
     public void nextPlayerTurn(Player player, Game game) throws SQLException {
         // Get the expected next sequence number.
         var nextSequence = player.getNextSequenceNumber(game.getPlayers().size(), player);
-        // Get new player data from db
-        var players = this.getPlayersByGame(game);
 
         // Update current player sequence number and set them to non current player.
         PreparedStatement statement = this.connection.getConnection()
@@ -369,20 +443,26 @@ public final class PlayerRepository extends Repository<Player> {
         statement.setInt(3, player.getId());
 
         statement.executeUpdate();
-        statement.close();
+
+        // Get new player data from db
+        var players = this.getPlayersByGame(game);
+
+        // This is a shitty fix to make sure the isCurrentPlayer can be set correctly.
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         // Get the next expected player based on calculated sequence number.
-        var expectedNextPlayer = setTurn(nextSequence, players);
+        var expectedNextPlayerId = setTurn(nextSequence, players);
 
         var gameRepository = new GameRepository(this.connection);
-        gameRepository.updateGamePlayer(expectedNextPlayer, game);
-
-        this.update(expectedNextPlayer);
+        gameRepository.updateGamePlayer(expectedNextPlayerId, game);
     }
 
-    private Player setTurn(int nextSequence, List<Player> players) throws SQLException {
-        int finalNextSequence = nextSequence;
-        var expectedNextPlayer = players.stream().filter(p -> p.getSequenceNumber() == finalNextSequence).findFirst().orElse(null);
+    private int setTurn(int nextSequence, List<Player> players) throws SQLException {
+        var expectedNextPlayer = players.stream().filter(p -> p.getSequenceNumber() == nextSequence).findFirst().orElse(null);
 
         // Set the expected player to current player.
         PreparedStatement statement = this.connection.getConnection()
@@ -395,19 +475,54 @@ public final class PlayerRepository extends Repository<Player> {
         statement.executeUpdate();
         statement.close();
 
-        // Set our local next player.
-        expectedNextPlayer.setCurrentPlayer(true);
-
-        return expectedNextPlayer;
+        return expectedNextPlayer.getId();
     }
 
+    public boolean getIfCurrent(int id) throws SQLException {
+        // Set the expected player to current player.
+        PreparedStatement statement = this.connection.getConnection()
+                .prepareStatement("SELECT isCurrentPlayer from player where idplayer = ?;");
 
+        statement.setInt(1, id);
+
+        var result = statement.executeQuery();
+        result.next();
+        var isCurrent = result.getBoolean(1);
+        result.close();
+        statement.close();
+
+        return isCurrent;
+    }
+
+    public String getCurrentPlayer(Game game) throws SQLException {
+        PreparedStatement statement = this.connection.getConnection().prepareStatement("SELECT username FROM player WHERE spel_idspel = ? AND isCurrentPlayer = ? AND playstatus_playstatus IN (?,?);");
+
+        statement.setInt(1, game.getId());
+        statement.setInt(2, 1);
+        statement.setString(3, PlayStatus.ACCEPTED.getPlayState());
+        statement.setString(4, PlayStatus.CHALLENGER.getPlayState());
+
+        ResultSet resultSet = statement.executeQuery();
+
+        if (!resultSet.next()) {
+            return null;
+        }
+
+        var username = resultSet.getString("username");
+
+        statement.close();
+        resultSet.close();
+
+        return username;
+    }
 
     public Player getPlayerByGameAndUsername(Game game, String username) throws SQLException {
-        PreparedStatement playerIdStatement = this.connection.getConnection().prepareStatement("SELECT idplayer FROM player WHERE spel_idspel = ? AND username = ?;");
+        PreparedStatement playerIdStatement = this.connection.getConnection().prepareStatement("SELECT idplayer FROM player WHERE spel_idspel = ? AND username = ? AND playstatus_playstatus IN (?,?);");
 
         playerIdStatement.setInt(1, game.getId());
         playerIdStatement.setString(2, username);
+        playerIdStatement.setString(3, PlayStatus.ACCEPTED.getPlayState());
+        playerIdStatement.setString(4, PlayStatus.CHALLENGER.getPlayState());
 
         ResultSet playerIdResultSet = playerIdStatement.executeQuery();
         playerIdResultSet.next();
@@ -435,11 +550,22 @@ public final class PlayerRepository extends Repository<Player> {
 
         GameRepository gameRepository = new GameRepository(this.connection);
 
-        gameRepository.updateGamePlayer(nextPlayer, game);
+        gameRepository.updateGamePlayer(nextPlayer.getId(), game);
 
         resultSet.close();
         preparedStatement.close();
 
         return nextPlayer;
+    }
+
+    public void setPlayerScorePoints(int score, int playerId) throws SQLException {
+        PreparedStatement statement = this.connection.getConnection()
+                .prepareStatement("UPDATE player SET score = ? WHERE idplayer = ?");
+
+        statement.setInt(1, score);
+        statement.setInt(2, playerId);
+
+        statement.executeUpdate();
+        statement.close();
     }
 }

@@ -14,7 +14,6 @@ import sagrada.model.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Timer;
@@ -22,13 +21,13 @@ import java.util.TimerTask;
 
 public class LobbyController {
     @FXML
-    private VBox vbLobbyGames;
+    private VBox vbLobbyGames, vbLobbyInvites;
     @FXML
-    private VBox vbLobbyPlayers;
-    @FXML
-    private VBox vbLobbyInvites;
-    @FXML
-    private Button btnCreateGame;
+    private Button btnCreateGame, btnPreviousPage, btnNextPage, btnReverseOrder;
+
+    private int page = 0;
+    private int amountOfGames = 0;
+    private boolean orderDesc = true;
 
     private final Account user;
     private final DatabaseConnection databaseConnection;
@@ -43,19 +42,24 @@ public class LobbyController {
 
     @FXML
     protected void initialize() {
+        this.btnPreviousPage.setDisable(true);
         this.btnCreateGame.setOnMouseClicked(e -> this.createGame());
+        this.btnPreviousPage.setOnMouseClicked(e -> this.previousPage());
+        this.btnNextPage.setOnMouseClicked(e -> this.nextPage());
+        this.btnReverseOrder.setOnMouseClicked(e -> this.reverseOrder());
+
         this.getGamesTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                 getGames();
+                getGames();
             }
-        }, 0, 5000);
+        }, 0, 2000);
         this.getInvitesTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                  getInvites();
             }
-        }, 0, 3000);
+        }, 0, 2000);
         this.getPlayersTimer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -67,11 +71,11 @@ public class LobbyController {
     private void getGames() {
         try {
             var gameRepository = new GameRepository(this.databaseConnection);
-            var games = gameRepository.getAll();
-            Platform.runLater(() -> {
-                var loader = this.getClass().getResource("/views/lobby/lobbyGame.fxml");
-                this.fillLobbyList(games, this.vbLobbyGames, loader);
-            });
+            var games = gameRepository.getAll(this.page * 20, this.orderDesc);
+            var loader = this.getClass().getResource("/views/lobby/lobbyGame.fxml");
+            this.fillLobbyList(games, this.vbLobbyGames, loader);
+            this.amountOfGames = gameRepository.countAllGames();
+            this.btnNextPage.setDisable(this.amountOfGames / 20 == this.page);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -81,10 +85,8 @@ public class LobbyController {
         try {
             var gameRepository = new GameRepository(this.databaseConnection);
             var games = gameRepository.getInvitedGames(this.user);
-            Platform.runLater(() -> {
-                var loader = this.getClass().getResource("/views/lobby/lobbyInvite.fxml");
-                this.fillLobbyList(games, this.vbLobbyInvites, loader);
-            });
+            var loader = this.getClass().getResource("/views/lobby/lobbyInvite.fxml");
+            this.fillLobbyList(games, this.vbLobbyInvites, loader);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -118,18 +120,19 @@ public class LobbyController {
     }
 
     private void fillLobbyList(List<Game> games, VBox items, URL view) {
-        items.getChildren().clear();
+        Platform.runLater(() -> items.getChildren().clear());
 
-        try {
-            for (var game : games) {
-                if (game.getOwner() != null) {
-                    var loader = new FXMLLoader(view);
-                    loader.setController(new LobbyItemController(game, this.user, this.databaseConnection, this));
+        for (var game : games) {
+            var loader = new FXMLLoader(view);
+            loader.setController(new LobbyItemController(game, this.user, this.databaseConnection, this));
+
+            Platform.runLater(() -> {
+                try {
                     items.getChildren().add(loader.load());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            });
         }
     }
 
@@ -156,7 +159,7 @@ public class LobbyController {
         }
     }
 
-   public void stopTimers() {
+    public void stopTimers() {
         this.getGamesTimer.cancel();
         this.getGamesTimer.purge();
         this.getInvitesTimer.cancel();
@@ -164,4 +167,25 @@ public class LobbyController {
         this.getPlayersTimer.cancel();
         this.getPlayersTimer.purge();
    }
+
+    private void nextPage() {
+        this.page += 1;
+
+        if (this.page != 0) {
+            this.btnPreviousPage.setDisable(false);
+        }
+    }
+
+    private void previousPage() {
+        this.page -= 1;
+
+        if (this.page == 0) {
+            this.btnPreviousPage.setDisable(true);
+        }
+    }
+
+    private void reverseOrder() {
+        this.orderDesc = !this.orderDesc;
+        this.btnReverseOrder.setText(this.orderDesc ? "Sorteer spellen van oud naar nieuw" : "Sorteer spellen van nieuw naar oud");
+    }
 }

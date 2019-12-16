@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public final class CopperFoilBurnisherActivator extends ToolCardActivator {
+public class CopperFoilBurnisherActivator extends ToolCardActivator {
     private Player player;
 
     public CopperFoilBurnisherActivator(GameController gameController, ToolCard toolCard) {
@@ -20,23 +20,33 @@ public final class CopperFoilBurnisherActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() throws SQLException {
+    public boolean activate() throws SQLException {
         this.player = this.controller.getPlayer();
         Game game = this.controller.getGame();
 
-
         Square square = this.askWhichDiceShouldBeMoved();
+
+        if (square == null) return false;
+
         Square newSquare = this.askNewPosition(square);
+
+        if (newSquare == null) return false;
 
         Object[] message = new Object[2];
         message[0] = square;
         message[1] = newSquare;
 
-        this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, message);
+        return this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPlayerFrame(), game.getRoundTrack(), this.player, game, message);
     }
 
     private Square askWhichDiceShouldBeMoved() {
-        ChoiceDialog<Square> dialog = new ChoiceDialog<>(this.player.getPatternCard().getSquares().get(0), this.player.getPatternCard().getSquares());
+        List<Square> squaresWithDie = this.player.getPlayerFrame().getSquares().stream()
+                .filter(square -> square.getDie() != null)
+                .collect(Collectors.toList());
+
+        if (squaresWithDie.size() == 0) return null;
+
+        ChoiceDialog<Square> dialog = new ChoiceDialog<>(squaresWithDie.get(0), squaresWithDie);
         dialog.setTitle("Folie-aandrukker 1/2");
         dialog.setHeaderText("Dobbelsteen keuze");
         dialog.setContentText("Kies dobbelsteen:");
@@ -51,9 +61,8 @@ public final class CopperFoilBurnisherActivator extends ToolCardActivator {
     }
 
     private Square askNewPosition(final Square chosenSquare) {
-        List<Square> emptyPositions = this.player.getPatternCard().getSquares().stream()
+        List<Square> emptyPositions = this.player.getPlayerFrame().getSquares().stream()
                 .filter(square -> square.getDie() == null)
-                .filter(square -> square.getColor() == chosenSquare.getColor())
                 .collect(Collectors.toList());
 
         ChoiceDialog<Square> dialog = new ChoiceDialog<>(emptyPositions.get(0), emptyPositions);

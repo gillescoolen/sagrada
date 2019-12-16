@@ -1,22 +1,35 @@
 package sagrada.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
+import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.GameRepository;
 import sagrada.model.Game;
+import sagrada.model.PlayStatus;
+import sagrada.model.Player;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class PostGameController {
     @FXML
-    private HBox objectiveCardBox, toolCardBox, leaderBoard;
+    private HBox objectiveCardBox, toolCardBox, leaderBoard, windowPatternCardBox;
 
     private final Game game;
     private final GameController gameController;
+    private final GameRepository gameRepository;
+    private final ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
 
-    public PostGameController(Game game, GameController gameController) {
+    public PostGameController(Game game, GameController gameController, DatabaseConnection connection) {
         this.game = game;
         this.gameController = gameController;
+        this.gameRepository = new GameRepository(connection);
     }
 
     @FXML
@@ -28,6 +41,31 @@ public class PostGameController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Runnable checkForScore = () -> {
+            try {
+                List<Player> players = this.gameRepository.getAllDonePlayers(this.game);
+
+                if (players.size() > 0) {
+                    this.game.addPlayers(players);
+
+                    Platform.runLater(() -> {
+                        try {
+                            this.loadPlayers();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+                    this.ses.shutdown();
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        };
+
+        this.ses.scheduleAtFixedRate(checkForScore, 0, 1, TimeUnit.SECONDS);
     }
 
     private void loadToolCards() throws IOException {
@@ -47,6 +85,7 @@ public class PostGameController {
     }
 
     private void loadPlayers() throws IOException {
+        this.leaderBoard.getChildren().clear();
         for (var player : this.game.getPlayers()) {
             var loader = new FXMLLoader(getClass().getResource("/views/game/postPlayer.fxml"));
             loader.setController(new PostPlayerController(player, this.gameController));

@@ -1,20 +1,18 @@
 package sagrada.model;
 
-import sagrada.database.repositories.PlayerRepository;
 import sagrada.util.Observable;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class Game extends Observable<Game> {
     private int id;
+    private Die selectedDie;
     private Player playerTurn;
     private LocalDateTime createdOn;
-    private RoundTrack roundTrack;
-    private DraftPool draftPool;
+    private final RoundTrack roundTrack;
+    private final DraftPool draftPool;
     private final List<Player> players = new ArrayList<>(2);
 
     private final List<ToolCard> toolCards = new ArrayList<>(3);
@@ -22,8 +20,10 @@ public class Game extends Observable<Game> {
 
     private final List<FavorToken> favorTokens = new ArrayList<>(24);
 
+
     public Game() {
         this.draftPool = new DraftPool();
+        this.roundTrack = new RoundTrack();
     }
 
     public int getId() {
@@ -127,8 +127,18 @@ public class Game extends Observable<Game> {
         return this.draftPool;
     }
 
-    public void removeDieFromDraftpool(Die die) {
+    public void removeDieFromDraftPool(Die die) {
         this.draftPool.removeDice(die);
+        this.update(this);
+    }
+
+    public void addDiceInDraftPool(List<Die> dieList) {
+        this.draftPool.addAllDice(dieList);
+        this.update(this);
+    }
+
+    public void throwDice() {
+        this.draftPool.throwDice();
         this.update(this);
     }
 
@@ -153,7 +163,8 @@ public class Game extends Observable<Game> {
     }
 
     public void setRoundTrack(RoundTrack roundTrack) {
-        this.roundTrack = roundTrack;
+        this.roundTrack.setCurrent(roundTrack.getCurrent());
+        this.roundTrack.setTrack(roundTrack.getTrack());
         this.update(this);
     }
 
@@ -172,5 +183,14 @@ public class Game extends Observable<Game> {
     // FIXME: rename function, init functions are bad practice
     public void init() {
         // TODO: implement
+    }
+
+    public Die getSelectedDie() {
+        return selectedDie;
+    }
+
+    public void setSelectedDie(Die selectedDie) {
+        this.selectedDie = selectedDie;
+        this.update(this);
     }
 }

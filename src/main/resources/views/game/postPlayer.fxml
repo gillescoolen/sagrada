@@ -6,11 +6,16 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.shape.Rectangle?>
 <VBox styleClass="post-player-wrapper" alignment="CENTER" stylesheets="/styles/game/post-player.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <HBox styleClass="player-info-wrapper">
         <HBox styleClass="player-hbox" alignment="CENTER_LEFT">
             <Text fx:id="playerName" styleClass="player-name"/>
         </HBox>
+        <VBox>
+            <Text text="Prive doelkaart"/>
+            <Rectangle fx:id="privateObjectiveColor" width="50" height="30"/>
+        </VBox>
         <StackPane>
             <Ellipse styleClass="score-marker" fill="blue" radiusX="30.0" radiusY="30.0"/>
             <Text fx:id="score" styleClass="vp-text"/>

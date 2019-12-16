@@ -8,7 +8,7 @@ import sagrada.model.Game;
 
 public class GameLobbyCreatorScreen extends FXMLLoader {
     public GameLobbyCreatorScreen(DatabaseConnection databaseConnection, Game game, Account account) {
-        this.setLocation(getClass().getResource("/views/lobby/gameLobbyCreator.fxml"));
+        this.setLocation(getClass().getResource("/views/screens/gameLobbyCreator.fxml"));
         this.setController(new GameLobbyCreatorController(databaseConnection, game, account));
     }
 }

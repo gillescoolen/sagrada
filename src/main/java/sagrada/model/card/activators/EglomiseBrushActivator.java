@@ -12,31 +12,39 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class EglomiseBurshActivator extends ToolCardActivator {
+public class EglomiseBrushActivator extends ToolCardActivator {
     private Player player;
 
-    public EglomiseBurshActivator(GameController gameController, ToolCard toolCard) {
+    public EglomiseBrushActivator(GameController gameController, ToolCard toolCard) {
         super(gameController, toolCard);
     }
 
     @Override
-    public void activate() throws SQLException {
+    public boolean activate() throws SQLException {
         this.player = this.controller.getPlayer();
         Game game = this.controller.getGame();
 
-
         Square square = this.askWhichDiceShouldBeMoved();
+
+        if (square == null) return false;
+
         Square newSquare = this.askNewPosition(square);
 
         Object[] message = new Object[2];
         message[0] = square;
         message[1] = newSquare;
 
-        this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, message);
+        return this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPlayerFrame(), game.getRoundTrack(), this.player, game, message);
     }
 
     private Square askWhichDiceShouldBeMoved() {
-        ChoiceDialog<Square> dialog = new ChoiceDialog<>(this.player.getPatternCard().getSquares().get(0), this.player.getPatternCard().getSquares());
+        List<Square> squaresWithDie = this.player.getPlayerFrame().getSquares().stream()
+                .filter(square -> square.getDie() != null)
+                .collect(Collectors.toList());
+
+        if (squaresWithDie.size() == 0) return null;
+
+        ChoiceDialog<Square> dialog = new ChoiceDialog<>(squaresWithDie.get(0), squaresWithDie);
         dialog.setTitle("Eglomise Borstel 1/2");
         dialog.setHeaderText("Dobbelsteen keuze");
         dialog.setContentText("Kies dobbelsteen:");
@@ -51,9 +59,8 @@ public class EglomiseBurshActivator extends ToolCardActivator {
     }
 
     private Square askNewPosition(final Square chosenSquare) {
-        List<Square> emptyPositions = this.player.getPatternCard().getSquares().stream()
+        List<Square> emptyPositions = this.player.getPlayerFrame().getSquares().stream()
                 .filter(square -> square.getDie() == null)
-                .filter(square -> square.getColor() == chosenSquare.getColor())
                 .collect(Collectors.toList());
 
         ChoiceDialog<Square> dialog = new ChoiceDialog<>(emptyPositions.get(0), emptyPositions);

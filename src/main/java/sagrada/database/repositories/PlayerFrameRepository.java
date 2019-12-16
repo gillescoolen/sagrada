@@ -79,6 +79,65 @@ public final class PlayerFrameRepository extends Repository<PatternCard> {
         preparedStatement.close();
     }
 
+    public void removeSquare(Player player, Square square) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE playerframefield SET dienumber = null , diecolor = null WHERE player_idplayer = ? AND position_x = ? AND position_y = ?");
+
+        preparedStatement.setInt(1, player.getId());
+        preparedStatement.setInt(2, square.getPosition().getX());
+        preparedStatement.setInt(3, square.getPosition().getY());
+
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
+    }
+
+    public void invalidateCard(Player player) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE player SET invalidframefield = true WHERE idplayer = ?;");
+
+        preparedStatement.setInt(1, player.getId());
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
+    }
+
+    public void setCardValid(Player player) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE player SET invalidframefield = false WHERE idplayer = ?;");
+
+        preparedStatement.setInt(1, player.getId());
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
+    }
+
+    public boolean checkIfCardIsValid(Player player) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT invalidframefield FROM player WHERE idplayer = ?;");
+
+        preparedStatement.setInt(1, player.getId());
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+
+        boolean invalidFrameField = resultSet.getBoolean("invalidframefield");
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return invalidFrameField;
+    }
+
+    public void resetSquare(Player player, Square square, Game game) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("UPDATE playerframefield SET dienumber = NULL, diecolor = NULL WHERE player_idplayer = ? AND position_x = ? AND position_y = ? AND idgame = ?");
+
+        preparedStatement.setInt(1, player.getId());
+        preparedStatement.setInt(2, square.getPosition().getX());
+        preparedStatement.setInt(3, square.getPosition().getY());
+        preparedStatement.setInt(4, game.getId());
+
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
+    }
+
     @Override
     public PatternCard findById(int id) throws SQLException {
         return null;

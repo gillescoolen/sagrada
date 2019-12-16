@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class BackButton extends FXMLLoader {
     public BackButton(Runnable runnable) throws IOException {
-        this.setLocation(getClass().getResource("/views/backButton.fxml"));
+        this.setLocation(getClass().getResource("/views/components/backButton.fxml"));
         this.setController(new BackButtonController(runnable));
     }
 }

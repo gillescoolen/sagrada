@@ -32,6 +32,9 @@ public final class ToolCardRepository extends Repository<ToolCard> {
             ));
         }
 
+        preparedStatement.close();
+        resultSet.close();
+
         return toolCards;
     }
 
@@ -124,15 +127,45 @@ public final class ToolCardRepository extends Repository<ToolCard> {
                 break;
             }
 
-            toolCards.add(CardFactory.getToolCard(
-                    cardResultSet.getInt("idtoolcard"),
+            int idToolCard = cardResultSet.getInt("idtoolcard");
+
+            ToolCard toolCard = CardFactory.getToolCard(
+                    idToolCard,
                     cardResultSet.getString("name"),
                     cardResultSet.getString("description"),
                     this.connection
-            ));
+            );
+
+            if (this.toolCardIsUsed(gameId, idToolCard)) {
+                toolCard.setCost(2);
+            }
+
+            toolCards.add(toolCard);
+
+            cardPreparedStatement.close();
+            cardResultSet.close();
         }
 
+        preparedStatement.close();
+        resultSet.close();
+
         return toolCards;
+    }
+
+    public boolean toolCardIsUsed(int gameId, int toolCardId) throws SQLException {
+        PreparedStatement statement = this.connection.getConnection().prepareStatement("SELECT if(count(*) > 0,true,false) as used FROM gamefavortoken JOIN gametoolcard ON gamefavortoken.idgame = gametoolcard.idgame AND gamefavortoken.gametoolcard = gametoolcard.gametoolcard WHERE gamefavortoken.idgame = ? AND gametoolcard.idtoolcard = ?;");
+
+        statement.setInt(1, gameId);
+        statement.setInt(2, toolCardId);
+
+        var result = statement.executeQuery();
+        result.next();
+        boolean bool = result.getBoolean(1);
+
+        result.close();
+        statement.close();
+
+        return bool;
     }
 
     public void addMultiple(Collection<ToolCard> toolCards, int gameId) throws SQLException {
@@ -198,28 +231,71 @@ public final class ToolCardRepository extends Repository<ToolCard> {
         return this.findById(id);
     }
 
+    public int getGameToolCardIdByToolCardId(int toolCardId, int gameId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection()
+                .prepareStatement("SELECT gametoolcard FROM gametoolcard WHERE idtoolcard = ? AND idgame = ?;");
+        preparedStatement.setInt(1, toolCardId);
+        preparedStatement.setInt(2, gameId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (!resultSet.next()) {
+            return 0;
+        }
+
+        final int id = resultSet.getInt("gametoolcard");
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return id;
+    }
+
     public void addAffectedToolCard(ToolCard toolCard, List<Die> dice, int gameId) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(
-                "INSERT INTO gametoolcard_affected_gamedie VALUES (?,?,?,?)"
+        PreparedStatement preparedDeleteStatement = this.connection.getConnection().prepareStatement(
+                "DELETE FROM gametoolcard_affected_gamedie WHERE gametoolcard_gametoolcard = ? AND gamedie_idgame = ? AND gamedie_dienumber = ? AND gamedie_diecolor = ?;"
+        );
+
+        PreparedStatement preparedInsertStatement = this.connection.getConnection().prepareStatement(
+                "INSERT INTO gametoolcard_affected_gamedie VALUES (?,?,?,?);"
         );
 
         var count = 0;
 
         for (var die : dice) {
-            preparedStatement.setInt(1, toolCard.getId());
-            preparedStatement.setInt(2, gameId);
-            preparedStatement.setInt(3, die.getNumber());
-            preparedStatement.setString(4, die.getColor().getDutchColorName());
+            preparedDeleteStatement.setInt(1, toolCard.getId());
+            preparedDeleteStatement.setInt(2, gameId);
+            preparedDeleteStatement.setInt(3, die.getNumber());
+            preparedDeleteStatement.setString(4, die.getColor().getDutchColorName());
 
-            preparedStatement.addBatch();
+            preparedDeleteStatement.addBatch();
+
+            preparedInsertStatement.setInt(1, toolCard.getId());
+            preparedInsertStatement.setInt(2, gameId);
+            preparedInsertStatement.setInt(3, die.getNumber());
+            preparedInsertStatement.setString(4, die.getColor().getDutchColorName());
+
+            preparedInsertStatement.addBatch();
 
             ++count;
 
             if (count % BATCH_SIZE == 0 || count == dice.size()) {
-                preparedStatement.executeBatch();
+                preparedDeleteStatement.executeBatch();
+                preparedInsertStatement.executeBatch();
             }
         }
 
-        preparedStatement.close();
+        preparedDeleteStatement.close();
+        preparedInsertStatement.close();
+    }
+
+    public boolean isGameDieAffected(int gameId, Die die) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM gametoolcard_affected_gamedie WHERE gamedie_idgame = ? AND gamedie_diecolor = ? AND gamedie_dienumber = ?;");
+
+        preparedStatement.setInt(1, gameId);
+        preparedStatement.setString(2, die.getColor().getDutchColorName());
+        preparedStatement.setInt(3, die.getNumber());
+
+        return preparedStatement.executeQuery().next();
     }
 }

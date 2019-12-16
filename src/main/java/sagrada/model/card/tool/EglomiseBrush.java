@@ -17,25 +17,38 @@ public final class EglomiseBrush extends ToolCard {
     }
 
     @Override
-    public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
+    public boolean use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
         Object[] values = (Object[]) message;
         Square oldSquare = (Square) values[0];
         Square newSquare = (Square) values[1];
 
-        newSquare.setDie(oldSquare.getDie());
-        oldSquare.setDie(null);
+        patternCard.moveDie(player, oldSquare, newSquare, connection);
 
-        patternCard.replaceSquare(oldSquare, newSquare);
+
+        ArrayList<Die> dice = new ArrayList<>();
+        dice.add(oldSquare.getDie());
+
+        if (this.getCost() == 1) {
+            FavorToken favorToken = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
+
+            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        } else {
+            FavorToken favorToken = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
+
+            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+
+            FavorToken favorToken1 = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
+
+            favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        }
 
         this.incrementCost();
 
-        ArrayList<Die> dice = new ArrayList<>();
-        dice.add(newSquare.getDie());
-
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
-
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false);
         toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+
+        return true;
     }
 }

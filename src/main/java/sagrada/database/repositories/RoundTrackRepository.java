@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-public class RoundTrackRepository extends Repository<RoundTrack> {
+public final class RoundTrackRepository extends Repository<RoundTrack> {
     public RoundTrackRepository(DatabaseConnection connection) {
         super(connection);
     }

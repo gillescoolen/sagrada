@@ -7,7 +7,6 @@ import sagrada.database.repositories.ToolCardRepository;
 import sagrada.model.*;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public final class TapWheel extends ToolCard {
@@ -19,30 +18,36 @@ public final class TapWheel extends ToolCard {
     }
 
     @Override
-    public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
+    public boolean use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
         @SuppressWarnings("unchecked")
-        List<Pair<Square, Square>> messageList = (List<Pair<Square, Square>>) message;
+        List<Pair<Square, Square>> movePair = (List<Pair<Square, Square>>) message;
 
-        ArrayList<Die> dice = new ArrayList<>();
+        for (var pair : movePair) {
+            Square newSquare = pair.getKey();
+            Square oldSquare = pair.getValue();
 
-        for (Pair<Square, Square> squarePair : messageList) {
-            Square squareNew = squarePair.getKey();
-            Square squareOld = squarePair.getValue();
+            patternCard.moveDie(player, newSquare, oldSquare, connection);
+        }
 
-            squareOld.setDie(squareNew.getDie());
-            squareNew.setDie(null);
+        if (this.getCost() == 1) {
+            FavorToken favorToken = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
 
-            patternCard.replaceSquare(squareOld, squareOld);
+            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        } else {
+            FavorToken favorToken = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
 
-            dice.add(squareNew.getDie());
+            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+
+            FavorToken favorToken1 = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
+
+            favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
         }
 
         this.incrementCost();
 
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
-
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false);
-        toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+        return true;
     }
 }

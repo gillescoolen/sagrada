@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      stylesheets="/styles/postgame.css"
+      styleClass="post-game-wrapper"
+      alignment="TOP_CENTER"
+      prefWidth="1400" prefHeight="720">
+
+    <Text styleClass="title" text="Samenvatting"/>
+
+    <!-- LEADERBOARD -->
+    <HBox fx:id="leaderBoard" alignment="TOP_CENTER" styleClass="leader-vbox" maxHeight="100"/>
+
+    <!-- CARDS -->
+    <HBox styleClass="cards-vbox">
+        <VBox styleClass="card-holder-vbox" alignment="CENTER" HBox.hgrow="ALWAYS">
+            <Text styleClass="small-title" text="Hulp kaarten"/>
+            <HBox fx:id="toolCardBox" alignment="CENTER" styleClass="cards-hbox-holder"/>
+        </VBox>
+        <VBox styleClass="card-holder-vbox" alignment="CENTER" HBox.hgrow="ALWAYS">
+            <Text styleClass="small-title" text="Publieke Doel kaarten"/>
+            <HBox fx:id="objectiveCardBox" alignment="CENTER" styleClass="cards-hbox-holder"/>
+        </VBox>
+    </HBox>
+</VBox>

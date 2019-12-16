@@ -2,9 +2,9 @@ package sagrada.database.repositories;
 
 import sagrada.database.DatabaseConnection;
 import sagrada.model.FavorToken;
-import sagrada.model.Game;
 import sagrada.model.Player;
 
+import javax.xml.transform.Result;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -73,9 +73,12 @@ public final class FavorTokenRepository extends Repository<FavorToken> {
         preparedStatement.close();
     }
 
-    public void updateFavorToken(FavorToken favorToken, int gameToolCardId, int round, boolean inFirstTurn) throws SQLException {
+    public void updateFavorToken(FavorToken favorToken, int toolCardId, int round, boolean inFirstTurn, int gameId) throws SQLException {
         PreparedStatement preparedStatement = this.connection.getConnection()
                 .prepareStatement("UPDATE gamefavortoken SET gametoolcard = ?, round = ?, inFirstTurn = ? WHERE idfavortoken = ?;");
+
+        ToolCardRepository repository = new ToolCardRepository(this.connection);
+        var gameToolCardId = repository.getGameToolCardIdByToolCardId(toolCardId, gameId);
 
         preparedStatement.setInt(1, gameToolCardId);
         preparedStatement.setInt(2, round);
@@ -110,23 +113,6 @@ public final class FavorTokenRepository extends Repository<FavorToken> {
         resultSet.close();
 
         return favorTokens;
-    }
-
-    public boolean checkIfFavorTokensAreSet(Game game, Player player) throws SQLException {
-        PreparedStatement statement = this.connection.getConnection()
-                .prepareStatement("SELECT * FROM gamefavortoken WHERE idgame = ? AND idplayer = ? LIMIT 1");
-
-        statement.setInt(1, game.getId());
-        statement.setInt(2, player.getId());
-
-        ResultSet resultSet = statement.executeQuery();
-
-        boolean hasTokens = resultSet.next();
-
-        statement.close();
-        resultSet.close();
-
-        return hasTokens;
     }
 
     public List<FavorToken> getPlayerFavorTokens(int gameId, int playerId) throws SQLException {
@@ -178,5 +164,57 @@ public final class FavorTokenRepository extends Repository<FavorToken> {
         }
 
         preparedStatement.close();
+    }
+
+    public int getPlayerFavorTokensTotal(int gameId, int playerId) throws SQLException {
+        PreparedStatement statement = this.connection.getConnection()
+                .prepareStatement("SELECT COUNT(*) AS total FROM gamefavortoken WHERE idgame = ? AND idplayer = ? AND gametoolcard IS NULL;");
+
+        statement.setInt(1, gameId);
+        statement.setInt(2, playerId);
+
+        ResultSet resultSet = statement.executeQuery();
+
+        if (!resultSet.next()) {
+            return 0;
+        }
+
+        final int total = resultSet.getInt("total");
+
+        statement.close();
+        resultSet.close();
+
+        return total;
+    }
+
+    public int getFavorTokensUsed(int gameId, int toolcardId) throws SQLException {
+        PreparedStatement gameToolcardIdStatement = this.connection.getConnection().prepareStatement("SELECT gametoolcard FROM gametoolcard WHERE idgame = ? AND idtoolcard = ?");
+
+        gameToolcardIdStatement.setInt(1, gameId);
+        gameToolcardIdStatement.setInt(2, toolcardId);
+
+        ResultSet gameToolcardResultset = gameToolcardIdStatement.executeQuery();
+        gameToolcardResultset.next();
+
+        int gameToolCardId = gameToolcardResultset.getInt("gametoolcard");
+
+        PreparedStatement statement = this.connection.getConnection()
+                .prepareStatement("SELECT COUNT(*) AS total FROM gamefavortoken WHERE idgame = ? AND gametoolcard = ?;");
+
+        statement.setInt(1, gameId);
+        statement.setInt(2, gameToolCardId);
+
+        ResultSet resultSet = statement.executeQuery();
+
+        if (!resultSet.next()) {
+            return 0;
+        }
+
+        final int total = resultSet.getInt("total");
+
+        statement.close();
+        resultSet.close();
+
+        return total;
     }
 }

@@ -17,16 +17,17 @@ public final class GrindingStoneActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() throws SQLException {
+    public boolean activate() throws SQLException {
         Die die = this.question();
 
         Player player = this.controller.getPlayer();
         Game game = this.controller.getGame();
-        this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, die);
+        return this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, die);
     }
 
     private Die question() {
         List<Die> dieList = this.controller.getGame().getDraftPool().getDice();
+
         ChoiceDialog<Die> dialog = new ChoiceDialog<>(dieList.get(0), dieList);
         dialog.setTitle("Schuurblok");
         dialog.setHeaderText("Dobbelsteen keuze");
@@ -38,6 +39,6 @@ public final class GrindingStoneActivator extends ToolCardActivator {
             return this.question();
         }
 
-        return result.orElse(null);
+        return result.get();
     }
 }

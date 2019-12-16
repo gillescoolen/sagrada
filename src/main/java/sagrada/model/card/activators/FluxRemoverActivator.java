@@ -5,22 +5,18 @@ import sagrada.controller.GameController;
 import sagrada.model.*;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 
 public final class FluxRemoverActivator extends ToolCardActivator {
-    private final Game game;
-
     public FluxRemoverActivator(GameController gameController, ToolCard toolCard) {
         super(gameController, toolCard);
-        this.game = gameController.getGame();
     }
 
     @Override
-    public void activate() throws SQLException {
-        Die die = this.askDieFromDraft();
-
+    public boolean activate() throws SQLException {
         Player player = this.controller.getPlayer();
+        Game game = this.controller.getGame();
+        Die die = this.askDieFromDraft();
 
         int newValue = this.askValue();
 
@@ -28,12 +24,13 @@ public final class FluxRemoverActivator extends ToolCardActivator {
         messages[0] = die;
         messages[1] = newValue;
 
-        this.toolCard.use(this.game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), this.game.getRoundTrack(), player, this.game, messages);
+        return this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, messages);
     }
 
     private Die askDieFromDraft() {
-        List<Die> dieList = this.game.getDraftPool().getDice();
-        ChoiceDialog<Die> dialog = new ChoiceDialog<>(dieList.get(0), dieList);
+        DraftPool draftPool = this.controller.getGame().getDraftPool();
+
+        ChoiceDialog<Die> dialog = new ChoiceDialog<>(draftPool.getDice().get(0), draftPool.getDice());
         dialog.setTitle("Fluxverwijderaar 1/2");
         dialog.setHeaderText("Dobbelsteen keuze");
         dialog.setContentText("Kies dobbelsteen:");
@@ -44,7 +41,7 @@ public final class FluxRemoverActivator extends ToolCardActivator {
             return this.askDieFromDraft();
         }
 
-        return result.orElse(null);
+        return result.get();
     }
 
     private int askValue() {

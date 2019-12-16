@@ -1,6 +1,9 @@
 package sagrada.model.card.activators;
 
-import javafx.scene.control.ChoiceDialog;
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.util.Pair;
 import sagrada.controller.GameController;
 import sagrada.model.Game;
 import sagrada.model.Player;
@@ -20,74 +23,110 @@ public final class LathekinActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() throws SQLException {
+    public boolean activate() throws SQLException {
         this.player = this.controller.getPlayer();
         Game game = this.controller.getGame();
 
-        Square[] squares = this.askWhichDiceToMove();
-        Square[] newSquares = this.askNewSquares(squares);
+        List<Pair<Square, Square>> dieToMovePair = this.askWhichDiceToMove();
 
-        List<Square[]> message = new ArrayList<>(SQUARES_TO_MOVE);
-        message.add(squares);
-        message.add(newSquares);
+        if (dieToMovePair == null) return false;
 
-        this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPatternCard(), game.getRoundTrack(), player, game, message);
+        return this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPatternCard(), game.getRoundTrack(), player, game, dieToMovePair);
     }
 
-    private Square[] askNewSquares(Square[] squares) {
-        Square[] squaresToMove = new Square[SQUARES_TO_MOVE];
-        Set<Square> newSquares = new HashSet<>(SQUARES_TO_MOVE);
+    private List<Pair<Square, Square>> askWhichDiceToMove() {
+        List<Square> dice = this.player.getPlayerFrame().getSquares().stream().filter(square -> square.getDie() != null).collect(Collectors.toList());
 
-        for (Square square : squares) {
-            List<Square> filteredSquares = this.player.getPatternCard().getSquares().stream()
-                    .filter(oldSquare -> oldSquare.getDie() == null)
-                    .filter(oldSquare -> oldSquare.getColor() == square.getColor()).collect(Collectors.toList());
+        if (dice.size() < 2) return null;
 
-            newSquares.addAll(filteredSquares);
-        }
+        List<Square> availableSquares = this.player.getPlayerFrame().getSquares().stream().filter(square -> square.getDie() == null).collect(Collectors.toList());
 
-        List<Square> cleanList = new ArrayList<>(newSquares);
+        List<Pair<Square, Square>> squares = new ArrayList<>(SQUARES_TO_MOVE);
 
-
-        for (int i = 0; i < squaresToMove.length; i++) {
-            ChoiceDialog<Square> dialog = new ChoiceDialog<>(cleanList.get(0), cleanList);
-            dialog.setTitle("Loodopenhaler 2/2");
-            dialog.setHeaderText("Dobbelsteen keuze");
-            dialog.setContentText("Kies dobbelsteen:");
-
-            Optional<Square> result = dialog.showAndWait();
+        for (int i = 0; i < SQUARES_TO_MOVE; i++) {
+            var dialog = this.createDialog(dice, availableSquares, i);
+            Optional<Pair<Square, Square>> result = dialog.showAndWait();
 
             if (result.isEmpty()) {
-                i = i - 1; // TODO: test if this works.
+                i = i - 1;
             } else {
-                squaresToMove[i] = result.get();
+                var input = result.get();
+
+                if (!this.isValidInput(squares, input)) {
+                    this.showInvalidMessage();
+                    i = i - 1;
+                } else {
+                    squares.add(input);
+                }
             }
-
         }
-
-        return squaresToMove;
+        return squares;
     }
 
+    private void showInvalidMessage() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("U heeft een dobbelsteen of positie gekozen die al eerder gekozen is");
+        alert.setContentText("Kies opnieuw");
 
-    private Square[] askWhichDiceToMove() {
-        Square[] squaresToMove = new Square[SQUARES_TO_MOVE];
+        alert.showAndWait();
+    }
 
-        for (int i = 0; i < squaresToMove.length; i++) {
-            ChoiceDialog<Square> dialog = new ChoiceDialog<>(this.player.getPatternCard().getSquares().get(0), this.player.getPatternCard().getSquares());
-            dialog.setTitle("Loodopenhaler 1/2");
-            dialog.setHeaderText("Dobbelsteen keuze");
-            dialog.setContentText("Kies dobbelsteen:");
-
-            Optional<Square> result = dialog.showAndWait();
-
-            if (result.isEmpty()) {
-                i = i - 1; // TODO: test if this works.
-            } else {
-                squaresToMove[i] = result.get();
+    private boolean isValidInput(List<Pair<Square, Square>> squares, Pair<Square, Square> result) {
+        for (var square : squares) {
+            if (square.getKey() == result.getKey() || square.getValue() == result.getValue()) {
+                return false;
             }
-
         }
 
-        return squaresToMove;
+        return true;
+    }
+
+    private Dialog<Pair<Square, Square>> createDialog(List<Square> availableDice, List<Square> availableSquares, int i) {
+        Dialog<Pair<Square, Square>> dialog = new Dialog<>();
+        dialog.setTitle("Loodopenhaler " + (i + 1) + "/" + 2);
+
+        ButtonType okButton = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButton);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        ComboBox<Square> squareComboBox1 = new ComboBox<>();
+        squareComboBox1.getItems().addAll(availableDice);
+
+        grid.add(new Label("Dobbelsteen die verplaatst moet worden "), 0, 0);
+        grid.add(squareComboBox1, 1, 0);
+
+        ComboBox<Square> squareComboBox2 = new ComboBox<>();
+        squareComboBox2.getItems().addAll(availableSquares);
+
+        grid.add(new Label("Vervangende plek"), 0, 1);
+        grid.add(squareComboBox2, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == okButton) {
+                var value1 = squareComboBox1.getValue();
+                var value2 = squareComboBox2.getValue();
+
+                if (value1 == null || value2 == null) {
+                    return null;
+                }
+
+                if (value1.equals(value2)) {
+                    return null;
+                }
+
+                return new Pair<>(value1, value2);
+            }
+
+            return null;
+        });
+
+        return dialog;
     }
 }

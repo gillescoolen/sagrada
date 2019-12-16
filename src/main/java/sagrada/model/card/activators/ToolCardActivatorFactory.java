@@ -45,7 +45,7 @@ public final class ToolCardActivatorFactory {
                 toolCardActivator = new RunningPliersActivator(gameController, toolCard);
                 break;
             case "Eglomise Borstel":
-                toolCardActivator = new EglomiseBurshActivator(gameController, toolCard);
+                toolCardActivator = new EglomiseBrushActivator(gameController, toolCard);
                 break;
             case "Fluxverwijderaar":
                 toolCardActivator = new FluxRemoverActivator(gameController, toolCard);

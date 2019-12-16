@@ -1,6 +1,9 @@
 package sagrada.model;
 
+import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.PlayerFrameRepository;
 import sagrada.database.repositories.PlayerRepository;
+import sagrada.database.repositories.ToolCardRepository;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -151,18 +154,133 @@ public class Player {
         this.invalidFrameField = invalidFrameField;
     }
 
+    public void invalidateField(PlayerFrameRepository repository) throws SQLException {
+        repository.invalidateCard(this);
+        this.setInvalidFrameField(true);
+    }
+
+    public void setCardAsValid(PlayerFrameRepository repository) throws SQLException {
+        repository.setCardValid(this);
+        this.setInvalidFrameField(false);
+    }
+
+    public boolean checkIfCardIsValid(PlayerFrameRepository repository) throws SQLException {
+        boolean result = repository.checkIfCardIsValid(this);
+
+        this.setInvalidFrameField(result);
+
+        return result;
+    }
+
     public void skipTurn(PlayerRepository playerRepository, Game game) throws SQLException {
         this.setCurrentPlayer(false);
         playerRepository.nextPlayerTurn(this, game);
+    }
+
+    public PatternCard validateFrameField(DatabaseConnection connection, Game game) {
+        var playerFrameRepository = new PlayerFrameRepository(connection);
+
+        for (var i = 0; i < 20; ++i) {
+            var patternCardSquares = this.patternCard.getSquares();
+            var frameFieldSquares = this.playerFrame.getSquares();
+            var frameFieldSquare = frameFieldSquares.get(i);
+            var patternCardSquare = patternCardSquares.get(i);
+
+            if (frameFieldSquare.getDie() != null) {
+
+                boolean colorNotCorrect = false;
+                boolean valueNotCorrect = false;
+
+                if (patternCardSquare.getColor() != null) {
+                    colorNotCorrect = !patternCardSquare.getColor().equals(frameFieldSquare.getDie().getColor());
+                }
+
+                if (patternCardSquare.getValue() != null) {
+                    valueNotCorrect = !patternCardSquare.getValue().equals(frameFieldSquare.getDie().getValue());
+                    if (patternCardSquare.getValue() == 0) {
+                        // This is the check if a square have value 0,
+                        // that means you can paste ever die in this square,
+                        // and also the color check if upside
+                        valueNotCorrect = false;
+                    }
+                }
+
+                if (colorNotCorrect || valueNotCorrect) {
+                    if (this.toolCardNotUsed(connection, game, frameFieldSquare.getDie())) {
+                        var frameSquare = frameFieldSquares.get(i);
+
+                        frameSquare.setDie(null);
+                        frameSquare.setValue(0);
+                        frameSquare.setColor(null);
+
+                        try {
+                            playerFrameRepository.resetSquare(this, frameSquare, game);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
+                        this.playerFrame.setSquares(frameFieldSquares);
+                    }
+                }
+            }
+        }
+
+        for (var i = 0; i < 20; ++i) {
+            var patternCardSquares = this.patternCard.getSquares();
+            var frameFieldSquares = this.playerFrame.getSquares();
+            var patternCardSquare = patternCardSquares.get(i);
+            var frameFieldSquare = frameFieldSquares.get(i);
+
+            var frameSquares = new ArrayList<Square>();
+
+            frameSquares.add(this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX() - 1, frameFieldSquare.getPosition().getY()));
+            frameSquares.add(this.playerFrame.getSquareByXAndY(frameFieldSquare.getPosition().getX(), frameFieldSquare.getPosition().getY() - 1));
+            frameSquares.add(this.patternCard.getSquareByXAndY(patternCardSquare.getPosition().getX() - 1, patternCardSquare.getPosition().getY()));
+            frameSquares.add(this.patternCard.getSquareByXAndY(patternCardSquare.getPosition().getX(), patternCardSquare.getPosition().getY() - 1));
+
+            for (var square : frameSquares) {
+                if (square != null && square.getDie() != null && frameFieldSquare.getDie() != null) {
+                    if (square.getDie().getColor().equals(frameFieldSquare.getDie().getColor()) || square.getDie().getValue().equals(frameFieldSquare.getDie().getValue())) {
+                        if (this.toolCardNotUsed(connection, game, square.getDie())) {
+                            frameFieldSquare.setDie(null);
+                            frameFieldSquare.setValue(0);
+                            frameFieldSquare.setColor(null);
+
+                            try {
+                                playerFrameRepository.resetSquare(this, frameFieldSquare, game);
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+
+                            this.playerFrame.setSquares(frameFieldSquares);
+                        }
+                    }
+                }
+            }
+        }
+
+        return this.playerFrame;
+    }
+
+    private boolean toolCardNotUsed(DatabaseConnection connection, Game game, Die die) {
+        var toolCardRepository = new ToolCardRepository(connection);
+
+        try {
+            return !toolCardRepository.isGameDieAffected(game.getId(), die);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return true;
+        }
     }
 
     public FavorToken getNonAffectedFavorToken() {
         return this.favorTokens.stream().filter(favorToken -> favorToken.getToolCard() == null).findFirst().orElse(null);
     }
 
-    public boolean getCurrent(PlayerRepository playerRepository, Game game) throws SQLException {
-        var player = playerRepository.getPlayerByGameAndUsername(game, this.account.getUsername());
-        return player.isCurrentPlayer();
+    public boolean getCurrent(PlayerRepository playerRepository) throws SQLException {
+        var isCurrent = playerRepository.getIfCurrent(this.getId());
+        this.isCurrentPlayer = isCurrent;
+        return isCurrent;
     }
 
     // FIXME: refactor this garbage
@@ -172,18 +290,18 @@ public class Player {
         if (playerAmount == 2) {
             switch (player.getSequenceNumber()) {
                 case 1:
-                    player.setSequenceNumber(8);
+                    player.setSequenceNumber(4);
                     nextSequence = 2;
                     break;
                 case 2:
-                    player.setSequenceNumber(7);
-                    nextSequence = 7;
+                    player.setSequenceNumber(3);
+                    nextSequence = 3;
                     break;
-                case 7:
+                case 3:
                     player.setSequenceNumber(1);
-                    nextSequence = 8;
+                    nextSequence = 4;
                     break;
-                case 8:
+                case 4:
                     player.setSequenceNumber(2);
                     nextSequence = 1;
                     break;
@@ -257,5 +375,13 @@ public class Player {
         }
 
         return nextSequence;
+    }
+
+    public boolean getIfSecondTurn(int playerAmount) {
+        if (this.getSequenceNumber() > playerAmount) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -17,6 +17,12 @@
     -fx-border-insets: 5;
 }
 
+.item-finished {
+    -fx-border-radius: 20;
+    -fx-border-color: gold;
+    -fx-border-insets: 5;
+}
+
 .item-started {
     -fx-border-radius: 20;
     -fx-border-color: blue;

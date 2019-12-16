@@ -1,10 +1,12 @@
 package sagrada.model;
 
 import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.DieRepository;
 import sagrada.database.repositories.PlayerFrameRepository;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 public class PatternCard extends ObservableCard<PatternCard> {
     private int id;
@@ -64,9 +66,18 @@ public class PatternCard extends ObservableCard<PatternCard> {
         this.update(this);
     }
 
+    public void moveDie(Player player, Square oldSquare, Square newSquare, DatabaseConnection connection) {
+        var dieToMove = oldSquare.getDie();
+
+        this.placeDie(player, newSquare, dieToMove, connection);
+        this.removeDie(player, oldSquare, connection);
+    }
+
     public void placeDie(Player player, Square square, Die die, DatabaseConnection connection) {
         var foundSquare = this.getSquareByXAndY(square.getPosition().getX(), square.getPosition().getY());
         if (foundSquare == null) return;
+
+        this.update(this);
 
         try {
             PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(connection);
@@ -74,8 +85,24 @@ public class PatternCard extends ObservableCard<PatternCard> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
-        foundSquare.setDie(die);
+    public void removeDie(Player player, Square square, DatabaseConnection connection) {
+        var foundSquare = this.getSquareByXAndY(square.getPosition().getX(), square.getPosition().getY());
+        if (foundSquare == null) return;
+
+        try {
+            PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(connection);
+            playerFrameRepository.removeSquare(player, foundSquare);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        foundSquare.setDie(null);
         this.update(this);
+    }
+
+    public int countEmptySquares() {
+        return ((int) this.squares.stream().filter(square -> square.getDie() == null).count());
     }
 }
