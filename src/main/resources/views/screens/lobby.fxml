@@ -28,4 +28,10 @@
             </HBox>
         </VBox>
     </ScrollPane>
+    <ScrollPane styleClass="side-column" fitToWidth="true" fitToHeight="true">
+        <VBox styleClass="side-column-item" prefHeight="720.0" prefWidth="500.0">
+            <Text styleClass="title" text="Spelers"/>
+            <VBox fx:id="vbLobbyPlayers" styleClass="lobby-list"/>
+        </VBox>
+    </ScrollPane>
 </HBox>
