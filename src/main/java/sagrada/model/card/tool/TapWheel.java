@@ -38,6 +38,6 @@ public final class TapWheel extends ToolCard {
 
         this.incrementCost();
 
-        return true;s
+        return true;
     }
 }
