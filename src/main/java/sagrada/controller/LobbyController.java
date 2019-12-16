@@ -22,10 +22,11 @@ public class LobbyController {
     @FXML
     private VBox vbLobbyGames, vbLobbyInvites;
     @FXML
-    private Button btnCreateGame, btnPreviousPage, btnNextPage;
+    private Button btnCreateGame, btnPreviousPage, btnNextPage, btnReverseOrder;
 
     private int page = 0;
     private int amountOfGames = 0;
+    private boolean orderDesc = true;
 
     private final Account user;
     private final DatabaseConnection databaseConnection;
@@ -40,10 +41,10 @@ public class LobbyController {
     @FXML
     protected void initialize() {
         this.btnPreviousPage.setDisable(true);
-
         this.btnCreateGame.setOnMouseClicked(e -> this.createGame());
         this.btnPreviousPage.setOnMouseClicked(e -> this.previousPage());
         this.btnNextPage.setOnMouseClicked(e -> this.nextPage());
+        this.btnReverseOrder.setOnMouseClicked(e -> this.reverseOrder());
 
         this.getGamesTimer.schedule(new TimerTask() {
             @Override
@@ -62,7 +63,7 @@ public class LobbyController {
     private void getGames() {
         try {
             var gameRepository = new GameRepository(this.databaseConnection);
-            var games = gameRepository.getAll(this.page * 20);
+            var games = gameRepository.getAll(this.page * 20, this.orderDesc);
             var loader = this.getClass().getResource("/views/lobby/lobbyGame.fxml");
             this.fillLobbyList(games, this.vbLobbyGames, loader);
             this.amountOfGames = gameRepository.countAllGames();
@@ -144,5 +145,10 @@ public class LobbyController {
         if (this.page == 0) {
             this.btnPreviousPage.setDisable(true);
         }
+    }
+
+    private void reverseOrder() {
+        this.orderDesc = !this.orderDesc;
+        this.btnReverseOrder.setText(this.orderDesc ? "Sorteer spellen van oud naar nieuw" : "Sorteer spellen van nieuw naar oud");
     }
 }
