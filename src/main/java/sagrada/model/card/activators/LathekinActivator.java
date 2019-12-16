@@ -23,13 +23,13 @@ public final class LathekinActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() throws SQLException {
+    public boolean activate() throws SQLException {
         this.player = this.controller.getPlayer();
         Game game = this.controller.getGame();
 
         List<Pair<Square, Square>> dieToMovePair = this.askWhichDiceToMove();
 
-        this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPatternCard(), game.getRoundTrack(), player, game, dieToMovePair);
+        return this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPatternCard(), game.getRoundTrack(), player, game, dieToMovePair);
     }
 
     private List<Pair<Square, Square>> askWhichDiceToMove() {

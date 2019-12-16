@@ -15,7 +15,7 @@ public final class GrozingPliersActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() throws SQLException {
+    public boolean activate() throws SQLException {
         Player player = this.controller.getPlayer();
         Game game = this.controller.getGame();
         Die oldDie = this.askWhichDieToBeChanged();
@@ -26,7 +26,7 @@ public final class GrozingPliersActivator extends ToolCardActivator {
         message[0] = oldDie;
         message[1] = newDieValue;
 
-        this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, message);
+        return this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, message);
     }
 
     private Die askWhichDieToBeChanged() {

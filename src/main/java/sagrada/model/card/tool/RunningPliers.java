@@ -17,7 +17,7 @@ public final class RunningPliers extends ToolCard {
     }
 
     @Override
-    public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
+    public boolean use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
         Die die = (Die) message;
 
         this.incrementCost();
@@ -31,5 +31,7 @@ public final class RunningPliers extends ToolCard {
         // TODO: UI??
 
         favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), true, game.getId());
+
+        return true;
     }
 }

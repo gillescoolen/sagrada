@@ -17,7 +17,7 @@ public final class EglomiseBrush extends ToolCard {
     }
 
     @Override
-    public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
+    public boolean use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
         Object[] values = (Object[]) message;
         Square oldSquare = (Square) values[0];
         Square newSquare = (Square) values[1];
@@ -34,5 +34,7 @@ public final class EglomiseBrush extends ToolCard {
 
         favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
         toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+
+        return true;
     }
 }

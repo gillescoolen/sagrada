@@ -20,7 +20,7 @@ public class CopperFoilBurnisherActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() throws SQLException {
+    public boolean activate() throws SQLException {
         this.player = this.controller.getPlayer();
         Game game = this.controller.getGame();
 
@@ -31,7 +31,7 @@ public class CopperFoilBurnisherActivator extends ToolCardActivator {
         message[0] = square;
         message[1] = newSquare;
 
-        this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPlayerFrame(), game.getRoundTrack(), this.player, game, message);
+        return this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPlayerFrame(), game.getRoundTrack(), this.player, game, message);
     }
 
     private Square askWhichDiceShouldBeMoved() {

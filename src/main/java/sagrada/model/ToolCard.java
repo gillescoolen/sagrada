@@ -46,7 +46,7 @@ public abstract class ToolCard extends ObservableCard<ToolCard> {
         return canUse;
     }
 
-    public abstract void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException;
+    public abstract boolean use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException;
 
     protected void incrementCost() {
         if (this.cost < 2) {

@@ -19,7 +19,7 @@ public final class GrozingPliers extends ToolCard {
     }
 
     @Override
-    public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
+    public boolean use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
         Object[] messages = (Object[]) message;
         Die die = (Die) messages[0];
         Integer newDieValue = (Integer) messages[1];
@@ -41,5 +41,7 @@ public final class GrozingPliers extends ToolCard {
 
         favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
         toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+
+        return true;
     }
 }

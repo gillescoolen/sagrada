@@ -20,7 +20,7 @@ public final class CorkBackedStraightedge extends ToolCard {
     }
 
     @Override
-    public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
+    public boolean use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
         @SuppressWarnings("unchecked")
         var move = (Pair<Die, Square>) message;
         var die = move.getKey();
@@ -39,5 +39,7 @@ public final class CorkBackedStraightedge extends ToolCard {
         chatRepository.add(new ChatLine(player, String.format("heeft %s gebruikt met dobbelsteen %s.", this.getName(), die.toString())));
         favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
         toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+
+        return true;
     }
 }

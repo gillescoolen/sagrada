@@ -23,7 +23,7 @@ public final class TapWheelActivator extends ToolCardActivator {
     }
 
     @Override
-    public void activate() throws SQLException {
+    public boolean activate() throws SQLException {
         this.player = this.controller.getPlayer();
         Game game = this.controller.getGame();
 
@@ -32,17 +32,17 @@ public final class TapWheelActivator extends ToolCardActivator {
 
         if (!checkIfCardCanBeUsed(trackDice)) {
             this.showMessage("De kaart kan niet gebruikt worden, er word niet voldaan aan de vereisten (bijv. de ronde track)");
-            return;
+            return false;
         }
 
         List<Pair<Square, Square>> dieToMovePair = this.askWhichDiceToMove(trackDice);
 
         if (dieToMovePair == null) {
             this.showMessage("De kaart kan niet uitgevoerd worden");
-            return;
+            return false;
         }
 
-        this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPatternCard(), game.getRoundTrack(), player, game, dieToMovePair);
+        return this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPatternCard(), game.getRoundTrack(), player, game, dieToMovePair);
     }
 
     // FIXME: fix this in the future

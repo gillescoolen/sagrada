@@ -18,7 +18,7 @@ public final class LensCutter extends ToolCard {
     }
 
     @Override
-    public void use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
+    public boolean use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
         Object[] values = (Object[]) message;
 
         Die draftDie = (Die) values[0];
@@ -37,5 +37,7 @@ public final class LensCutter extends ToolCard {
         favorToken.setToolCard(this);
 
         favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+
+        return true;
     }
 }
