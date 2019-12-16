@@ -159,6 +159,21 @@ public final class AccountRepository extends Repository<Account> {
         return opponents;
     }
 
+    public Integer getHighestScore(String username) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT score FROM player WHERE username = ? ORDER BY score DESC LIMIT 1");
+
+        preparedStatement.setString(1, username);
+
+        var resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        var highscore = resultSet.getInt("score");
+
+        resultSet.close();
+        preparedStatement.close();
+
+        return highscore;
+    }
+
     @Override
     public Account findById(int id) throws SQLException {
         throw new SQLException("Account has no id");

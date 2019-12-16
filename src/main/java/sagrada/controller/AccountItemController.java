@@ -69,12 +69,14 @@ public class AccountItemController {
                             "Aantal gewonnen spellen: %s \n\n" +
                             "Aantal verloren spellen: %s \n\n" +
                             "Meest gekozen dobbelsteen kleur: %s \n\n" +
-                            "Aantal unieke tegenstanders: %s",
+                            "Aantal unieke tegenstanders: %s \n\n" +
+                            "Highscore: %s",
                     accountRepository.getPlayedGames(username),
                     wins,
                     losses,
                     ((color == null) ? "Geen kleur" : color),
-                    accountRepository.getUniqueOpponents(username))
+                    accountRepository.getUniqueOpponents(username),
+                    accountRepository.getHighestScore(username))
             );
 
             dialog.showAndWait();
