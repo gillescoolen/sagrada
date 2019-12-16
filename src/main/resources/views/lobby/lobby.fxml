@@ -19,6 +19,10 @@
             <Button fx:id="btnCreateGame" text="Spel aanmaken"/>
             <Text styleClass="title" text="Lobbies"/>
             <VBox fx:id="vbLobbyGames" styleClass="lobby-list"/>
+            <HBox alignment="CENTER">
+                <Button fx:id="btnPreviousPage" text="Vorige pagina"/>
+                <Button fx:id="btnNextPage" text="Volgende pagina"/>
+            </HBox>
         </VBox>
     </ScrollPane>
 </HBox>

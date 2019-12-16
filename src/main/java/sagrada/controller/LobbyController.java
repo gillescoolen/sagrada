@@ -22,7 +22,10 @@ public class LobbyController {
     @FXML
     private VBox vbLobbyGames, vbLobbyInvites;
     @FXML
-    private Button btnCreateGame;
+    private Button btnCreateGame, btnPreviousPage, btnNextPage;
+
+    private int page = 0;
+    private int amountOfGames = 0;
 
     private final Account user;
     private final DatabaseConnection databaseConnection;
@@ -36,27 +39,34 @@ public class LobbyController {
 
     @FXML
     protected void initialize() {
+        this.btnPreviousPage.setDisable(true);
+
         this.btnCreateGame.setOnMouseClicked(e -> this.createGame());
+        this.btnPreviousPage.setOnMouseClicked(e -> this.previousPage());
+        this.btnNextPage.setOnMouseClicked(e -> this.nextPage());
+
         this.getGamesTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 getGames();
             }
-        }, 0, 5000);
+        }, 0, 2000);
         this.getInvitesTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                  getInvites();
             }
-        }, 0, 3000);
+        }, 0, 2000);
     }
 
     private void getGames() {
         try {
             var gameRepository = new GameRepository(this.databaseConnection);
-            var games = gameRepository.getAll();
+            var games = gameRepository.getAll(this.page * 20);
             var loader = this.getClass().getResource("/views/lobby/lobbyGame.fxml");
             this.fillLobbyList(games, this.vbLobbyGames, loader);
+            this.amountOfGames = gameRepository.countAllGames();
+            this.btnNextPage.setDisable(this.amountOfGames / 20 == this.page);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -118,5 +128,21 @@ public class LobbyController {
         this.getGamesTimer.purge();
         this.getInvitesTimer.cancel();
         this.getInvitesTimer.purge();
+    }
+
+    private void nextPage() {
+        this.page += 1;
+
+        if (this.page != 0) {
+            this.btnPreviousPage.setDisable(false);
+        }
+    }
+
+    private void previousPage() {
+        this.page -= 1;
+
+        if (this.page == 0) {
+            this.btnPreviousPage.setDisable(true);
+        }
     }
 }
