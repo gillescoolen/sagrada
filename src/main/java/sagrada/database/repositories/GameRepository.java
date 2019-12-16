@@ -37,8 +37,8 @@ public final class GameRepository extends Repository<Game> {
         return resultSet.getInt("allGames");
     }
 
-    public List<Game> getAll(int offset) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM game g ORDER BY g.created_on DESC LIMIT ?, 20;");
+    public List<Game> getAll(int offset, boolean orderDesc) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(orderDesc ? "SELECT * FROM game g ORDER BY g.created_on DESC LIMIT ?, 20;" : "SELECT * FROM game g ORDER BY g.created_on LIMIT ?, 20;");
 
         preparedStatement.setInt(1, offset);
 

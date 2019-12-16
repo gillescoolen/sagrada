@@ -18,7 +18,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.databaseConnection = new DatabaseConnection();
 
-        var sagrada = new FXMLLoader(getClass().getResource("/views/login.fxml"));
+        var sagrada = new FXMLLoader(getClass().getResource("/views/screens/login.fxml"));
         sagrada.setController(new LoginController(this.databaseConnection));
 
         Parent root = sagrada.load();
