@@ -289,13 +289,25 @@ public final class ToolCardRepository extends Repository<ToolCard> {
         preparedInsertStatement.close();
     }
 
-    public boolean isGameDieAffected(int gameId, Die die) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM gametoolcard_affected_gamedie WHERE gamedie_idgame = ? AND gamedie_diecolor = ? AND gamedie_dienumber = ?;");
+    public boolean isGameDieAffected(int gameId, Die die, int toolCardId) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT COUNT(*) AS count FROM gametoolcard_affected_gamedie WHERE gamedie_idgame = ? AND gamedie_diecolor = ? AND gamedie_dienumber = ? AND gametoolcard_gametoolcard = ?;");
 
         preparedStatement.setInt(1, gameId);
         preparedStatement.setString(2, die.getColor().getDutchColorName());
         preparedStatement.setInt(3, die.getNumber());
+        preparedStatement.setInt(4, toolCardId);
 
-        return preparedStatement.executeQuery().next();
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (!resultSet.next()) {
+            return true;
+        }
+
+        final int count = resultSet.getInt("count");
+
+        preparedStatement.close();
+        resultSet.close();
+
+        return count == 1;
     }
 }

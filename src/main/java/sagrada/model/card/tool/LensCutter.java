@@ -29,23 +29,23 @@ public final class LensCutter extends ToolCard {
         roundTrack.updateTrack(round, draftDie);
         game.updateDraftPool(draftDie, roundTrackDie);
 
-        dieRepository.replaceDieOnRoundTrack(roundTrackDie, draftDie, game, round);
+        this.dieRepository.replaceDieOnRoundTrack(roundTrackDie, draftDie, game, round);
 
         if (this.getCost() == 1) {
-            FavorToken favorToken = player.getNonAffectedFavorToken();
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
             favorToken.setToolCard(this);
 
-            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
         } else {
-            FavorToken favorToken = player.getNonAffectedFavorToken();
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
             favorToken.setToolCard(this);
 
-            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
 
-            FavorToken favorToken1 = player.getNonAffectedFavorToken();
-            favorToken.setToolCard(this);
+            FavorToken favorToken1 = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken1.setToolCard(this);
 
-            favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
         }
 
         this.incrementCost();
