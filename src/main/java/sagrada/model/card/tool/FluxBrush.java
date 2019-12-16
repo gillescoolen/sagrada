@@ -29,18 +29,22 @@ public final class FluxBrush extends ToolCard {
 
         game.updateDraftPool(die, newDie);
 
-        this.incrementCost();
 
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(newDie);
 
         dieRepository.updateGameDie(game.getId(), newDie);
 
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
+        for (var i = 0; this.getCost() < i; i++) {
+            FavorToken favorToken = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
 
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        }
+
         toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+
+        this.incrementCost();
 
         return true;
     }

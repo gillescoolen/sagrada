@@ -32,7 +32,6 @@ public final class FluxRemover extends ToolCard {
 
         game.updateDraftPool(die, newDie);
 
-        this.incrementCost();
 
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(newDie);
@@ -40,10 +39,14 @@ public final class FluxRemover extends ToolCard {
         var round = gameRepository.getCurrentRound(game.getId());
         dieRepository.addGameDice(game.getId(), round, dice);
 
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
+        for (var i = 0; this.getCost() < i; i++) {
+            FavorToken favorToken = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
 
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        }
+
+        this.incrementCost();
 
         return true;
     }

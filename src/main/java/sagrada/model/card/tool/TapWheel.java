@@ -29,13 +29,15 @@ public final class TapWheel extends ToolCard {
             patternCard.moveDie(player, newSquare, oldSquare, connection);
         }
 
+        for (var i = 0; this.getCost() < i; i++) {
+            FavorToken favorToken = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
+
+            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        }
+
         this.incrementCost();
 
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
-
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
-
-        return true;
+        return true;s
     }
 }

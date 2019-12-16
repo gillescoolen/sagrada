@@ -37,13 +37,17 @@ public final class GlazingHammer extends ToolCard {
             }
         });
 
-        this.incrementCost();
 
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
         game.addDiceInDraftPool(draftPool.getDice());
 
-        this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        for (var i = 0; this.getCost() < i; i++) {
+            FavorToken favorToken = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
+
+            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        }
+
+        this.incrementCost();
 
         return true;
     }

@@ -24,16 +24,20 @@ public final class CopperFoilBurnisher extends ToolCard {
 
         patternCard.moveDie(player, oldSquare, newSquare, connection);
 
-        this.incrementCost();
 
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(oldSquare.getDie());
 
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
+        for (var i = 0; this.getCost() < i; i++) {
+            FavorToken favorToken = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
 
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        }
+
         toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+
+        this.incrementCost();
 
         return true;
     }

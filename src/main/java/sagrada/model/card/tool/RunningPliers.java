@@ -20,17 +20,19 @@ public final class RunningPliers extends ToolCard {
     public boolean use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
         Die die = (Die) message;
 
-        this.incrementCost();
-
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(die);
 
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
-
         // TODO: UI??
 
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), true, game.getId());
+        for (var i = 0; this.getCost() < i; i++) {
+            FavorToken favorToken = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
+
+            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        }
+
+        this.incrementCost();
 
         return true;
     }

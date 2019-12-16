@@ -26,19 +26,22 @@ public final class CorkBackedStraightedge extends ToolCard {
         var die = move.getKey();
         var square = move.getValue();
 
-        this.incrementCost();
-
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(die);
 
         patternCard.placeDie(player, square, die, connection);
 
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
+        for (var i = 0; this.getCost() < i; i++) {
+            FavorToken favorToken = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
+
+            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        }
 
         chatRepository.add(new ChatLine(player, String.format("heeft %s gebruikt met dobbelsteen %s.", this.getName(), die.toString())));
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
         toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+
+        this.incrementCost();
 
         return true;
     }
