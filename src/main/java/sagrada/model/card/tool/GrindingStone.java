@@ -29,18 +29,31 @@ public final class GrindingStone extends ToolCard {
 
         game.updateDraftPool(die, newDie);
 
-        this.incrementCost();
-
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(newDie);
 
         dieRepository.updateGameDie(game.getId(), newDie);
 
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
+        if (this.getCost() == 1) {
+            FavorToken favorToken = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
 
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        } else {
+            FavorToken favorToken = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
+
+            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+
+            FavorToken favorToken1 = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
+
+            favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        }
+
         toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+
+        this.incrementCost();
 
         return true;
     }
