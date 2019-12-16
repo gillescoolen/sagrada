@@ -1,0 +1,43 @@
+.item {
+    -fx-border-radius: 20;
+    -fx-border-color: black;
+    -fx-border-insets: 5;
+}
+
+.item-full {
+    -fx-border-radius: 20;
+    -fx-border-color: red;
+    -fx-border-insets: 5;
+    -fx-opacity: 1.0;
+}
+
+.item-accepted {
+    -fx-border-radius: 20;
+    -fx-border-color: green;
+    -fx-border-insets: 5;
+}
+
+.item-finished {
+    -fx-border-radius: 20;
+    -fx-border-color: gold;
+    -fx-border-insets: 5;
+}
+
+.item-started {
+    -fx-border-radius: 20;
+    -fx-border-color: blue;
+    -fx-border-insets: 5;
+}
+
+.hSpacer {
+    -fx-spacing: 10;
+    -fx-padding: 20;
+}
+
+.vSpacer {
+    -fx-spacing: 5;
+}
+
+.lobbyTitle {
+    -fx-font-size: 18;
+}

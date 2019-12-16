@@ -1,0 +1,31 @@
+.pub-obj-card-wrapper {
+    -fx-background-color: rgb(255,255,205);
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.5, 0.0, 0.0);
+    -fx-view-order: 1;
+}
+
+.pub-obj-card-wrapper:hover {
+    -fx-view-order: 0;
+}
+
+.pub-obj-card-vbox {
+    -fx-padding: 15px;
+}
+
+.pub-obj-card-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.public-points {
+    -fx-stroke-width: 2;
+    -fx-stroke: yellow;
+    -fx-fill: white;
+    -fx-rotate: 45;
+}
+
+.public-points-text {
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}

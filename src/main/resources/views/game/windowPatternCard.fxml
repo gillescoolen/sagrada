@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<VBox xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1"
+      stylesheets="/styles/game/window-pattern-card.css"
+      styleClass="window"
+      maxWidth="255"
+      fx:id="window">
+    <HBox styleClass="wpc-hbox" alignment="CENTER_LEFT">
+        <Text wrappingWidth="160" styleClass="wpc-nametag" fx:id="name"/>
+        <VBox prefHeight="50">
+            <Button fx:id="changeView" alignment="CENTER_RIGHT" styleClass="wpc-button" prefWidth="100" prefHeight="20"/>
+            <Button fx:id="reportMisplacement" alignment="CENTER_RIGHT" styleClass="wpc-button" prefWidth="100" prefHeight="20"/>
+        </VBox>
+    </HBox>
+    <HBox>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+    </HBox>
+    <HBox>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+    </HBox>
+    <HBox>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+    </HBox>
+    <HBox>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+        <Button prefHeight="50" prefWidth="50" styleClass="sq-button"/>
+    </HBox>
+</VBox>

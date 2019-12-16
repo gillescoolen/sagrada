@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      stylesheets="/styles/game.css"
+      styleClass="game-wrapper"
+      prefWidth="1400" prefHeight="720"
+      fx:id="mainGamePage">
+
+    <VBox fx:id="mainBox" styleClass="main-vbox" HBox.hgrow="ALWAYS">
+        <HBox styleClass="wpc-hbox" alignment="BOTTOM_RIGHT">
+            <VBox HBox.hgrow="ALWAYS" alignment="BOTTOM_LEFT">
+                <VBox fx:id="chatWrapper"/>
+                <HBox styleClass="control-buttons" spacing="15">
+                    <Button fx:id="btnSkipTurn" disable="true" styleClass="btn-controls" prefWidth="150">BEURT
+                        OVERSLAAN
+                    </Button>
+                    <Button fx:id="btnRollDice" styleClass="btn-controls" prefWidth="150">ROLLEN</Button>
+                </HBox>
+            </VBox>
+            <VBox fx:id="rowOne" styleClass="wpc-vbox">
+            </VBox>
+            <VBox fx:id="rowTwo" styleClass="wpc-vbox">
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <!-- Cards -->
+    <VBox styleClass="game-vbox" alignment="CENTER_RIGHT">
+        <!-- Tool cards -->
+        <HBox VBox.vgrow="ALWAYS" spacing="275" alignment="CENTER">
+            <Text fx:id="currentTokenAmount"/>
+            <Text styleClass="title-tool-cards">Hulp Kaarten</Text>
+        </HBox>
+        <HBox fx:id="toolCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
+
+        <!-- Public Objective card -->
+        <Text styleClass="title-tool-cards">Openbare Doel Kaarten</Text>
+        <HBox fx:id="publicObjectiveCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
+
+        <!-- Private Objective card -->
+        <Text styleClass="title-tool-cards">Prive Doel Kaart</Text>
+        <HBox fx:id="privateObjectiveCardBox" alignment="CENTER_RIGHT" styleClass="game-hbox"/>
+    </VBox>
+</HBox>

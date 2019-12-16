@@ -1,0 +1,20 @@
+.incoming-message {
+    -fx-alignment: center-left;
+}
+
+.outgoing-message {
+    -fx-alignment: center-right;
+}
+
+.send-button {
+    -fx-background-radius: 0;
+}
+
+.input {
+    -fx-background-radius: 0;
+}
+
+.chat {
+    -fx-padding: 10px;
+}
+

@@ -1,0 +1,47 @@
+.game-wrapper {
+    -fx-padding: 15px;
+}
+
+.game-hbox {
+    -fx-spacing: -100px;
+}
+
+.game-vbox {
+    -fx-spacing: 15px;
+    -fx-padding: 20;
+    -fx-background-color: rgba(0, 0, 0, 0.1);
+}
+
+.title-tool-cards {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.wpc-vbox {
+    -fx-spacing: 25px;
+}
+
+.wpc-hbox {
+    -fx-spacing: 25px;
+}
+
+.btn-controls {
+    -fx-background-radius: 0px;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-background-color: green;
+}
+
+.btn-controls:disabled {
+    -fx-background-color: red;
+}
+
+.control-buttons {
+    -fx-spacing: 15px;
+}
+
+.dice-hbox {
+    -fx-spacing: 15px;
+}
