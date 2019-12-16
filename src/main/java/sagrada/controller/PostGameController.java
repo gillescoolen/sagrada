@@ -56,8 +56,6 @@ public class PostGameController {
                             e.printStackTrace();
                         }
                     });
-
-                    this.ses.shutdown();
                 }
 
             } catch (SQLException e) {
