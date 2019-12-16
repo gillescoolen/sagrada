@@ -22,18 +22,30 @@ public final class CopperFoilBurnisher extends ToolCard {
         Square oldSquare = (Square) values[0];
         Square newSquare = (Square) values[1];
 
-        patternCard.moveDie(player, oldSquare, newSquare, connection);
-
-        this.incrementCost();
+        patternCard.moveDie(player, oldSquare, newSquare, this.connection);
 
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(oldSquare.getDie());
 
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
+        if (this.getCost() == 1) {
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken.setToolCard(this);
 
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
-        toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        } else {
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken.setToolCard(this);
+
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+
+            FavorToken favorToken1 = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken1.setToolCard(this);
+
+            this.favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        }
+
+        this.toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+        this.incrementCost();
 
         return true;
     }

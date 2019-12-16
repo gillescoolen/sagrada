@@ -24,16 +24,29 @@ public final class EglomiseBrush extends ToolCard {
 
         patternCard.moveDie(player, oldSquare, newSquare, connection);
 
-        this.incrementCost();
 
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(oldSquare.getDie());
 
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
+        if (this.getCost() == 1) {
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken.setToolCard(this);
 
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
-        toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        } else {
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken.setToolCard(this);
+
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+
+            FavorToken favorToken1 = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken1.setToolCard(this);
+
+            this.favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        }
+
+        this.incrementCost();
+        this.toolCardRepository.addAffectedToolCard(this, dice, game.getId());
 
         return true;
     }

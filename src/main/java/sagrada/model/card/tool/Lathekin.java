@@ -24,15 +24,27 @@ public final class Lathekin extends ToolCard {
             Square newSquare = pair.getKey();
             Square oldSquare = pair.getValue();
 
-            patternCard.moveDie(player, newSquare, oldSquare, connection);
+            patternCard.moveDie(player, newSquare, oldSquare, this.connection);
+        }
+
+        if (this.getCost() == 1) {
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken.setToolCard(this);
+
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        } else {
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken.setToolCard(this);
+
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+
+            FavorToken favorToken1 = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken1.setToolCard(this);
+
+            this.favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
         }
 
         this.incrementCost();
-
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
-
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
 
         return true;
     }

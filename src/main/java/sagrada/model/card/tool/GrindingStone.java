@@ -3,14 +3,12 @@ package sagrada.model.card.tool;
 import sagrada.database.DatabaseConnection;
 import sagrada.database.repositories.DieRepository;
 import sagrada.database.repositories.FavorTokenRepository;
-import sagrada.database.repositories.ToolCardRepository;
 import sagrada.model.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public final class GrindingStone extends ToolCard {
-    private ToolCardRepository toolCardRepository = new ToolCardRepository(this.connection);
     private FavorTokenRepository favorTokenRepository = new FavorTokenRepository(this.connection);
     private DieRepository dieRepository = new DieRepository(this.connection);
 
@@ -29,18 +27,29 @@ public final class GrindingStone extends ToolCard {
 
         game.updateDraftPool(die, newDie);
 
-        this.incrementCost();
-
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(newDie);
 
-        dieRepository.updateGameDie(game.getId(), newDie);
+        this.dieRepository.updateGameDie(game.getId(), newDie);
 
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
+        if (this.getCost() == 1) {
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken.setToolCard(this);
 
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
-        toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        } else {
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken.setToolCard(this);
+
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+
+            FavorToken favorToken1 = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken1.setToolCard(this);
+
+            this.favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        }
+
+        this.incrementCost();
 
         return true;
     }

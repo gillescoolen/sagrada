@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -24,6 +25,8 @@ public class DraftPoolController implements Consumer<DraftPool> {
     private DraftPool draftPool;
     private final Game game;
     private final GameController gameController;
+    private ScheduledExecutorService ses;
+    private ScheduledFuture<?> draftpoolSchedule;
 
     public DraftPoolController(DraftPool draftPool, Game game, GameController gameController, DatabaseConnection connection) {
         this.draftPool = draftPool;
@@ -41,12 +44,12 @@ public class DraftPoolController implements Consumer<DraftPool> {
                 this.game.addDiceInDraftPool(draftedDice);
                 this.drawDice();
             } catch (SQLException e) {
-                e.printStackTrace();
+
             }
         };
 
-        ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
-        ses.scheduleAtFixedRate(draftPoolTimer, 0, 1500, TimeUnit.MILLISECONDS);
+        this.ses = Executors.newScheduledThreadPool(2);
+        this.draftpoolSchedule = this.ses.scheduleAtFixedRate(draftPoolTimer, 0, 1500, TimeUnit.MILLISECONDS);
     }
 
     @FXML
@@ -71,12 +74,16 @@ public class DraftPoolController implements Consumer<DraftPool> {
 
                 if (i < this.draftPool.getDice().size()) {
                     var die = this.draftPool.getDice().get(i);
-                    loader.setController(new DraftPoolDieController(die, this.gameController));
+                     loader.setController(new DraftPoolDieController(die, this.gameController));
                 }
 
                 Platform.runLater(() -> {
                     try {
-                        this.draftPoolBox.getChildren().add(loader.load());
+                        if (this.draftPoolBox == null) {
+                            this.draftpoolSchedule.cancel(true);
+                            this.ses.shutdown();
+                        }
+                        if (this.draftPoolBox != null) this.draftPoolBox.getChildren().add(loader.load());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

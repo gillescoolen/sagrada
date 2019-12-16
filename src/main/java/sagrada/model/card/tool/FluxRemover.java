@@ -24,7 +24,7 @@ public final class FluxRemover extends ToolCard {
         Die die = (Die) messages[0];
         Integer newValue = (Integer) messages[1];
 
-        dieRepository.removeGameDie(game.getId(), die);
+        this.dieRepository.removeGameDie(game.getId(), die);
         diceBag.put(die);
 
         Die newDie = diceBag.getRandomDice(1).get(0);
@@ -32,18 +32,30 @@ public final class FluxRemover extends ToolCard {
 
         game.updateDraftPool(die, newDie);
 
-        this.incrementCost();
 
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(newDie);
 
-        var round = gameRepository.getCurrentRound(game.getId());
+        var round = this.gameRepository.getCurrentRound(game.getId());
         dieRepository.addGameDice(game.getId(), round, dice);
 
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
+        if (this.getCost() == 1) {
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken.setToolCard(this);
 
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        } else {
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken.setToolCard(this);
+
+            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+
+            FavorToken favorToken1 = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken1.setToolCard(this);
+
+            favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        }
+        this.incrementCost();
 
         return true;
     }

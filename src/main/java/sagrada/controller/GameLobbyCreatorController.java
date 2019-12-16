@@ -166,6 +166,16 @@ public class GameLobbyCreatorController {
                 return;
             }
 
+            if (!this.playerRepository.isInviteAllowed(account, this.account)) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Waarschuwings dialoog");
+                alert.setContentText("Kon de speler niet uitnodigen! \nDe speler heeft nog een openstaande uitnodiging\nop een van je games.");
+
+                alert.showAndWait();
+
+                return;
+            }
+
             player.setAccount(account);
             player.setCurrentPlayer(false);
             player.setPrivateObjectiveCard(new PrivateObjectiveCard(Color.BLUE));

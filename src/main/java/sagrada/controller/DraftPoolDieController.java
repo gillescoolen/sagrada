@@ -2,6 +2,7 @@ package sagrada.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
 import sagrada.model.Die;
 
 public class DraftPoolDieController {
@@ -18,11 +19,22 @@ public class DraftPoolDieController {
 
     @FXML
     protected void initialize() {
-        this.singleDie.setDisable(this.gameController.isPlacedDie() || !this.gameController.getPlayer().isCurrentPlayer());
-        this.singleDie.setText(this.die.getValue().toString());
-        this.singleDie.setStyle("-fx-background-color: " + this.die.getColor().getColor());
+        if (this.singleDie != null) {
+            this.singleDie.setDisable(this.gameController.isPlacedDie() || !this.gameController.getPlayer().isCurrentPlayer());
+            this.singleDie.setText(this.die.getValue().toString());
 
-        this.singleDie.setOnMouseClicked(c -> this.selectDie());
+            this.singleDie.setStyle("-fx-background-color: " + this.die.getColor().getColor());
+
+            var color = this.die.getColor();
+
+            if (color == null || color == sagrada.model.Color.YELLOW) {
+                this.singleDie.setTextFill(javafx.scene.paint.Color.BLACK);
+            } else {
+                this.singleDie.setTextFill(javafx.scene.paint.Color.WHITE);
+            }
+
+            this.singleDie.setOnMouseClicked(c -> this.selectDie());
+        }
     }
 
     private void selectDie() {

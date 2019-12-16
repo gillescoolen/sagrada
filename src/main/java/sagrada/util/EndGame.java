@@ -1,18 +1,22 @@
 package sagrada.util;
 
 import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.PlayerRepository;
 import sagrada.model.Game;
 import sagrada.model.Player;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class EndGame {
     private final Game game;
     private final DatabaseConnection connection;
+    private final PlayerRepository playerRepository;
 
     public EndGame(Game game, DatabaseConnection connection) {
         this.game = game;
         this.connection = connection;
+        this.playerRepository = new PlayerRepository(this.connection);
     }
 
     public void calculatePoints() {
@@ -32,6 +36,12 @@ public class EndGame {
             points += player.getPrivateObjectiveCard().calculatePoints(player.getPlayerFrame());
             points += player.getFavorTokens().stream().filter(token -> token.getToolCard() == null).count();
             points -= player.getPlayerFrame().countEmptySquares();
+
+            try {
+                this.playerRepository.setPlayerScorePoints(points, player.getId());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
             player.setScore(points);
 
@@ -54,6 +64,13 @@ public class EndGame {
 
         if (!tiePlayerList.isEmpty()) {
             var winner = getWinnerWhenTie(tiePlayerList);
+
+            try {
+                this.playerRepository.setPlayerScorePoints(winner.getScore() + 1, winner.getId());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
             winner.setScore(winner.getScore() + 1);
         }
 

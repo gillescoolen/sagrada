@@ -25,7 +25,12 @@ public class CopperFoilBurnisherActivator extends ToolCardActivator {
         Game game = this.controller.getGame();
 
         Square square = this.askWhichDiceShouldBeMoved();
+
+        if (square == null) return false;
+
         Square newSquare = this.askNewPosition(square);
+
+        if (newSquare == null) return false;
 
         Object[] message = new Object[2];
         message[0] = square;
@@ -38,6 +43,8 @@ public class CopperFoilBurnisherActivator extends ToolCardActivator {
         List<Square> squaresWithDie = this.player.getPlayerFrame().getSquares().stream()
                 .filter(square -> square.getDie() != null)
                 .collect(Collectors.toList());
+
+        if (squaresWithDie.size() == 0) return null;
 
         ChoiceDialog<Square> dialog = new ChoiceDialog<>(squaresWithDie.get(0), squaresWithDie);
         dialog.setTitle("Folie-aandrukker 1/2");

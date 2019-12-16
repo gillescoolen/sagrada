@@ -1,8 +1,10 @@
 package sagrada.database.repositories;
 
+import javafx.util.Pair;
 import sagrada.database.DatabaseConnection;
 import sagrada.model.*;
 
+import javax.swing.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,8 +28,22 @@ public final class GameRepository extends Repository<Game> {
         preparedStatement.close();
     }
 
-    public List<Game> getAll() throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM game g ORDER BY g.created_on DESC LIMIT 20;");
+    public int countAllGames() throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT COUNT(*) AS allGames FROM game;");
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (!resultSet.next()) {
+            return 0;
+        }
+
+        return resultSet.getInt("allGames");
+    }
+
+    public List<Game> getAll(int offset, boolean orderDesc) throws SQLException {
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement(orderDesc ? "SELECT * FROM game g ORDER BY g.created_on DESC LIMIT ?, 20;" : "SELECT * FROM game g ORDER BY g.created_on LIMIT ?, 20;");
+
+        preparedStatement.setInt(1, offset);
+
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Game> games = new ArrayList<>();
 
@@ -46,11 +62,10 @@ public final class GameRepository extends Repository<Game> {
     }
 
     public List<Game> getInvitedGames(Account account) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player p JOIN game g ON p.spel_idspel = g.idgame WHERE p.username = ? AND p.playstatus_playstatus IN (?, ?) ORDER BY g.created_on DESC LIMIT 20;");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM player p JOIN game g ON p.spel_idspel = g.idgame WHERE p.username = ? AND p.playstatus_playstatus = ? ORDER BY g.created_on DESC;");
 
         preparedStatement.setString(1, account.getUsername());
         preparedStatement.setString(2, PlayStatus.INVITED.getPlayState());
-        preparedStatement.setString(3, PlayStatus.ACCEPTED.getPlayState());
 
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Game> invitedGames = new ArrayList<>();

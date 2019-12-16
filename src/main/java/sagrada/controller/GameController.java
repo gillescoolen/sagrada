@@ -38,6 +38,8 @@ public class GameController implements Consumer<Game> {
     private Button btnSkipTurn, btnRollDice;
     @FXML
     private Text currentTokenAmount;
+    @FXML
+    private Text currentPlayerIndicator;
 
     private Game game;
     private StartGame startGameUtil;
@@ -219,7 +221,7 @@ public class GameController implements Consumer<Game> {
             }
 
             Platform.runLater(() -> {
-                if (player != null && player.isCurrentPlayer()) {
+                if (player != null && player.isCurrentPlayer() && !player.hasInvalidFrameField()) {
                     btnSkipTurn.setDisable(false);
 
                     if (game.getDraftPool().getDice().isEmpty()) {
@@ -229,6 +231,12 @@ public class GameController implements Consumer<Game> {
                 } else {
                     btnSkipTurn.setDisable(true);
                     btnRollDice.setDisable(true);
+                }
+
+                if (placedDie || usedToolCard) {
+                    btnSkipTurn.setText("Beurt beeindigen");
+                } else {
+                    btnSkipTurn.setText("Beurt overslaan");
                 }
             });
         } catch (SQLException e) {
@@ -242,6 +250,7 @@ public class GameController implements Consumer<Game> {
         }
 
         setCurrentTokenAmount();
+        setCurrentPlayerIndicator();
 
         try {
             this.game.setRoundTrack(this.roundTrackRepository.getRoundTrack(game.getId()));
@@ -343,7 +352,7 @@ public class GameController implements Consumer<Game> {
                             rowTwo.getChildren().clear();
 
                             for (var player : players) {
-                                var controller = new WindowPatternCardController(connection, player, gameController);
+                                var controller = new WindowPatternCardController(connection, player, gameController, false);
                                 var loader = new FXMLLoader(getClass().getResource("/views/game/windowPatternCard.fxml"));
 
                                 loader.setController(controller);
@@ -461,6 +470,16 @@ public class GameController implements Consumer<Game> {
         }
 
         this.currentTokenAmount.setText(message);
+    }
+
+    private void setCurrentPlayerIndicator() {
+        try {
+            var username = this.playerRepository.getCurrentPlayer(this.game);
+            var message = (username == null) ? "" : String.format("%s is aan de beurt.", username);
+            this.currentPlayerIndicator.setText(message);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public Game getGame() {

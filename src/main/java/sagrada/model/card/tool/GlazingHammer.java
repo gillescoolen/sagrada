@@ -17,7 +17,7 @@ public final class GlazingHammer extends ToolCard {
 
     @Override
     public boolean use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
-        if (player.getIfSecondTurn(game.getPlayers().size())) {
+        if (!player.getIfSecondTurn(game.getPlayers().size())) {
             return false;
         }
 
@@ -31,19 +31,33 @@ public final class GlazingHammer extends ToolCard {
 
         pool.forEach(die -> {
             try {
-                dieRepository.updateGameDie(game.getId(), die);
+                this.dieRepository.updateGameDie(game.getId(), die);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
 
-        this.incrementCost();
 
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
         game.addDiceInDraftPool(draftPool.getDice());
 
-        this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        if (this.getCost() == 1) {
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken.setToolCard(this);
+
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        } else {
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken.setToolCard(this);
+
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+
+            FavorToken favorToken1 = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken1.setToolCard(this);
+
+            this.favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        }
+
+        this.incrementCost();
 
         return true;
     }

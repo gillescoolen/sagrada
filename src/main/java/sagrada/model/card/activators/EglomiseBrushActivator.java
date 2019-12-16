@@ -25,6 +25,9 @@ public class EglomiseBrushActivator extends ToolCardActivator {
         Game game = this.controller.getGame();
 
         Square square = this.askWhichDiceShouldBeMoved();
+
+        if (square == null) return false;
+
         Square newSquare = this.askNewPosition(square);
 
         Object[] message = new Object[2];
@@ -38,6 +41,8 @@ public class EglomiseBrushActivator extends ToolCardActivator {
         List<Square> squaresWithDie = this.player.getPlayerFrame().getSquares().stream()
                 .filter(square -> square.getDie() != null)
                 .collect(Collectors.toList());
+
+        if (squaresWithDie.size() == 0) return null;
 
         ChoiceDialog<Square> dialog = new ChoiceDialog<>(squaresWithDie.get(0), squaresWithDie);
         dialog.setTitle("Eglomise Borstel 1/2");

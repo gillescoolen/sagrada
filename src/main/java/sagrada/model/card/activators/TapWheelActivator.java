@@ -37,6 +37,8 @@ public final class TapWheelActivator extends ToolCardActivator {
 
         List<Pair<Square, Square>> dieToMovePair = this.askWhichDiceToMove(trackDice);
 
+        if (dieToMovePair == null) return false;
+
         if (dieToMovePair == null) {
             this.showMessage("De kaart kan niet uitgevoerd worden");
             return false;
@@ -80,9 +82,7 @@ public final class TapWheelActivator extends ToolCardActivator {
                 .filter(square -> roundtrackDie.entrySet().stream().anyMatch(pair -> pair.getValue().getColor() == square.getDie().getColor()))
                 .collect(Collectors.toList());
 
-        if (dice.size() == 0) {
-            return null;
-        }
+        if (dice.size() == 0) return null;
 
         List<Square> availableSquares = this.player.getPlayerFrame().getSquares().stream().filter(square -> square.getDie() == null).collect(Collectors.toList());
 

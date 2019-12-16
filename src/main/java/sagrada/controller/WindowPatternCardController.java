@@ -28,9 +28,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     @FXML
     private VBox window;
     @FXML
-    private Button changeView;
-    @FXML
-    private Button reportMisplacement;
+    private Button changeView, reportMisplacement;
     @FXML
     private Text name;
 
@@ -40,7 +38,7 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
     private PatternCard playerFrame;
     private DatabaseConnection connection;
     private boolean showPatternCard = false;
-    private boolean isEndOfGame = false;
+    private boolean isEndOfGame = true;
 
     private final List<Button> windowSquares = new ArrayList<>();
     private final GameController gameController;
@@ -54,10 +52,12 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         this.connection = connection;
         this.player = player;
         this.gameController = gameController;
+        this.isEndOfGame = false;
     }
 
-    public WindowPatternCardController(DatabaseConnection connection, Player player, GameController gameController) {
+    public WindowPatternCardController(DatabaseConnection connection, Player player, GameController gameController, boolean isEndOfGame) {
         this.connection = connection;
+        this.isEndOfGame = isEndOfGame;
 
         PlayerFrameRepository playerFrameRepository = new PlayerFrameRepository(connection);
         PlayerRepository playerRepository = new PlayerRepository(connection);
@@ -96,15 +96,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         this.playerFrame.observe(this);
     }
 
-    public WindowPatternCardController(Player player, GameController gameController) {
-        this.patternCard = player.getPatternCard();
-        this.playerFrame = player.getPlayerFrame();
-        this.windowField = this.playerFrame;
-        this.player = player;
-        this.isEndOfGame = true;
-        this.gameController = gameController;
-    }
-
     @Override
     public void accept(PatternCard patternCard) {
         this.playerFrame = patternCard;
@@ -125,22 +116,24 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
                     this.changeView.setDisable(false);
                     this.setPatternCardInformation();
 
-                    boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
+                    if (this.gameController != null && this.gameController.getPlayer() != null) {
+                        boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
 
-                    if (!isOwnCard) {
-                        this.reportMisplacement.setText("Ongeldig verklaren");
-                        this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
+                        if (!isOwnCard) {
+                            this.reportMisplacement.setText("Ongeldig verklaren");
+                            this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
 
-                        this.reportMisplacement.setDisable(this.player.hasInvalidFrameField());
-                    } else {
-                        if (this.player.hasInvalidFrameField()) {
-                            this.setDiceRemovable();
+                            this.reportMisplacement.setDisable(this.player.hasInvalidFrameField());
+                        } else {
+                            if (this.player.hasInvalidFrameField()) {
+                                this.setDiceRemovable();
 
-                            this.reportMisplacement.setText("Valide verklaren");
-                            this.reportMisplacement.setOnMouseClicked(e -> this.setBoardValid());
+                                this.reportMisplacement.setText("Valide verklaren");
+                                this.reportMisplacement.setOnMouseClicked(e -> this.setBoardValid());
+                            }
+
+                            this.reportMisplacement.setVisible(this.player.hasInvalidFrameField());
                         }
-
-                        this.reportMisplacement.setVisible(this.player.hasInvalidFrameField());
                     }
                 }
             });
@@ -172,26 +165,26 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
 
     @FXML
     protected void initialize() {
-        if (this.playerFrame == null) {
-            this.changeView.setDisable(true);
-            this.name.setText(this.windowField.getName() + String.format(" (%s tokens)", this.windowField.getDifficulty()));
-            this.reportMisplacement.setText("Kies");
-            this.reportMisplacement.setOnMouseClicked(e -> this.choosePatternCard());
-        } else {
-            this.changeView.setDisable(false);
-            this.name.setText(this.player.getAccount().getUsername() + String.format(" (%s tokens)", this.playerFrame.getDifficulty()));
-            this.reportMisplacement.setText("Ongeldig verklaren");
-            this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
-        }
-
-        if (this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername())) {
-            this.window.getStyleClass().clear();
-            this.window.getStyleClass().add("window-own");
-        }
-
         if (this.isEndOfGame) {
             this.reportMisplacement.setDisable(true);
             this.reportMisplacement.setVisible(false);
+        } else {
+            if (this.playerFrame == null) {
+                this.changeView.setDisable(true);
+                this.name.setText(this.windowField.getName() + String.format(" (%s tokens)", this.windowField.getDifficulty()));
+                this.reportMisplacement.setText("Kies");
+                this.reportMisplacement.setOnMouseClicked(e -> this.choosePatternCard());
+            } else {
+                this.changeView.setDisable(false);
+                this.name.setText(this.player.getAccount().getUsername() + String.format(" (%s tokens)", this.playerFrame.getDifficulty()));
+                this.reportMisplacement.setText("Ongeldig verklaren");
+                this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
+            }
+
+            if (this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername())) {
+                this.window.getStyleClass().clear();
+                this.window.getStyleClass().add("window-own");
+            }
         }
 
         this.changeView.setOnAction((e) -> this.changeView());
@@ -225,31 +218,47 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         var i = 0;
         var selectedDie = this.gameController.getSelectedDie();
 
-        boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
+        boolean isOwnCard = (this.gameController.getPlayer() != null && this.gameController.getPlayer().getAccount() != null && this.gameController.getPlayer().getAccount() != null) && this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
         boolean canBeClicked = (isOwnCard && player.isCurrentPlayer());
 
-        for (var square : this.windowField.getSquares()) {
-            var button = this.windowSquares.get(i);
-            var color = square.getColor();
+        if (this.windowField != null) {
+            for (var square : this.windowField.getSquares()) {
+                var button = this.windowSquares.get(i);
+                var color = square.getColor();
 
-            button.setText(square.getValue().toString());
+                Integer value = square.getValue();
 
-            if (!this.showPatternCard || !isOwnCard) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
+                if (value == 0) {
+                    button.setText("");
+                } else {
+                    button.setText(value.toString());
+                }
 
-            if (this.playerFrame == null || !canBeClicked || this.isEndOfGame) {
-                button.setDisable(true);
-            } else {
-                var emptyCount = this.player.getPlayerFrame().countEmptySquares();
-                button.setDisable(emptyCount == 20 && (square.getPosition().getX() != 1 && square.getPosition().getX() != 5 && square.getPosition().getY() != 1 && square.getPosition().getY() != 4));
+                if (color == null || color == sagrada.model.Color.YELLOW) {
+                    button.setTextFill(javafx.scene.paint.Color.BLACK);
+                } else {
+                    button.setTextFill(javafx.scene.paint.Color.WHITE);
+                }
+
+                button.setDisable(this.playerFrame == null || this.showPatternCard);
+
+                if (!this.showPatternCard || !isOwnCard) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
+
+                if (this.playerFrame == null || !canBeClicked || this.isEndOfGame) {
+                    button.setDisable(true);
+                } else {
+                    var emptyCount = this.player.getPlayerFrame().countEmptySquares();
+                    button.setDisable(emptyCount == 20 && (square.getPosition().getX() != 1 && square.getPosition().getX() != 5 && square.getPosition().getY() != 1 && square.getPosition().getY() != 4));
+                }
+
+                if (color != null) {
+                    button.setStyle("-fx-background-color: " + square.getColor().getColor());
+                } else {
+                    button.setStyle("");
+                }
+
+                ++i;
             }
-
-            if (color != null) {
-                button.setStyle("-fx-background-color: " + square.getColor().getColor());
-            } else {
-                button.setStyle("");
-            }
-
-            ++i;
         }
     }
 

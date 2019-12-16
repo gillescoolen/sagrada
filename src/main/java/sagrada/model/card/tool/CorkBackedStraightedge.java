@@ -26,19 +26,31 @@ public final class CorkBackedStraightedge extends ToolCard {
         var die = move.getKey();
         var square = move.getValue();
 
-        this.incrementCost();
-
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(die);
 
         patternCard.placeDie(player, square, die, connection);
 
-        FavorToken favorToken = player.getNonAffectedFavorToken();
-        favorToken.setToolCard(this);
+        if (this.getCost() == 1) {
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken.setToolCard(this);
 
-        chatRepository.add(new ChatLine(player, String.format("heeft %s gebruikt met dobbelsteen %s.", this.getName(), die.toString())));
-        favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
-        toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        } else {
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken.setToolCard(this);
+
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+
+            FavorToken favorToken1 = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken1.setToolCard(this);
+
+            this.favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        }
+
+        this.chatRepository.add(new ChatLine(player, String.format("heeft %s gebruikt met dobbelsteen %s.", this.getName(), die.toString())));
+        this.toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+        this.incrementCost();
 
         return true;
     }

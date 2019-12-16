@@ -9,16 +9,29 @@
 <HBox prefHeight="720" prefWidth="1200" stylesheets="/styles/lobby/lobby-list.css"
       xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <ScrollPane styleClass="side-column" fitToWidth="true" fitToHeight="true">
-        <VBox styleClass="side-column-item" prefHeight="720.0" prefWidth="350.0">
+        <VBox styleClass="side-column-item" prefHeight="720.0" prefWidth="500.0">
             <Text styleClass="title" text="Uitnodigingen"/>
             <VBox fx:id="vbLobbyInvites" styleClass="lobby-list"/>
         </VBox>
     </ScrollPane>
     <ScrollPane styleClass="main-column" fitToWidth="true" fitToHeight="true">
         <VBox styleClass="main-column-item" prefHeight="720.0" prefWidth="850.0">
-            <Button fx:id="btnCreateGame" text="Spel aanmaken"/>
+            <HBox alignment="CENTER">
+                <Button fx:id="btnCreateGame" text="Spel aanmaken"/>
+                <Button fx:id="btnReverseOrder" text="Sorteer spellen van oud naar nieuw"/>
+            </HBox>
             <Text styleClass="title" text="Lobbies"/>
             <VBox fx:id="vbLobbyGames" styleClass="lobby-list"/>
+            <HBox alignment="CENTER">
+                <Button fx:id="btnPreviousPage" text="Vorige pagina"/>
+                <Button fx:id="btnNextPage" text="Volgende pagina"/>
+            </HBox>
+        </VBox>
+    </ScrollPane>
+    <ScrollPane styleClass="side-column" fitToWidth="true" fitToHeight="true">
+        <VBox styleClass="side-column-item" prefHeight="720.0" prefWidth="500.0">
+            <Text styleClass="title" text="Spelers"/>
+            <VBox fx:id="vbLobbyPlayers" styleClass="lobby-list"/>
         </VBox>
     </ScrollPane>
 </HBox>
