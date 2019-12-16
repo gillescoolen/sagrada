@@ -18,7 +18,7 @@ public final class AccountRepository extends Repository<Account> {
     }
 
     public Account findByUsername(String username) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM account WHERE username = ?");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT * FROM account WHERE username = ?;");
 
         preparedStatement.setString(1, username);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -47,9 +47,9 @@ public final class AccountRepository extends Repository<Account> {
         List<String> accounts = new ArrayList<>();
 
         while (resultSet.next()) {
-            var accountName = resultSet.getString("username");
-            accounts.add(accountName);
-        }
+        var accountName = resultSet.getString("username");
+        accounts.add(accountName);
+    }
 
         resultSet.close();
         preparedStatement.close();
