@@ -14,10 +14,10 @@ public final class ColumnColorVariety extends PublicObjectiveCard {
     public int calculatePoints(PatternCard patternCard) {
         var amountOfPoints = 0;
 
-        for (var xPosition = 1; xPosition < 5; ++xPosition) {
+        for (var xPosition = 1; xPosition <= 5; ++xPosition) {
             var columnColorSet = new HashSet<String>();
 
-            for (var yPosition = 1; yPosition < 4; ++yPosition) {
+            for (var yPosition = 1; yPosition <= 4; ++yPosition) {
                 var square = patternCard.getSquareByXAndY(xPosition, yPosition);
 
                 if (square.getDie() != null) {
@@ -26,7 +26,7 @@ public final class ColumnColorVariety extends PublicObjectiveCard {
             }
 
             if (columnColorSet.size() == 4) {
-                amountOfPoints += 5;
+                amountOfPoints += this.getPoints();
             }
         }
 

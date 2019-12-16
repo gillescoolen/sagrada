@@ -425,6 +425,14 @@ public final class PlayerRepository extends Repository<Player> {
 
         // Get new player data from db
         var players = this.getPlayersByGame(game);
+
+        // This is a shitty fix to make sure the isCurrentPlayer can be set correctly.
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // Get the next expected player based on calculated sequence number.
         var expectedNextPlayerId = setTurn(nextSequence, players);
 
