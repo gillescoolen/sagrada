@@ -219,7 +219,7 @@ public class GameController implements Consumer<Game> {
             }
 
             Platform.runLater(() -> {
-                if (player != null && player.isCurrentPlayer()) {
+                if (player != null && player.isCurrentPlayer() && !player.hasInvalidFrameField()) {
                     btnSkipTurn.setDisable(false);
 
                     if (game.getDraftPool().getDice().isEmpty()) {
