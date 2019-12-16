@@ -77,9 +77,6 @@ public class DraftPoolController implements Consumer<DraftPool> {
 
                 Platform.runLater(() -> {
                     try {
-                        if (this.draftPool == null) {
-                            this.ses.shutdown();
-                        }
                         this.draftPoolBox.getChildren().add(loader.load());
                     } catch (IOException e) {
                         e.printStackTrace();
