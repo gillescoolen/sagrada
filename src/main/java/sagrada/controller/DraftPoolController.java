@@ -46,7 +46,7 @@ public class DraftPoolController implements Consumer<DraftPool> {
         };
 
         ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
-        ses.scheduleAtFixedRate(draftPoolTimer, 0, 1500, TimeUnit.MILLISECONDS);
+        ses.scheduleAtFixedRate(draftPoolTimer, 0, 1000, TimeUnit.MILLISECONDS);
     }
 
     @FXML
