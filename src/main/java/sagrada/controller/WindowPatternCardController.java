@@ -125,22 +125,24 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
                     this.changeView.setDisable(false);
                     this.setPatternCardInformation();
 
-                    boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
+                    if (this.gameController != null && this.gameController.getPlayer() != null) {
+                        boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
 
-                    if (!isOwnCard) {
-                        this.reportMisplacement.setText("Ongeldig verklaren");
-                        this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
+                        if (!isOwnCard) {
+                            this.reportMisplacement.setText("Ongeldig verklaren");
+                            this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
 
-                        this.reportMisplacement.setDisable(this.player.hasInvalidFrameField());
-                    } else {
-                        if (this.player.hasInvalidFrameField()) {
-                            this.setDiceRemovable();
+                            this.reportMisplacement.setDisable(this.player.hasInvalidFrameField());
+                        } else {
+                            if (this.player.hasInvalidFrameField()) {
+                                this.setDiceRemovable();
 
-                            this.reportMisplacement.setText("Valide verklaren");
-                            this.reportMisplacement.setOnMouseClicked(e -> this.setBoardValid());
+                                this.reportMisplacement.setText("Valide verklaren");
+                                this.reportMisplacement.setOnMouseClicked(e -> this.setBoardValid());
+                            }
+
+                            this.reportMisplacement.setVisible(this.player.hasInvalidFrameField());
                         }
-
-                        this.reportMisplacement.setVisible(this.player.hasInvalidFrameField());
                     }
                 }
             });
@@ -184,10 +186,13 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             this.reportMisplacement.setOnMouseClicked(e -> this.invalidateCard());
         }
 
-        if (this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername())) {
-            this.window.getStyleClass().clear();
-            this.window.getStyleClass().add("window-own");
+        if (!this.isEndOfGame) {
+            if (this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername())) {
+                this.window.getStyleClass().clear();
+                this.window.getStyleClass().add("window-own");
+            }
         }
+
 
         if (this.isEndOfGame) {
             this.reportMisplacement.setDisable(true);
@@ -232,7 +237,6 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
             var button = this.windowSquares.get(i);
             var color = square.getColor();
 
-
             Integer value = square.getValue();
 
             if (value == 0) {
@@ -241,12 +245,11 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
                 button.setText(value.toString());
             }
 
-            if ( color == null || color == sagrada.model.Color.YELLOW) {
+            if (color == null || color == sagrada.model.Color.YELLOW) {
                 button.setTextFill(javafx.scene.paint.Color.BLACK);
             } else {
                 button.setTextFill(javafx.scene.paint.Color.WHITE);
             }
-
 
             button.setDisable(this.playerFrame == null || this.showPatternCard);
 
