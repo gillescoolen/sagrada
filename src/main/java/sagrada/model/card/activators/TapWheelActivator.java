@@ -42,9 +42,7 @@ public final class TapWheelActivator extends ToolCardActivator {
             return false;
         }
 
-        this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPatternCard(), game.getRoundTrack(), player, game, dieToMovePair);
-
-        return true;
+        return this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPatternCard(), game.getRoundTrack(), player, game, dieToMovePair);
     }
 
     // FIXME: fix this in the future

@@ -35,9 +35,7 @@ public class CorkBackedStraightedgeActivator extends ToolCardActivator {
             move = result.get();
         }
 
-        this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, move);
-
-        return true;
+        return this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, move);
     }
 
     private Dialog<Pair<Die, Square>> question(List<Square> availableSquares) {

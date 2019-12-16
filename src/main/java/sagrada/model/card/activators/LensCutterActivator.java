@@ -24,9 +24,7 @@ public final class LensCutterActivator extends ToolCardActivator {
 
         Player player = this.controller.getPlayer();
         Game game = this.controller.getGame();
-        this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, message);
-
-        return true;
+        return this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, message);
     }
 
     private Object[] question() {

@@ -26,9 +26,7 @@ public final class GrozingPliersActivator extends ToolCardActivator {
         message[0] = oldDie;
         message[1] = newDieValue;
 
-        this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, message);
-
-        return true;
+        return this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, message);
     }
 
     private Die askWhichDieToBeChanged() {

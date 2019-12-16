@@ -31,9 +31,7 @@ public class EglomiseBrushActivator extends ToolCardActivator {
         message[0] = square;
         message[1] = newSquare;
 
-        this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPlayerFrame(), game.getRoundTrack(), this.player, game, message);
-
-        return true;
+        return this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPlayerFrame(), game.getRoundTrack(), this.player, game, message);
     }
 
     private Square askWhichDiceShouldBeMoved() {

@@ -73,8 +73,8 @@ public class ToolCardController implements Consumer<ToolCard> {
 
     private void useToolCard() {
         try {
-            this.toolCardActivator.activate();
-            this.gameController.setUsedToolCard(true);
+            var used = this.toolCardActivator.activate();
+            this.gameController.setUsedToolCard(used);
         } catch (SQLException e) {
             e.printStackTrace();
         }

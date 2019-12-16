@@ -6,7 +6,6 @@ import sagrada.database.repositories.FavorTokenRepository;
 import sagrada.model.*;
 
 import java.sql.SQLException;
-import java.util.List;
 
 public final class GlazingHammer extends ToolCard {
     private FavorTokenRepository favorTokenRepository = new FavorTokenRepository(this.connection);
@@ -18,7 +17,11 @@ public final class GlazingHammer extends ToolCard {
 
     @Override
     public boolean use(DraftPool draftPool, DiceBag diceBag, PatternCard patternCard, RoundTrack roundTrack, Player player, Game game, Object message) throws SQLException {
-        if (game.getSelectedDie() != null || player.getIfSecondTurn(game.getPlayers().size())) {
+        if (player.getIfSecondTurn(game.getPlayers().size())) {
+            return false;
+        }
+
+        if (game.getSelectedDie() != null) {
             return false;
         }
 

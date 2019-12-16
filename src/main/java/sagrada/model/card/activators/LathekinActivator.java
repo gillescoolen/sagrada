@@ -29,9 +29,7 @@ public final class LathekinActivator extends ToolCardActivator {
 
         List<Pair<Square, Square>> dieToMovePair = this.askWhichDiceToMove();
 
-        this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPatternCard(), game.getRoundTrack(), player, game, dieToMovePair);
-
-        return true;
+        return this.toolCard.use(game.getDraftPool(), this.player.getDiceBag(), this.player.getPatternCard(), game.getRoundTrack(), player, game, dieToMovePair);
     }
 
     private List<Pair<Square, Square>> askWhichDiceToMove() {

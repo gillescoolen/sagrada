@@ -41,5 +41,7 @@ public final class GrindingStone extends ToolCard {
 
         favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
         toolCardRepository.addAffectedToolCard(this, dice, game.getId());
+
+        return true;
     }
 }

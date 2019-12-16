@@ -22,9 +22,7 @@ public final class FluxBrushActivator extends ToolCardActivator {
 
         Player player = this.controller.getPlayer();
         Game game = this.controller.getGame();
-        this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, die);
-
-        return true;
+        return this.toolCard.use(game.getDraftPool(), player.getDiceBag(), player.getPatternCard(), game.getRoundTrack(), player, game, die);
     }
 
     private Die question() {
