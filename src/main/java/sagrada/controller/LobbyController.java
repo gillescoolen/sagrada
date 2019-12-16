@@ -21,7 +21,7 @@ import java.util.TimerTask;
 
 public class LobbyController {
     @FXML
-    private VBox vbLobbyGames, vbLobbyInvites;
+    private VBox vbLobbyGames, vbLobbyInvites, vbLobbyPlayers;
     @FXML
     private Button btnCreateGame, btnPreviousPage, btnNextPage, btnReverseOrder;
 
