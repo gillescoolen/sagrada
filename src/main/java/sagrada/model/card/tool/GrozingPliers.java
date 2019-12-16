@@ -35,11 +35,21 @@ public final class GrozingPliers extends ToolCard {
 
         dieRepository.updateGameDie(game.getId(), newDie);
 
-        for (var i = 0; this.getCost() < i; i++) {
+        if (this.getCost() == 1) {
             FavorToken favorToken = player.getNonAffectedFavorToken();
             favorToken.setToolCard(this);
 
             favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+        } else {
+            FavorToken favorToken = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
+
+            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+
+            FavorToken favorToken1 = player.getNonAffectedFavorToken();
+            favorToken.setToolCard(this);
+
+            favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
         }
 
         toolCardRepository.addAffectedToolCard(this, dice, game.getId());
