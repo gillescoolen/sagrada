@@ -230,33 +230,45 @@ public class WindowPatternCardController implements Consumer<PatternCard> {
         var i = 0;
         var selectedDie = this.gameController.getSelectedDie();
 
-        if(this.gameController.getPlayer() != null){
-            boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
-            boolean canBeClicked = (isOwnCard && player.isCurrentPlayer());
+        boolean isOwnCard = this.player.getAccount().getUsername().equals(this.gameController.getPlayer().getAccount().getUsername());
+        boolean canBeClicked = (isOwnCard && player.isCurrentPlayer());
 
-            for (var square : this.windowField.getSquares()) {
-                var button = this.windowSquares.get(i);
-                var color = square.getColor();
+        for (var square : this.windowField.getSquares()) {
+            var button = this.windowSquares.get(i);
+            var color = square.getColor();
 
-                button.setText(square.getValue().toString());
+            Integer value = square.getValue();
 
-                if (!this.showPatternCard || !isOwnCard) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
-
-                if (this.playerFrame == null || !canBeClicked || this.isEndOfGame) {
-                    button.setDisable(true);
-                } else {
-                    var emptyCount = this.player.getPlayerFrame().countEmptySquares();
-                    button.setDisable(emptyCount == 20 && (square.getPosition().getX() != 1 && square.getPosition().getX() != 5 && square.getPosition().getY() != 1 && square.getPosition().getY() != 4));
-                }
-
-                if (color != null) {
-                    button.setStyle("-fx-background-color: " + square.getColor().getColor());
-                } else {
-                    button.setStyle("");
-                }
-
-                ++i;
+            if (value == 0) {
+                button.setText("");
+            } else {
+                button.setText(value.toString());
             }
+
+            if (color == null || color == sagrada.model.Color.YELLOW) {
+                button.setTextFill(javafx.scene.paint.Color.BLACK);
+            } else {
+                button.setTextFill(javafx.scene.paint.Color.WHITE);
+            }
+
+            button.setDisable(this.playerFrame == null || this.showPatternCard);
+
+            if (!this.showPatternCard || !isOwnCard) button.setOnMouseClicked(c -> this.placeDie(square, selectedDie));
+
+            if (this.playerFrame == null || !canBeClicked || this.isEndOfGame) {
+                button.setDisable(true);
+            } else {
+                var emptyCount = this.player.getPlayerFrame().countEmptySquares();
+                button.setDisable(emptyCount == 20 && (square.getPosition().getX() != 1 && square.getPosition().getX() != 5 && square.getPosition().getY() != 1 && square.getPosition().getY() != 4));
+            }
+
+            if (color != null) {
+                button.setStyle("-fx-background-color: " + square.getColor().getColor());
+            } else {
+                button.setStyle("");
+            }
+
+            ++i;
         }
     }
 
