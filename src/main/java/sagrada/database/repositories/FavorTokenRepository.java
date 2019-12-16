@@ -4,6 +4,7 @@ import sagrada.database.DatabaseConnection;
 import sagrada.model.FavorToken;
 import sagrada.model.Player;
 
+import javax.xml.transform.Result;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -171,6 +172,37 @@ public final class FavorTokenRepository extends Repository<FavorToken> {
 
         statement.setInt(1, gameId);
         statement.setInt(2, playerId);
+
+        ResultSet resultSet = statement.executeQuery();
+
+        if (!resultSet.next()) {
+            return 0;
+        }
+
+        final int total = resultSet.getInt("total");
+
+        statement.close();
+        resultSet.close();
+
+        return total;
+    }
+
+    public int getFavorTokensUsed(int gameId, int toolcardId) throws SQLException {
+        PreparedStatement gameToolcardIdStatement = this.connection.getConnection().prepareStatement("SELECT gametoolcard FROM gametoolcard WHERE idgame = ? AND idtoolcard = ?");
+
+        gameToolcardIdStatement.setInt(1, gameId);
+        gameToolcardIdStatement.setInt(2, toolcardId);
+
+        ResultSet gameToolcardResultset = gameToolcardIdStatement.executeQuery();
+        gameToolcardResultset.next();
+
+        int gameToolCardId = gameToolcardResultset.getInt("gametoolcard");
+
+        PreparedStatement statement = this.connection.getConnection()
+                .prepareStatement("SELECT COUNT(*) AS total FROM gamefavortoken WHERE idgame = ? AND gametoolcard = ?;");
+
+        statement.setInt(1, gameId);
+        statement.setInt(2, gameToolCardId);
 
         ResultSet resultSet = statement.executeQuery();
 

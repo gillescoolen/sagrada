@@ -20,7 +20,7 @@ public final class DieRepository extends Repository<Die> {
     }
 
     public List<Die> getUnusedDice(int gameId) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT d.number, d.color, g.value FROM die d LEFT OUTER JOIN gamedie g ON g.dienumber = d.number AND g.diecolor = d.color AND g.idgame = ? WHERE g.idgame IS NULL;");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT d.number, d.color FROM die d LEFT OUTER JOIN gamedie g ON g.dienumber = d.number AND g.diecolor = d.color AND g.idgame = ? WHERE g.idgame IS NULL;");
 
         preparedStatement.setInt(1, gameId);
 
@@ -32,7 +32,6 @@ public final class DieRepository extends Repository<Die> {
             for (Color color : Color.values()) {
                 if (color.getDutchColorName().equals(resultSet.getString("color"))) {
                     die = new Die(resultSet.getInt("number"), color);
-                    die.setValue(resultSet.getInt("value"));
                 }
             }
             unusedDice.add(die);
