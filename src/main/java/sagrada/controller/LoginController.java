@@ -100,6 +100,13 @@ public class LoginController {
         var username = this.tfUsername.getText();
         var password = this.pfPassword.getText();
 
+        if (!username.matches("([A-Za-z0-9]{3,})+") || !password.matches("([A-Za-z0-9]{3,})+")) {
+            this.messageLabel.getStyleClass().add("warning");
+            this.messageLabel.setText("Je mag alleen letters en cijfers in je gebruikersnaam/wachtwoord gebruiken!");
+
+            return;
+        }
+
         if (username.equals("") || password.equals("")) {
             this.messageLabel.getStyleClass().add("warning");
             this.messageLabel.setText("Gebruikersnaam of wachtwoord is niet ingevuld!");
