@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public final class CopperFoilBurnisher extends ToolCard {
-    private ToolCardRepository toolCardRepository = new ToolCardRepository(this.connection);
     private FavorTokenRepository favorTokenRepository = new FavorTokenRepository(this.connection);
 
     public CopperFoilBurnisher(int id, String name, String description, DatabaseConnection connection) {
@@ -23,10 +22,6 @@ public final class CopperFoilBurnisher extends ToolCard {
         Square newSquare = (Square) values[1];
 
         patternCard.moveDie(player, oldSquare, newSquare, connection);
-
-
-        ArrayList<Die> dice = new ArrayList<>();
-        dice.add(oldSquare.getDie());
 
         if (this.getCost() == 1) {
             FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
@@ -45,7 +40,6 @@ public final class CopperFoilBurnisher extends ToolCard {
             this.favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
         }
 
-        this.toolCardRepository.addAffectedToolCard(this, dice, game.getId());
         this.incrementCost();
 
         return true;
