@@ -16,7 +16,7 @@ public final class ChatRepository extends Repository<ChatLine> {
 
 
     public List<String> getMultiple(Integer id) throws SQLException {
-        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT username, message FROM game JOIN player p on game.idgame = p.spel_idspel JOIN chatline c on p.idplayer = c.player_idplayer WHERE idgame = ? ORDER BY c.time DESC;");
+        PreparedStatement preparedStatement = this.connection.getConnection().prepareStatement("SELECT username, message, time FROM game JOIN player p on game.idgame = p.spel_idspel JOIN chatline c on p.idplayer = c.player_idplayer WHERE idgame = ? ORDER BY c.time DESC;");
 
         preparedStatement.setInt(1, id);
 
@@ -25,7 +25,7 @@ public final class ChatRepository extends Repository<ChatLine> {
         List<String> lines = new ArrayList<>();
 
         while (resultSet.next()) {
-            lines.add("[" + resultSet.getString("username") + "] - " + resultSet.getString("message"));
+            lines.add( resultSet.getTimestamp("time") + " [" + resultSet.getString("username") + "] - " + resultSet.getString("message"));
         }
 
         resultSet.close();
