@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public final class TapWheel extends ToolCard {
-    private ToolCardRepository toolCardRepository = new ToolCardRepository(this.connection);
     private FavorTokenRepository favorTokenRepository = new FavorTokenRepository(this.connection);
 
     public TapWheel(int id, String name, String description, DatabaseConnection connection) {
@@ -30,20 +29,20 @@ public final class TapWheel extends ToolCard {
         }
 
         if (this.getCost() == 1) {
-            FavorToken favorToken = player.getNonAffectedFavorToken();
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
             favorToken.setToolCard(this);
 
-            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
         } else {
-            FavorToken favorToken = player.getNonAffectedFavorToken();
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
             favorToken.setToolCard(this);
 
-            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
 
-            FavorToken favorToken1 = player.getNonAffectedFavorToken();
-            favorToken.setToolCard(this);
+            FavorToken favorToken1 = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken1.setToolCard(this);
 
-            favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
         }
 
         this.incrementCost();

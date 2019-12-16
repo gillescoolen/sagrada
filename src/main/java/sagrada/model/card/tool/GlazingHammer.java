@@ -31,7 +31,7 @@ public final class GlazingHammer extends ToolCard {
 
         pool.forEach(die -> {
             try {
-                dieRepository.updateGameDie(game.getId(), die);
+                this.dieRepository.updateGameDie(game.getId(), die);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -41,20 +41,20 @@ public final class GlazingHammer extends ToolCard {
         game.addDiceInDraftPool(draftPool.getDice());
 
         if (this.getCost() == 1) {
-            FavorToken favorToken = player.getNonAffectedFavorToken();
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
             favorToken.setToolCard(this);
 
-            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
         } else {
-            FavorToken favorToken = player.getNonAffectedFavorToken();
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
             favorToken.setToolCard(this);
 
-            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
 
-            FavorToken favorToken1 = player.getNonAffectedFavorToken();
-            favorToken.setToolCard(this);
+            FavorToken favorToken1 = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken1.setToolCard(this);
 
-            favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
         }
 
         this.incrementCost();

@@ -1,6 +1,7 @@
 package sagrada.model;
 
 import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.FavorTokenRepository;
 import sagrada.database.repositories.PlayerFrameRepository;
 import sagrada.database.repositories.PlayerRepository;
 import sagrada.database.repositories.ToolCardRepository;
@@ -164,12 +165,10 @@ public class Player {
         this.setInvalidFrameField(false);
     }
 
-    public boolean checkIfCardIsValid(PlayerFrameRepository repository) throws SQLException {
+    public void checkIfCardIsValid(PlayerFrameRepository repository) throws SQLException {
         boolean result = repository.checkIfCardIsValid(this);
 
         this.setInvalidFrameField(result);
-
-        return result;
     }
 
     public void skipTurn(PlayerRepository playerRepository, Game game) throws SQLException {
@@ -179,6 +178,7 @@ public class Player {
 
     public PatternCard validateFrameField(DatabaseConnection connection, Game game) {
         var playerFrameRepository = new PlayerFrameRepository(connection);
+        var toolCardRepository = new ToolCardRepository(connection);
 
         for (var i = 0; i < 20; ++i) {
             var patternCardSquares = this.patternCard.getSquares();
@@ -205,22 +205,20 @@ public class Player {
                     }
                 }
 
-                if (colorNotCorrect || valueNotCorrect) {
-                    if (this.toolCardNotUsed(connection, game, frameFieldSquare.getDie())) {
+                try {
+                    if ((colorNotCorrect && !toolCardRepository.isGameDieAffected(game.getId(), frameFieldSquare.getDie(), 2)) || (valueNotCorrect && !toolCardRepository.isGameDieAffected(game.getId(), frameFieldSquare.getDie(), 3))) {
                         var frameSquare = frameFieldSquares.get(i);
 
                         frameSquare.setDie(null);
                         frameSquare.setValue(0);
                         frameSquare.setColor(null);
 
-                        try {
-                            playerFrameRepository.resetSquare(this, frameSquare, game);
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
+                        playerFrameRepository.resetSquare(this, frameSquare, game);
 
                         this.playerFrame.setSquares(frameFieldSquares);
                     }
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -241,19 +239,17 @@ public class Player {
             for (var square : frameSquares) {
                 if (square != null && square.getDie() != null && frameFieldSquare.getDie() != null) {
                     if (square.getDie().getColor().equals(frameFieldSquare.getDie().getColor()) || square.getDie().getValue().equals(frameFieldSquare.getDie().getValue())) {
-                        if (this.toolCardNotUsed(connection, game, square.getDie())) {
-                            frameFieldSquare.setDie(null);
-                            frameFieldSquare.setValue(0);
-                            frameFieldSquare.setColor(null);
+                        frameFieldSquare.setDie(null);
+                        frameFieldSquare.setValue(0);
+                        frameFieldSquare.setColor(null);
 
-                            try {
-                                playerFrameRepository.resetSquare(this, frameFieldSquare, game);
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
-
-                            this.playerFrame.setSquares(frameFieldSquares);
+                        try {
+                            playerFrameRepository.resetSquare(this, frameFieldSquare, game);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
                         }
+
+                        this.playerFrame.setSquares(frameFieldSquares);
                     }
                 }
             }
@@ -262,18 +258,16 @@ public class Player {
         return this.playerFrame;
     }
 
-    private boolean toolCardNotUsed(DatabaseConnection connection, Game game, Die die) {
-        var toolCardRepository = new ToolCardRepository(connection);
+    public FavorToken getNonAffectedFavorToken(FavorTokenRepository favorTokenRepository, Game game) {
+        var favorTokens = new ArrayList<FavorToken>();
 
         try {
-            return !toolCardRepository.isGameDieAffected(game.getId(), die);
+            favorTokens.addAll(favorTokenRepository.getPlayerFavorTokens(game.getId(), this.getId()));
         } catch (SQLException e) {
             e.printStackTrace();
-            return true;
         }
-    }
 
-    public FavorToken getNonAffectedFavorToken() {
+        this.addFavorTokens(favorTokens);
         return this.favorTokens.stream().filter(favorToken -> favorToken.getToolCard() == null).findFirst().orElse(null);
     }
 
