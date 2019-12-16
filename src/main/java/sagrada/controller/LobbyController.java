@@ -34,6 +34,7 @@ public class LobbyController {
     private final DatabaseConnection databaseConnection;
     private final Timer getGamesTimer = new Timer();
     private final Timer getInvitesTimer = new Timer();
+    private final Timer getPlayersTimer = new Timer();
 
     public LobbyController(DatabaseConnection databaseConnection, Account account) {
         this.databaseConnection = databaseConnection;
@@ -55,7 +56,12 @@ public class LobbyController {
                  getInvites();
             }
         }, 0, 3000);
-        this.getAccounts();
+        this.getPlayersTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                getAccounts();
+            }
+        }, 0, 60000);
     }
 
     private void getGames() {
@@ -155,5 +161,7 @@ public class LobbyController {
         this.getGamesTimer.purge();
         this.getInvitesTimer.cancel();
         this.getInvitesTimer.purge();
+        this.getPlayersTimer.cancel();
+        this.getPlayersTimer.purge();
    }
 }
