@@ -230,6 +230,12 @@ public class GameController implements Consumer<Game> {
                     btnSkipTurn.setDisable(true);
                     btnRollDice.setDisable(true);
                 }
+
+                if (placedDie || usedToolCard) {
+                    btnSkipTurn.setText("Beurt beeindigen");
+                } else {
+                    btnSkipTurn.setText("Beurt overslaan");
+                }
             });
         } catch (SQLException e) {
             e.printStackTrace();
