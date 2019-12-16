@@ -1,5 +1,7 @@
+// uncomment the commented shit when you need to make a jar.
+
 plugins {
-//    id 'application'
+    id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
@@ -8,9 +10,9 @@ repositories {
 }
 
 dependencies {
-    compile 'org.openjfx:javafx-controls:13.0.1:linux'
-    compile 'org.openjfx:javafx-controls:13.0.1:win'
-    compile 'org.openjfx:javafx-controls:13.0.1:mac'
+//    compile 'org.openjfx:javafx-controls:13.0.1:linux'
+//    compile 'org.openjfx:javafx-controls:13.0.1:win'
+//    compile 'org.openjfx:javafx-controls:13.0.1:mac'
     compile 'mysql:mysql-connector-java:5.1.36'
 }
 
@@ -19,7 +21,7 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
-//mainClassName = 'sagrada.Main'
+mainClassName = 'sagrada.MainLauncher'
 jar {
     manifest {
         attributes 'Main-Class': 'sagrada.MainLauncher'
