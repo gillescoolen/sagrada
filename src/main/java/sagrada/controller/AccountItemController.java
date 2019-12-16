@@ -7,6 +7,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.AccountRepository;
 import sagrada.database.repositories.GameRepository;
 import sagrada.database.repositories.PlayerRepository;
 
@@ -42,15 +43,15 @@ public class AccountItemController {
     }
 
     private void playerItemClicked() {
-        var gameRepository = new GameRepository(this.databaseConnection);
         var playerRepository = new PlayerRepository(this.databaseConnection);
+        var accountRepository = new AccountRepository(this.databaseConnection);
 
         var wins = new AtomicInteger();
         var losses = new AtomicInteger();
 
         try {
-            var stats = gameRepository.getPlayedGameStats(this.username, playerRepository);
-
+            var stats = accountRepository.getPlayedGameStats(this.username, playerRepository);
+            var color = accountRepository.getMostUsedDieColor(username);
             stats.forEach(stat -> {
                 if (stat) {
                     wins.getAndIncrement();
@@ -66,10 +67,14 @@ public class AccountItemController {
             dialog.setContentText(String.format("" +
                             "Aantal gespeelde spellen: %s \n\n" +
                             "Aantal gewonnen spellen: %s \n\n" +
-                            "Aantal verloren spellen: %s \n\n",
-                    gameRepository.getPlayedGames(username),
+                            "Aantal verloren spellen: %s \n\n" +
+                            "Meest gekozen dobbelsteen kleur: %s \n\n" +
+                            "Aantal unieke tegenstanders: %s",
+                    accountRepository.getPlayedGames(username),
                     wins,
-                    losses)
+                    losses,
+                    ((color == null) ? "Geen kleur" : color),
+                    accountRepository.getUniqueOpponents(username))
             );
 
             dialog.showAndWait();
