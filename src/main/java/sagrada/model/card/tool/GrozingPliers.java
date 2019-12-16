@@ -33,27 +33,26 @@ public final class GrozingPliers extends ToolCard {
         ArrayList<Die> dice = new ArrayList<>();
         dice.add(newDie);
 
-        dieRepository.updateGameDie(game.getId(), newDie);
+        this.dieRepository.updateGameDie(game.getId(), newDie);
 
         if (this.getCost() == 1) {
-            FavorToken favorToken = player.getNonAffectedFavorToken();
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
             favorToken.setToolCard(this);
 
-            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
         } else {
-            FavorToken favorToken = player.getNonAffectedFavorToken();
+            FavorToken favorToken = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
             favorToken.setToolCard(this);
 
-            favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken, this.getId(), roundTrack.getCurrent(), false, game.getId());
 
-            FavorToken favorToken1 = player.getNonAffectedFavorToken();
-            favorToken.setToolCard(this);
+            FavorToken favorToken1 = player.getNonAffectedFavorToken(this.favorTokenRepository, game);
+            favorToken1.setToolCard(this);
 
-            favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
+            this.favorTokenRepository.updateFavorToken(favorToken1, this.getId(), roundTrack.getCurrent(), false, game.getId());
         }
 
-        toolCardRepository.addAffectedToolCard(this, dice, game.getId());
-
+        this.toolCardRepository.addAffectedToolCard(this, dice, game.getId());
         this.incrementCost();
 
         return true;

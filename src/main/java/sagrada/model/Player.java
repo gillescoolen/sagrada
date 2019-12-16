@@ -1,6 +1,7 @@
 package sagrada.model;
 
 import sagrada.database.DatabaseConnection;
+import sagrada.database.repositories.FavorTokenRepository;
 import sagrada.database.repositories.PlayerFrameRepository;
 import sagrada.database.repositories.PlayerRepository;
 import sagrada.database.repositories.ToolCardRepository;
@@ -164,12 +165,10 @@ public class Player {
         this.setInvalidFrameField(false);
     }
 
-    public boolean checkIfCardIsValid(PlayerFrameRepository repository) throws SQLException {
+    public void checkIfCardIsValid(PlayerFrameRepository repository) throws SQLException {
         boolean result = repository.checkIfCardIsValid(this);
 
         this.setInvalidFrameField(result);
-
-        return result;
     }
 
     public void skipTurn(PlayerRepository playerRepository, Game game) throws SQLException {
@@ -273,7 +272,16 @@ public class Player {
         }
     }
 
-    public FavorToken getNonAffectedFavorToken() {
+    public FavorToken getNonAffectedFavorToken(FavorTokenRepository favorTokenRepository, Game game) {
+        var favorTokens = new ArrayList<FavorToken>();
+
+        try {
+            favorTokens.addAll(favorTokenRepository.getPlayerFavorTokens(game.getId(), this.getId()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        this.addFavorTokens(favorTokens);
         return this.favorTokens.stream().filter(favorToken -> favorToken.getToolCard() == null).findFirst().orElse(null);
     }
 
