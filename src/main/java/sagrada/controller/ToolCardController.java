@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import sagrada.database.repositories.FavorTokenRepository;
+import sagrada.model.Game;
+import sagrada.model.Player;
 import sagrada.model.ToolCard;
 import sagrada.model.card.activators.ToolCardActivator;
 
@@ -17,6 +19,8 @@ public class ToolCardController implements Consumer<ToolCard> {
     private Text description;
     @FXML
     private Text points;
+    @FXML
+    private Text favorTokensUsed;
     @FXML
     private AnchorPane wrapper;
 
@@ -38,14 +42,14 @@ public class ToolCardController implements Consumer<ToolCard> {
     protected void initialize() {
         this.name.setText(this.toolCard.getName());
         this.description.setText(this.toolCard.getDescription());
-        this.points.setText(Integer.toString(this.toolCard.getCost()));
+        this.points.setText("K: " + this.toolCard.getCost());
+        this.favorTokensUsed.setText("T: " + this.getAmountFavorTokensUsed());
     }
 
     @Override
     public void accept(ToolCard card) {
         if (card != null) {
             this.toolCard = card;
-            this.points.setText(Integer.toString(this.toolCard.getCost()));
 
             if (this.toolCard.canUse() && !this.gameController.isToolCardUsed() && sufficientTokens()) {
                 this.wrapper.getStyleClass().clear();
@@ -56,7 +60,24 @@ public class ToolCardController implements Consumer<ToolCard> {
                 this.wrapper.getStyleClass().add("tool-card-wrapper-disabled");
                 this.wrapper.setOnMouseClicked(null);
             }
+
+            this.points.setText("K: " + this.toolCard.getCost());
+            this.favorTokensUsed.setText("T: " + this.getAmountFavorTokensUsed());
         }
+    }
+
+    private int getAmountFavorTokensUsed() {
+        Game game = this.gameController.getGame();
+
+        int amount = 0;
+
+        try {
+            amount = this.repository.getFavorTokensUsed(game.getId(), this.toolCard.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return amount;
     }
 
     private boolean sufficientTokens() {
